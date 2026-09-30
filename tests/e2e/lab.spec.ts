@@ -254,7 +254,11 @@ for (const copy of translatedLabs) {
     try {
       const page = await context.newPage();
       await page.goto(`/${copy.locale}/lab`);
-      await expect(page.locator('main noscript')).toContainText(copy.noScript);
+      // Playwright excludes NOSCRIPT itself from its text matcher. Inspect the
+      // rendered paragraph instead, and verify that a no-JS visitor can see it.
+      const notice = page.locator('main noscript p');
+      await expect(notice).toBeVisible();
+      await expect(notice).toContainText(copy.noScript);
       await expect(page.locator('[data-data-status]')).toContainText(copy.initial);
       await expect(page.locator('[data-data-rows] tr')).toHaveCount(6);
       await expect(page.getByRole('button', { name: copy.transform })).toBeDisabled();

@@ -1,5 +1,6 @@
 ---
-import { brand } from '../config/brand';
+import { getBrand, localeFromPath } from '../i18n';
+const brand = getBrand(localeFromPath(Astro.url.pathname));
 import Mark from './Mark.astro';
 interface Props {
   vertical?: boolean;

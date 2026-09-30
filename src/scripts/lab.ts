@@ -1,20 +1,26 @@
 import {
   normalizeCsv,
   sampleCsv,
-  sampleData,
   summarizeRows,
   formatAmount,
   sampleDocuments,
   routeDocuments,
-  workflowSteps,
 } from '../content/lab';
 import type { DataResult, DataRow, RoutedDocument } from '../content/lab';
+import type { Locale } from '../i18n';
+import { getLabMessages, labCategoryLabel } from '../i18n/lab';
 
 // Le changement de préférence de mouvement réinitialise les listeners, pas les résultats.
 const dataResults = new WeakMap<HTMLElement, DataResult>();
 const workflowOutputs = new WeakMap<HTMLElement, RoutedDocument[]>();
 
 export function initLab(): () => void {
+  // Astro can swap language without reloading this module.
+  const language = document.documentElement.lang;
+  const locale: Locale = language === 'en' || language === 'es' ? language : 'fr';
+  const messages = getLabMessages(locale);
+  const categoryLabel = (category: string) => labCategoryLabel(category, locale);
+  const amount = (value: number) => formatAmount(value, locale);
   const controller = new AbortController();
   const { signal } = controller;
   let disposed = false;
@@ -44,7 +50,7 @@ export function initLab(): () => void {
     const filter = dataRoot.querySelector<HTMLSelectElement>('[data-data-filter]');
     const status = dataRoot.querySelector<HTMLElement>('[data-data-status]');
     const reset = dataRoot.querySelector<HTMLButtonElement>('[data-reset-csv]');
-    let result: DataResult = dataResults.get(dataRoot) ?? sampleData;
+    let result: DataResult = dataResults.get(dataRoot) ?? normalizeCsv(sampleCsv, locale);
     dataRoot
       .querySelectorAll<HTMLButtonElement | HTMLSelectElement>('button,select')
       .forEach((control) => {
@@ -71,21 +77,21 @@ export function initLab(): () => void {
         const bar = chartRow?.querySelector<HTMLElement>('[data-chart-bar]');
         const value = chartRow?.querySelector<HTMLElement>('[data-chart-value]');
         if (bar) bar.style.width = `${(item.amount / maxAmount) * 100}%`;
-        if (value) value.textContent = `${formatAmount(item.amount)} €`;
+        if (value) value.textContent = `${amount(item.amount)} €`;
       }
       dataRoot
         .querySelector('[data-data-chart]')
         ?.setAttribute(
           'aria-label',
-          `Montants synthétiques : ${summary.map((item) => `${item.category} : ${formatAmount(item.amount)} euros`).join(', ')}`,
+          `${messages.chartLabel} : ${summary.map((item) => `${categoryLabel(item.category)} : ${amount(item.amount)} euros`).join(', ')}`,
         );
       renderTable(
         dataRoot.querySelector('[data-data-rows]'),
-        rows.map((row) => [row.id, row.category, `${formatAmount(row.amount)} €`]),
+        rows.map((row) => [row.id, categoryLabel(row.category), `${amount(row.amount)} €`]),
       );
       const issueList = dataRoot.querySelector('[data-data-issues]');
       if (issueList) {
-        const issues = result.issues.length ? result.issues : ['Aucune ligne écartée.'];
+        const issues = result.issues.length ? result.issues : [messages.noExcludedRows];
         issueList.replaceChildren(
           ...issues.map((message) => {
             const li = document.createElement('li');
@@ -96,7 +102,13 @@ export function initLab(): () => void {
       }
       if (status) {
         status.dataset.state = 'success';
-        status.textContent = `${result.inputCount} lignes lues : ${result.rows.length} valides, ${result.duplicateCount} doublon(s), ${result.invalidCount} anomalie(s). ${rows.length} ligne(s) dans la vue actuelle.`;
+        status.textContent = messages.dataStatus(
+          result.inputCount,
+          result.rows.length,
+          result.duplicateCount,
+          result.invalidCount,
+          rows.length,
+        );
       }
       input?.removeAttribute('aria-invalid');
     };
@@ -105,13 +117,13 @@ export function initLab(): () => void {
       (event) => {
         event.preventDefault();
         try {
-          result = normalizeCsv(input?.value ?? '');
+          result = normalizeCsv(input?.value ?? '', locale);
           dataResults.set(dataRoot, result);
           showResult();
         } catch (error) {
           if (status) {
             status.dataset.state = 'error';
-            status.textContent = `${error instanceof Error ? error.message : 'Impossible de lire ces données.'} La dernière vue valide est conservée.`;
+            status.textContent = `${error instanceof Error ? error.message : messages.unreadableData} ${messages.viewPreserved}`;
           }
           input?.setAttribute('aria-invalid', 'true');
           input?.focus();
@@ -125,7 +137,7 @@ export function initLab(): () => void {
       () => {
         if (status) {
           status.dataset.state = 'pending';
-          status.textContent = 'Source modifiée. Lancez « Transformer » pour actualiser la vue.';
+          status.textContent = messages.sourceChanged;
         }
       },
       { signal },
@@ -135,7 +147,7 @@ export function initLab(): () => void {
       () => {
         if (input) input.value = sampleCsv;
         if (filter) filter.value = 'all';
-        result = normalizeCsv(sampleCsv);
+        result = normalizeCsv(sampleCsv, locale);
         dataResults.set(dataRoot, result);
         showResult();
       },
@@ -163,11 +175,9 @@ export function initLab(): () => void {
       steps.forEach((step) => {
         delete step.dataset.state;
         const label = step.querySelector('[data-step-state]');
-        if (label) label.textContent = 'À lancer';
+        if (label) label.textContent = messages.idle;
       });
-      if (status)
-        status.textContent =
-          'Traitement interrompu. Relancez le flux pour obtenir un résultat complet.';
+      if (status) status.textContent = messages.interrupted;
     }
     const pause = () =>
       new Promise<void>((resolve) => {
@@ -193,13 +203,12 @@ export function initLab(): () => void {
       steps.forEach((step) => {
         delete step.dataset.state;
         const label = step.querySelector('[data-step-state]');
-        if (label) label.textContent = 'À lancer';
+        if (label) label.textContent = messages.idle;
       });
-      if (status)
-        status.textContent = 'Configuration modifiée. Relancez le flux pour calculer le résultat.';
+      if (status) status.textContent = messages.configurationChanged;
       renderTable(
         body,
-        sampleDocuments.map((doc) => [doc.name, `${formatAmount(doc.amount)} €`, 'En attente']),
+        sampleDocuments.map((doc) => [doc.name, `${amount(doc.amount)} €`, messages.pending]),
       );
     };
     valid?.addEventListener('change', resetOutput, { signal });
@@ -222,45 +231,44 @@ export function initLab(): () => void {
         steps.forEach((step) => {
           delete step.dataset.state;
           const label = step.querySelector('[data-step-state]');
-          if (label) label.textContent = 'À lancer';
+          if (label) label.textContent = messages.idle;
         });
         for (const [index, step] of steps.entries()) {
           if (disposed) return;
           step.dataset.state = 'active';
           const label = step.querySelector('[data-step-state]');
-          if (label) label.textContent = 'En cours';
+          if (label) label.textContent = messages.running;
           if (status)
-            status.textContent = `Étape ${index + 1} sur ${steps.length} : ${workflowSteps[index]?.label}.`;
+            status.textContent = messages.stepStatus(
+              index + 1,
+              steps.length,
+              messages.steps[index]?.label ?? '',
+            );
           if (index === 0)
             renderTable(
               body,
-              documents.map((doc) => [
-                doc.name,
-                `${formatAmount(doc.amount)} €`,
-                'Reçu localement',
-              ]),
+              documents.map((doc) => [doc.name, `${amount(doc.amount)} €`, messages.received]),
             );
           if (index === 1) {
-            output = routeDocuments(documents);
+            output = routeDocuments(documents, locale);
             renderTable(
               body,
-              output.map((doc) => [doc.name, `${formatAmount(doc.amount)} €`, doc.reason]),
+              output.map((doc) => [doc.name, `${amount(doc.amount)} €`, doc.reason]),
             );
           }
           if (index === 2 && output)
             renderTable(
               body,
-              output.map((doc) => [doc.name, `${formatAmount(doc.amount)} €`, doc.destination]),
+              output.map((doc) => [doc.name, `${amount(doc.amount)} €`, doc.destination]),
             );
           await pause();
           if (disposed) return;
           step.dataset.state = 'done';
-          if (label) label.textContent = 'Terminé';
+          if (label) label.textContent = messages.done;
         }
-        const ready = output?.filter((doc) => doc.destination === 'Prêt à exporter').length ?? 0;
+        const ready = output?.filter((doc) => doc.destination === messages.ready).length ?? 0;
         if (output) workflowOutputs.set(workflowRoot, output);
-        if (status)
-          status.textContent = `Traitement terminé : ${ready} document(s) prêt(s), ${documents.length - ready} à vérifier. Le JSON est disponible ; aucun document n’a été envoyé.`;
+        if (status) status.textContent = messages.completed(ready, documents.length - ready);
         if (download) download.disabled = false;
         run.disabled = false;
         run.removeAttribute('aria-busy');
@@ -287,7 +295,7 @@ export function initLab(): () => void {
         urls.add(url);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'demonstrateur-documents.json';
+        link.download = messages.downloadName;
         link.click();
         const id = setTimeout(() => {
           URL.revokeObjectURL(url);
@@ -295,9 +303,7 @@ export function initLab(): () => void {
           timerIds.delete(id);
         }, 1500);
         timerIds.add(id);
-        if (status)
-          status.textContent =
-            'Le téléchargement du JSON synthétique a été demandé à votre navigateur. Aucun document n’a été envoyé.';
+        if (status) status.textContent = messages.downloadRequested;
       },
       { signal },
     );

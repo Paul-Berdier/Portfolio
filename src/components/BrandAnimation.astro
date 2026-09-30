@@ -1,5 +1,8 @@
 ---
-import { brand } from '../config/brand';
+import { getBrand, localeFromPath, translate } from '../i18n';
+const locale = localeFromPath(Astro.url.pathname);
+const brand = getBrand(locale);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
 import { palette } from '../brand/palette.mjs';
 import { ribbonCenterPath, symbolMarkup } from '../brand/ribbon.mjs';
 import typeArt from '../brand/type.generated.json';
@@ -84,31 +87,55 @@ const wordScale = Math.min(0.85, 410 / typeArt.word.width);
       <g
         data-brand-signature
         color={palette.ivory}
-        transform={`translate(${(640 - typeArt.signature.width) / 2} 375)`}
-        set:html={typeArt.signature.markup}
-      />
+        transform={
+          locale === 'fr' ? `translate(${(640 - typeArt.signature.width) / 2} 375)` : undefined
+        }
+      >
+        {locale === 'fr' ? (
+          <Fragment set:html={typeArt.signature.markup} />
+        ) : (
+          <text
+            x="320"
+            y="375"
+            text-anchor="middle"
+            fill="currentColor"
+            font-family="Space Grotesk Variable, sans-serif"
+            font-size="14"
+            letter-spacing="3"
+          >
+            {brand.tagline.toUpperCase()}
+          </text>
+        )}
+      </g>
       <style is:inline set:html={`[data-wordmark-ai]{color:${palette.periwinkle}}`} />
     </svg>
     {canvas && <div class="engine-canvas" aria-hidden="true" />}
   </div>
   {controls && (
-    <div class="brand-playback" aria-label="Commandes de l’animation du logo">
+    <div
+      class="brand-playback"
+      aria-label={t(
+        'Commandes de l’animation du logo',
+        'Logo animation controls',
+        'Controles de animación del logo',
+      )}
+    >
       {variant === 'presentation' && (
         <>
           <button type="button" class="text-link" data-brand-action="play">
-            Lire <span aria-hidden="true">▷</span>
+            {t('Lire', 'Play', 'Reproducir')} <span aria-hidden="true">▷</span>
           </button>
           <button type="button" class="text-link" data-brand-action="pause">
-            Pause <span aria-hidden="true">Ⅱ</span>
+            {t('Pause', 'Pause', 'Pausa')} <span aria-hidden="true">Ⅱ</span>
           </button>
         </>
       )}
       <button type="button" class="text-link" data-brand-action="replay">
-        Rejouer <span aria-hidden="true">↻</span>
+        {t('Rejouer', 'Replay', 'Repetir')} <span aria-hidden="true">↻</span>
       </button>
       {variant === 'presentation' && (
         <label class="brand-scrubber">
-          Progression{' '}
+          {t('Progression', 'Progress', 'Progreso')}{' '}
           <input
             type="range"
             min="0"
@@ -116,12 +143,16 @@ const wordScale = Math.min(0.85, 410 / typeArt.word.width);
             step="0.001"
             value="1"
             data-brand-progress
-            aria-label="Progression de l’animation"
+            aria-label={t(
+              'Progression de l’animation',
+              'Animation progress',
+              'Progreso de la animación',
+            )}
           />
         </label>
       )}
       <output class="brand-step" data-brand-step aria-live="polite">
-        Logo final
+        {t('Logo final', 'Final logo', 'Logo final')}
       </output>
     </div>
   )}

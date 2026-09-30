@@ -1,8 +1,10 @@
 import { gsap } from 'gsap';
+import { localeFromPath, translate } from '../i18n';
 
 export function initProjects(): () => void {
   const root = document.querySelector<HTMLElement>('[data-projects]');
   const progress = document.querySelector<HTMLElement>('[data-case-progress]');
+  const locale = localeFromPath(window.location.pathname);
   const controller = new AbortController();
   const { signal } = controller;
   const animations: gsap.core.Tween[] = [];
@@ -25,7 +27,12 @@ export function initProjects(): () => void {
           });
           const visible = items.filter((item) => !item.hidden);
           if (status)
-            status.textContent = `${visible.length} démonstrateur${visible.length > 1 ? 's' : ''} ${visible.length > 1 ? 'affichés' : 'affiché'}.`;
+            status.textContent = translate(
+              locale,
+              `${visible.length} démonstrateur${visible.length > 1 ? 's' : ''} ${visible.length > 1 ? 'affichés' : 'affiché'}.`,
+              `${visible.length} demo${visible.length === 1 ? '' : 's'} shown.`,
+              `${visible.length} demostraci${visible.length === 1 ? 'ón mostrada' : 'ones mostradas'}.`,
+            );
           if (empty) empty.hidden = visible.length > 0;
           if (document.documentElement.dataset.motion === 'auto' && visible.length) {
             animations.push(

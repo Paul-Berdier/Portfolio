@@ -1,16 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ContactForm from '../components/ContactForm.astro';
-import { brand } from '../config/brand';
+import { getBrand, localeFromPath, translate } from '../i18n';
 import { getContactConfig } from '../server/config';
 
 export const prerender = false;
+const locale = localeFromPath(Astro.url.pathname);
+const brand = getBrand(locale);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
 const config = getContactConfig();
 const needFromService = {
   'developpement-web': 'web',
+  'web-development': 'web',
+  'desarrollo-web': 'web',
+  web: 'web',
   automatisation: 'automation',
+  automation: 'automation',
+  automatizacion: 'automation',
   data: 'data',
+  datos: 'data',
   'intelligence-artificielle': 'ai',
+  'artificial-intelligence': 'ai',
+  'inteligencia-artificial': 'ai',
+  ai: 'ai',
 } as const;
 const requestedNeed = Astro.url.searchParams.get('besoin') || '';
 const selectedNeed = Object.hasOwn(needFromService, requestedNeed)
@@ -21,20 +33,40 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
 ---
 
 <Layout
-  title="Parlons de votre projet"
-  description="Un site à créer, un processus à automatiser, des données à exploiter ? Parlez de votre besoin à Paul Berdier, à Toulouse et à distance."
+  title={t('Parlons de votre projet', 'Let’s talk about your project', 'Hablemos de tu proyecto')}
+  description={t(
+    'Un site à créer, un processus à automatiser, des données à exploiter ? Parlez de votre besoin à Paul Berdier, à Toulouse et à distance.',
+    'A website to build, a process to automate, or data to put to work? Tell Paul Berdier about your project, in Toulouse or remotely.',
+    '¿Un sitio que crear, un proceso que automatizar o datos que aprovechar? Cuéntale tu proyecto a Paul Berdier, en Toulouse o a distancia.',
+  )}
 >
   <section class="page-shell contact-page">
     <header class="contact-heading">
-      <p class="eyebrow">Contact · Le début de quelque chose</p>
+      <p class="eyebrow">
+        {t(
+          'Contact · Le début de quelque chose',
+          'Contact · The start of something',
+          'Contacto · El comienzo de algo',
+        )}
+      </p>
       <h1 class="page-heading">
-        Tout commence
+        {t('Tout commence', 'It all starts', 'Todo empieza')}
         <br />
-        par <span>un échange.</span>
+        {t('par', 'with', 'con')}{' '}
+        <span>{t('un échange.', 'a conversation.', 'una conversación.')}</span>
       </h1>
       <p class="lede">
-        Un besoin précis ou une idée encore floue ?<br />
-        Dites-moi ce que vous aimeriez faire avancer.
+        {t(
+          'Un besoin précis ou une idée encore floue ?',
+          'A clear need or an idea still taking shape?',
+          '¿Una necesidad concreta o una idea aún por definir?',
+        )}
+        <br />
+        {t(
+          'Dites-moi ce que vous aimeriez faire avancer.',
+          'Tell me what you’d like to move forward.',
+          'Cuéntame qué te gustaría hacer avanzar.',
+        )}
       </p>
     </header>
     <div class="contact-columns">
@@ -50,26 +82,35 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
           </svg>
         </div>
         <h2>
-          Votre contexte.
+          {t('Votre contexte.', 'Your context.', 'Tu contexto.')}
           <br />
-          Mon point de départ.
+          {t('Mon point de départ.', 'My starting point.', 'Mi punto de partida.')}
         </h2>
         <p>
-          Je prends le temps de comprendre ce qui compte pour vous avant de parler de solution
-          technique.
+          {t(
+            'Je prends le temps de comprendre ce qui compte pour vous avant de parler de solution technique.',
+            'I take time to understand what matters to you before discussing a technical solution.',
+            'Me tomo el tiempo de entender lo que te importa antes de hablar de una solución técnica.',
+          )}
         </p>
         <dl>
           <div>
-            <dt>Votre interlocuteur</dt>
+            <dt>{t('Votre interlocuteur', 'Who you’ll work with', 'Con quién hablarás')}</dt>
             <dd>{brand.owner}</dd>
           </div>
           <div>
-            <dt>Où ?</dt>
+            <dt>{t('Où ?', 'Where?', '¿Dónde?')}</dt>
             <dd>{brand.location}</dd>
           </div>
           <div>
-            <dt>Et après ?</dt>
-            <dd>Un échange pour préciser le besoin, le périmètre et la suite possible.</dd>
+            <dt>{t('Et après ?', 'What happens next?', '¿Y después?')}</dt>
+            <dd>
+              {t(
+                'Un échange pour préciser le besoin, le périmètre et la suite possible.',
+                'A conversation to clarify your needs, the scope and possible next steps.',
+                'Una conversación para concretar la necesidad, el alcance y los posibles próximos pasos.',
+              )}
+            </dd>
           </div>
         </dl>
         {brand.email && (
@@ -84,7 +125,8 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
             target="_blank"
             rel="noopener noreferrer"
           >
-            Choisir un créneau <span aria-hidden="true">↗</span>
+            {t('Choisir un créneau', 'Choose a time', 'Elegir una hora')}{' '}
+            <span aria-hidden="true">↗</span>
           </a>
         )}
       </aside>
@@ -95,18 +137,35 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
             <div>
               <strong>
                 {config.availability === 'preview'
-                  ? 'Le formulaire ouvrira bientôt.'
-                  : 'Le formulaire est temporairement indisponible.'}
+                  ? t(
+                      'Le formulaire ouvrira bientôt.',
+                      'The form will open soon.',
+                      'El formulario estará disponible próximamente.',
+                    )
+                  : t(
+                      'Le formulaire est temporairement indisponible.',
+                      'The form is temporarily unavailable.',
+                      'El formulario no está disponible temporalmente.',
+                    )}
               </strong>
               <p>
                 {config.availability === 'preview'
-                  ? 'Ce site est en préproduction. La collecte reste fermée jusqu’à la validation des coordonnées et des informations légales. Aucune donnée n’est transmise.'
-                  : 'L’enregistrement des demandes n’est pas ouvert pour le moment. Aucune donnée n’est transmise.'}
+                  ? t(
+                      'Ce site est en préproduction. La collecte reste fermée jusqu’à la validation des coordonnées et des informations légales. Aucune donnée n’est transmise.',
+                      'This site is a preview. Submissions remain closed until the contact details and legal information are validated. No data is transmitted.',
+                      'Este sitio está en preproducción. No se admiten solicitudes hasta que se validen los datos de contacto y la información legal. No se transmite ningún dato.',
+                    )
+                  : t(
+                      'L’enregistrement des demandes n’est pas ouvert pour le moment. Aucune donnée n’est transmise.',
+                      'Enquiries cannot be submitted at the moment. No data is transmitted.',
+                      'En este momento no se pueden enviar solicitudes. No se transmite ningún dato.',
+                    )}
               </p>
             </div>
           </div>
         )}
         <ContactForm
+          locale={locale}
           enabled={config.enabled}
           retentionMonths={config.retentionMonths}
           selectedNeed={selectedNeed}

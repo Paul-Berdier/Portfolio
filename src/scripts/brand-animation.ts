@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import { ribbonCenterPath, ribbonFramePath, ribbonPath } from '../brand/ribbon.mjs';
 import { getMotion } from '../config/motion';
+import { localeFromPath, translate } from '../i18n';
 
 const clamp = (n: number) => Math.max(0, Math.min(1, n));
 const smooth = (n: number) => {
@@ -9,6 +10,13 @@ const smooth = (n: number) => {
 };
 
 export function initBrandAnimations() {
+  const locale = localeFromPath(location.pathname);
+  const steps = translate(
+    locale,
+    ['Impulsion', 'Transformation', 'Stabilisation', 'Révélation', 'Logo final'],
+    ['Impulse', 'Transformation', 'Stabilisation', 'Reveal', 'Final logo'],
+    ['Impulso', 'Transformación', 'Estabilización', 'Revelación', 'Logo final'],
+  );
   const cleanup: (() => void)[] = [];
   document.querySelectorAll<HTMLElement>('[data-brand-animation]').forEach((host) => {
     const abort = new AbortController(),
@@ -55,14 +63,14 @@ export function initBrandAnimations() {
       if (slider) slider.value = String(p);
       const label =
         p < 0.18
-          ? 'Impulsion'
+          ? steps[0]!
           : p < 0.6
-            ? 'Transformation'
+            ? steps[1]!
             : p < 0.7
-              ? 'Stabilisation'
+              ? steps[2]!
               : p < 0.88
-                ? 'Révélation'
-                : 'Logo final';
+                ? steps[3]!
+                : steps[4]!;
       if (output && output.textContent !== label) output.textContent = label;
       engine?.dispatchEvent(
         new CustomEvent('engine:progress', { detail: { formation, light: p } }),

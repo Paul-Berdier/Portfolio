@@ -1,3 +1,5 @@
+import { contactClientCopy, contactLocale } from '../i18n/contact';
+
 interface ContactResponse {
   ok?: boolean;
   recorded?: boolean;
@@ -10,6 +12,7 @@ export function initContact(): () => void {
   dispose?.();
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
   if (!form || form.dataset.enabled !== 'true') return () => {};
+  const copy = contactClientCopy[contactLocale(form.dataset.contactLocale)];
   const lifecycle = new AbortController();
   let requestController: AbortController | undefined;
   let busy = false;
@@ -23,17 +26,55 @@ export function initContact(): () => void {
       const label = form.querySelector<HTMLElement>('[data-submit-label]');
       const status = form.querySelector<HTMLElement>('[data-contact-status]');
       if (button) button.disabled = false;
-      if (label) label.textContent = 'Réessayer l’envoi';
+      if (label) label.textContent = copy.retry;
       if (status) {
         status.dataset.state = 'error';
-        status.textContent =
-          'L’envoi a été interrompu. Votre saisie est conservée ; vous pouvez réessayer sans créer de doublon.';
+        status.textContent = copy.interrupted;
       }
       form.removeAttribute('aria-busy');
     }
     busy = false;
     dispose = undefined;
   };
+  const isField = (target: EventTarget | null) =>
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLSelectElement ||
+    target instanceof HTMLTextAreaElement;
+  // Native validation follows the page language, independently of browser settings.
+  form.addEventListener(
+    'invalid',
+    (event) => {
+      const field = event.target;
+      if (!isField(field)) return;
+      field.setCustomValidity('');
+      const validity = field.validity;
+      const min = Number(field.getAttribute('minlength'));
+      const max = Number(field.getAttribute('maxlength'));
+      field.setCustomValidity(
+        validity.valueMissing
+          ? copy.required
+          : validity.typeMismatch
+            ? copy.email
+            : validity.tooShort
+              ? copy.tooShort(min)
+              : validity.tooLong
+                ? copy.tooLong(max)
+                : copy.invalid,
+      );
+    },
+    { capture: true, signal: lifecycle.signal },
+  );
+  const clearValidity = (event: Event) => {
+    if (isField(event.target)) event.target.setCustomValidity('');
+  };
+  form.addEventListener('input', clearValidity, { signal: lifecycle.signal });
+  form.addEventListener('change', clearValidity, { signal: lifecycle.signal });
+  // Re-initialisation (including a motion preference change) must not retain stale errors.
+  form
+    .querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+      'input, select, textarea',
+    )
+    .forEach((field) => field.setCustomValidity(''));
   form.addEventListener(
     'submit',
     async (event) => {
@@ -45,10 +86,10 @@ export function initContact(): () => void {
       if (!status || !button || !label) return;
       busy = true;
       button.disabled = true;
-      label.textContent = 'Enregistrement…';
+      label.textContent = copy.saving;
       form.setAttribute('aria-busy', 'true');
       status.dataset.state = 'loading';
-      status.textContent = 'Votre demande est en cours d’enregistrement.';
+      status.textContent = copy.savingStatus;
       form.querySelectorAll<HTMLElement>('[data-error-for]').forEach((element) => {
         element.hidden = true;
         element.textContent = '';
@@ -70,14 +111,13 @@ export function initContact(): () => void {
         const result = (await response.json()) as ContactResponse;
         if (response.ok && result.ok === true && result.recorded === true) {
           status.dataset.state = 'success';
-          status.textContent = result.message || 'Votre demande est bien enregistrée.';
-          label.textContent = 'Demande enregistrée';
+          status.textContent = result.message || copy.saved;
+          label.textContent = copy.savedLabel;
           form.querySelector('fieldset')?.setAttribute('disabled', '');
           status.focus();
         } else {
           status.dataset.state = 'error';
-          status.textContent =
-            result.message || 'Votre demande n’a pas pu être enregistrée. Réessayez.';
+          status.textContent = result.message || copy.failed;
           let first: HTMLElement | undefined;
           for (const [field, message] of Object.entries(result.errors || {})) {
             const control = form.elements.namedItem(field);
@@ -95,15 +135,14 @@ export function initContact(): () => void {
           }
           (first || status).focus();
           button.disabled = false;
-          label.textContent = 'Réessayer l’envoi';
+          label.textContent = copy.retry;
         }
       } catch {
         if (!lifecycle.signal.aborted) {
           status.dataset.state = 'error';
-          status.textContent =
-            'La connexion a été interrompue. Votre saisie est conservée. Réessayez : une même tentative ne créera pas deux demandes.';
+          status.textContent = copy.network;
           button.disabled = false;
-          label.textContent = 'Réessayer l’envoi';
+          label.textContent = copy.retry;
           status.focus();
         }
       } finally {

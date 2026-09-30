@@ -1,25 +1,40 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ServiceVisual from '../../components/ServiceVisual.astro';
-import { services } from '../../content/services';
+import { getServices } from '../../content/services';
+import { localeFromPath, translate, localizePath } from '../../i18n';
 export const prerender = true;
+const locale = localeFromPath(Astro.url.pathname);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
+const services = getServices(locale);
 ---
 
 <Layout
-  title="Expertises — Web, automatisation, data & IA"
-  description="Sites et applications web, automatisation, data et IA : quatre domaines pour construire les outils qui font avancer votre activité."
+  title={t(
+    'Expertises — Web, automatisation, data & IA',
+    'Services — Web, automation, data & AI',
+    'Servicios — Web, automatización, datos e IA',
+  )}
+  description={t(
+    'Sites et applications web, automatisation, data et IA : quatre domaines pour construire les outils qui font avancer votre activité.',
+    'Websites and applications, automation, data and AI: four areas of expertise to build tools that move your business forward.',
+    'Sitios y aplicaciones web, automatización, datos e IA: cuatro áreas para construir las herramientas que hacen avanzar tu actividad.',
+  )}
 >
   <div class="container page-shell">
     <header class="page-heading">
-      <p class="eyebrow">Expertises / 01 — 04</p>
+      <p class="eyebrow">{t('Expertises', 'Services', 'Servicios')} / 01 — 04</p>
       <h1 data-line>
-        Un besoin précis.
+        {t('Un besoin précis.', 'A specific need.', 'Una necesidad concreta.')}
         <br />
-        <em>La bonne réponse.</em>
+        <em>{t('La bonne réponse.', 'The right solution.', 'La respuesta adecuada.')}</em>
       </h1>
       <p class="lede">
-        Un site à créer. Des outils à relier. Des données à comprendre. Je construis la solution
-        autour de votre activité.
+        {t(
+          'Un site à créer. Des outils à relier. Des données à comprendre. Je construis la solution autour de votre activité.',
+          'A website to build. Tools to connect. Data to understand. I shape the solution around your business.',
+          'Un sitio que crear. Herramientas que conectar. Datos que comprender. Construyo la solución en torno a tu actividad.',
+        )}
       </p>
     </header>
     <div class="service-list">
@@ -30,7 +45,7 @@ export const prerender = true;
               {service.number} / {service.shortTitle}
             </span>
             <h2>
-              <a href={`/services/${service.slug}`}>{service.title}</a>
+              <a href={localizePath('/services/' + service.slug, locale)}>{service.title}</a>
             </h2>
             <p>{service.description}</p>
             <ul class="tags">
@@ -38,8 +53,9 @@ export const prerender = true;
                 <li class="tag">{tag}</li>
               ))}
             </ul>
-            <a class="text-link" href={`/services/${service.slug}`}>
-              Explorer cette expertise <span aria-hidden="true">↗</span>
+            <a class="text-link" href={localizePath('/services/' + service.slug, locale)}>
+              {t('Explorer cette expertise', 'Explore this service', 'Explorar este servicio')}{' '}
+              <span aria-hidden="true">↗</span>
             </a>
           </div>
           <div class="service-art">
@@ -49,19 +65,29 @@ export const prerender = true;
       ))}
     </div>
     <section class="cross-section" data-reveal>
-      <p class="eyebrow">Le fil commun</p>
+      <p class="eyebrow">{t('Le fil commun', 'The connecting thread', 'El hilo conductor')}</p>
       <div>
         <h2>
-          Les sujets se croisent.
+          {t('Les sujets se croisent.', 'The disciplines connect.', 'Las disciplinas se conectan.')}
           <br />
-          <em>Le projet reste cohérent.</em>
+          <em>
+            {t(
+              'Le projet reste cohérent.',
+              'The project stays coherent.',
+              'El proyecto mantiene su coherencia.',
+            )}
+          </em>
         </h2>
         <p>
-          Une application peut automatiser un processus, exploiter des données et intégrer une
-          recherche documentaire. Je garde une vue d’ensemble, avec un seul point de contact.
+          {t(
+            'Une application peut automatiser un processus, exploiter des données et intégrer une recherche documentaire. Je garde une vue d’ensemble, avec un seul point de contact.',
+            'An application can automate a process, use data and integrate document search. I keep the whole project in view, as your single point of contact.',
+            'Una aplicación puede automatizar un proceso, utilizar datos e integrar una búsqueda documental. Mantengo una visión de conjunto, con un único interlocutor.',
+          )}
         </p>
-        <a href="/contact" class="button button-primary">
-          Parler de votre projet <span aria-hidden="true">↗</span>
+        <a href={localizePath('/contact', locale)} class="button button-primary">
+          {t('Parler de votre projet', 'Discuss your project', 'Hablar de tu proyecto')}{' '}
+          <span aria-hidden="true">↗</span>
         </a>
       </div>
     </section>

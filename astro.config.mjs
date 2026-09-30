@@ -13,6 +13,7 @@ export default defineConfig({
   site: process.env.PUBLIC_SITE_URL || undefined,
   output: 'static',
   session: false,
+  i18n: { defaultLocale: 'fr', locales: ['fr', 'en', 'es'], routing: 'manual' },
   security: {
     allowedDomains: publicUrl ? [{ hostname: publicUrl.hostname, protocol: 'https' }] : [],
   },

@@ -1,0 +1,8 @@
+---
+import Page from '../../services/[slug].astro';
+import { services } from '../../../content/services';
+export const prerender = true;
+const service = services.find((item) => item.slug === 'automatisation')!;
+---
+
+<Page service={service} />

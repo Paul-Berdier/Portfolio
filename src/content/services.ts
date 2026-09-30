@@ -1,3 +1,7 @@
+import type { Locale } from '../i18n';
+import { englishServices } from './services.en';
+import { spanishServices } from './services.es';
+
 export type ServiceSlug =
   'developpement-web' | 'automatisation' | 'data' | 'intelligence-artificielle';
 
@@ -160,3 +164,9 @@ export const services: Service[] = [
       'Un modèle peut se tromper. Sources, validation humaine, confidentialité, coûts et droits d’utilisation font partie du cadrage. Aucune décision sensible n’est confiée aveuglément à un modèle.',
   },
 ];
+
+export function getServices(locale: Locale): Service[] {
+  if (locale === 'fr') return services;
+  const copy = locale === 'es' ? spanishServices : englishServices;
+  return services.map((service) => ({ ...service, ...copy[service.slug] }));
+}

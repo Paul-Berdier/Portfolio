@@ -284,7 +284,7 @@ button {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
-  gap: 24px;
+  gap: 18px;
   position: relative;
   z-index: 5;
 }
@@ -304,7 +304,7 @@ button {
 }
 .desktop-nav {
   display: flex;
-  gap: 32px;
+  gap: 24px;
   align-items: center;
 }
 .desktop-nav a {
@@ -609,6 +609,10 @@ button {
   }
   .header-contact {
     gap: 12px;
+    padding: 10px;
+  }
+  .header-contact span {
+    display: none;
   }
   .brand {
     font-size: 25px;
@@ -627,10 +631,10 @@ button {
   }
   .site-header {
     height: 80px;
-    gap: 12px;
+    gap: 8px;
   }
   .brand {
-    font-size: 26px;
+    font-size: 22px;
   }
   .header-contact {
     margin-left: auto;

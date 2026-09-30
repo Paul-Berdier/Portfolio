@@ -1,7 +1,10 @@
 ---
 import BrandAnimation from './BrandAnimation.astro';
 import ServiceVisual from './ServiceVisual.astro';
-import { engineModes } from '../config/engine';
+import { getEngineModes } from '../config/engine';
+import { localeFromPath, translate } from '../i18n';
+const locale = localeFromPath(Astro.url.pathname);
+const engineModes = getEngineModes(locale);
 ---
 
 <div class="morph-engine" data-engine data-state="brand">
@@ -10,7 +13,14 @@ import { engineModes } from '../config/engine';
       <i />
       MORPH ENGINE
     </span>
-    <span>UNE MATIÈRE · CINQ FORMES</span>
+    <span>
+      {translate(
+        locale,
+        'UNE MATIÈRE · CINQ FORMES',
+        'ONE MATERIAL · FIVE FORMS',
+        'UNA MATERIA · CINCO FORMAS',
+      )}
+    </span>
   </div>
   <div class="engine-stage">
     <BrandAnimation variant="hero" canvas />
@@ -22,7 +32,16 @@ import { engineModes } from '../config/engine';
       ))}
     </div>
   </div>
-  <div class="engine-controls" role="group" aria-label="Choisir une transformation du Morph Engine">
+  <div
+    class="engine-controls"
+    role="group"
+    aria-label={translate(
+      locale,
+      'Choisir une transformation du Morph Engine',
+      'Choose a Morph Engine transformation',
+      'Elegir una transformación del Morph Engine',
+    )}
+  >
     {engineModes.map((mode) => (
       <button type="button" data-engine-mode={mode.key} aria-pressed={mode.key === 'brand'}>
         <span>{mode.number}</span>
@@ -31,7 +50,7 @@ import { engineModes } from '../config/engine';
     ))}
   </div>
   <p class="engine-caption" aria-live="polite" data-engine-caption>
-    {engineModes[0].caption}
+    {engineModes[0]!.caption}
   </p>
   <span class="sr-only" data-engine-number>
     00

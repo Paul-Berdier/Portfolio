@@ -1,7 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ProjectPreview from '../../components/ProjectPreview.astro';
-import { publishedProjects } from '../../content/projects';
+import { publishedProjects, getPublishedProjects, type Project } from '../../content/projects';
+import { localeFromPath, translate, localizePath } from '../../i18n';
 export const prerender = true;
 export function getStaticPaths() {
   return publishedProjects.map((project) => ({
@@ -9,15 +10,25 @@ export function getStaticPaths() {
     props: { project },
   }));
 }
-const { project } = Astro.props;
-const nextProject = publishedProjects.find((item) => item.slug !== project.slug);
+interface Props {
+  project: Project;
+}
+const locale = localeFromPath(Astro.url.pathname);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
+const localizedProjects = getPublishedProjects(locale);
+const project = localizedProjects.find((item) => item.slug === Astro.props.project.slug)!;
+const nextProject = localizedProjects.find((item) => item.slug !== project.slug);
+const labHref = localizePath('/lab#' + (project.preview === 'data' ? 'data' : 'workflow'), locale);
 ---
 
-<Layout title={`${project.title} — Étude de cas`} description={project.summary}>
+<Layout
+  title={project.title + t(' — Étude de cas', ' — Case study', ' — Caso práctico')}
+  description={project.summary}
+>
   <div class="case-progress" data-case-progress aria-hidden="true"></div>
   <article class="container page-shell case-study">
-    <a href="/realisations" class="text-link back-link">
-      <span aria-hidden="true">←</span> Les réalisations
+    <a href={localizePath('/realisations', locale)} class="text-link back-link">
+      <span aria-hidden="true">←</span> {t('Les réalisations', 'Selected work', 'Los proyectos')}
     </a>
     <header class="case-heading">
       <p class="eyebrow">
@@ -32,59 +43,62 @@ const nextProject = publishedProjects.find((item) => item.slug !== project.slug)
       </div>
     </header>
     <figure class="case-preview" data-reveal>
-      <div transition:name={`project-${project.slug}`}>
+      <div transition:name={'project-' + project.slug}>
         <ProjectPreview project={project} variant="case" />
       </div>
       <figcaption>
-        Vue réelle de l’interface de démonstration, rendue avec les mêmes données que le lab. Jeu
-        entièrement synthétique.
+        {t(
+          'Vue réelle de l’interface de démonstration, rendue avec les mêmes données que le lab. Jeu entièrement synthétique.',
+          'An actual rendering of the demo interface, using the same data as the lab. The dataset is entirely synthetic.',
+          'Vista real de la interfaz de demostración, con los mismos datos que el laboratorio. El conjunto es completamente sintético.',
+        )}
       </figcaption>
     </figure>
     <div class="case-facts">
       <div>
-        <span>STATUT</span>
+        <span>{t('STATUT', 'STATUS', 'ESTADO')}</span>
         <p>{project.type}</p>
       </div>
       <div>
-        <span>PÉRIMÈTRE</span>
-        <p>Expérience locale</p>
+        <span>{t('PÉRIMÈTRE', 'SCOPE', 'ALCANCE')}</span>
+        <p>{t('Expérience locale', 'Local experiment', 'Experimento local')}</p>
       </div>
       <div>
-        <span>DISPONIBILITÉ</span>
+        <span>{t('DISPONIBILITÉ', 'AVAILABILITY', 'DISPONIBILIDAD')}</span>
         <p>{project.status}</p>
       </div>
-      <a
-        href={`/lab#${project.preview === 'data' ? 'data' : 'workflow'}`}
-        class="button button-primary"
-      >
-        Tester le démonstrateur <span aria-hidden="true">↗</span>
+      <a href={labHref} class="button button-primary">
+        {t('Tester le démonstrateur', 'Try the demo', 'Probar la demostración')}{' '}
+        <span aria-hidden="true">↗</span>
       </a>
     </div>
     <section class="case-section" data-reveal>
-      <p class="eyebrow">01 / Le contexte</p>
+      <p class="eyebrow">{t('01 / Le contexte', '01 / Context', '01 / El contexto')}</p>
       <div>
-        <h2>Une question concrète.</h2>
+        <h2>{t('Une question concrète.', 'A practical question.', 'Una pregunta concreta.')}</h2>
         <p>{project.context}</p>
         <blockquote>{project.problem}</blockquote>
       </div>
     </section>
     <section class="case-section" data-reveal>
-      <p class="eyebrow">02 / Le périmètre</p>
+      <p class="eyebrow">{t('02 / Le périmètre', '02 / Scope', '02 / El alcance')}</p>
       <div>
-        <h2>Ce qui a été construit.</h2>
+        <h2>{t('Ce qui a été construit.', 'What was built.', 'Lo que se ha construido.')}</h2>
         <ul>
           {project.scope.map((item) => (
             <li>{item}</li>
           ))}
         </ul>
-        <h3>Mon rôle</h3>
+        <h3>{t('Mon rôle', 'My role', 'Mi papel')}</h3>
         <p>{project.role}</p>
       </div>
     </section>
     <section class="case-section" data-reveal>
-      <p class="eyebrow">03 / La solution</p>
+      <p class="eyebrow">{t('03 / La solution', '03 / The solution', '03 / La solución')}</p>
       <div>
-        <h2>Rendre la logique visible.</h2>
+        <h2>
+          {t('Rendre la logique visible.', 'Make the logic visible.', 'Hacer visible la lógica.')}
+        </h2>
         <p>{project.solution}</p>
         <ol class="architecture" data-service-scene="architecture">
           {project.architecture.map((step, index) => (
@@ -100,27 +114,47 @@ const nextProject = publishedProjects.find((item) => item.slug !== project.slug)
       </div>
     </section>
     <section class="case-section" data-reveal>
-      <p class="eyebrow">04 / Le résultat</p>
+      <p class="eyebrow">{t('04 / Le résultat', '04 / The result', '04 / El resultado')}</p>
       <div>
-        <h2>Un résultat vérifiable.</h2>
+        <h2>
+          {t(
+            'Un résultat vérifiable.',
+            'A result you can verify.',
+            'Un resultado que se puede comprobar.',
+          )}
+        </h2>
         <ul class="results">
           {project.result.map((result) => (
             <li>{result}</li>
           ))}
         </ul>
         <aside class="case-limits">
-          <h3>Les limites, elles aussi, sont visibles.</h3>
+          <h3>
+            {t(
+              'Les limites, elles aussi, sont visibles.',
+              'The limitations are visible too.',
+              'Los límites también son visibles.',
+            )}
+          </h3>
           <p>{project.limits}</p>
         </aside>
-        <a class="text-link" href={`/lab#${project.preview === 'data' ? 'data' : 'workflow'}`}>
-          Passer de l’explication à l’expérience <span aria-hidden="true">↗</span>
+        <a class="text-link" href={labHref}>
+          {t(
+            'Passer de l’explication à l’expérience',
+            'From the explanation to the experiment',
+            'De la explicación a la experiencia',
+          )}{' '}
+          <span aria-hidden="true">↗</span>
         </a>
       </div>
     </section>
     {nextProject && (
-      <nav aria-label="Réalisation suivante" class="next-project">
-        <p class="eyebrow">Continuer l’exploration</p>
-        <a href={nextProject.href}>
+      <nav
+        aria-label={t('Réalisation suivante', 'Next project', 'Siguiente proyecto')}
+        class="next-project"
+      >
+        <p class="eyebrow">{t('Continuer l’exploration', 'Keep exploring', 'Seguir explorando')}</p>
+        <a href={localizePath(nextProject.href, locale)}>
           <h2>{nextProject.title}</h2>
           <span aria-hidden="true">↗</span>
         </a>

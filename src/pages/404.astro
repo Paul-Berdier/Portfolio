@@ -1,11 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { localeFromPath, localizePath, translate } from '../i18n';
 export const prerender = true;
+const locale = localeFromPath(Astro.url.pathname);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
+const href = (path: string) => localizePath(path, locale);
 ---
 
 <Layout
-  title="Page introuvable"
-  description="Cette page n’existe pas ou a changé de chemin. Retrouvez les expertises et réalisations de Paul Berdier."
+  title={t('Page introuvable', 'Page not found', 'Página no encontrada')}
+  description={t(
+    'Cette page n’existe pas ou a changé de chemin. Retrouvez les expertises et réalisations de Paul Berdier.',
+    'This page does not exist or has moved. Explore Paul Berdier’s services and projects.',
+    'Esta página no existe o ha cambiado de dirección. Descubre los servicios y proyectos de Paul Berdier.',
+  )}
+  noindex
 >
   <section class="container page-shell missing-page">
     <div class="missing-code" aria-hidden="true" data-service-scene="404">
@@ -14,21 +23,29 @@ export const prerender = true;
       <span class="scene-part">4</span>
     </div>
     <div class="missing-copy">
-      <p class="eyebrow">Cette piste s’arrête ici</p>
+      <p class="eyebrow">
+        {t('Cette piste s’arrête ici', 'This path ends here', 'Este camino termina aquí')}
+      </p>
       <h1>
-        Retrouvons
+        {t('Retrouvons', 'Let’s find', 'Encontremos')}
         <br />
-        <em>le bon chemin.</em>
+        <em>{t('le bon chemin.', 'the right path.', 'el camino correcto.')}</em>
       </h1>
       <p>
-        La page demandée n’existe pas ou a changé d’adresse. Le reste de l’exploration vous attend.
+        {t(
+          'La page demandée n’existe pas ou a changé d’adresse. Le reste de l’exploration vous attend.',
+          'The page you requested does not exist or has moved. There is more to explore.',
+          'La página que buscas no existe o ha cambiado de dirección. Todavía queda mucho por explorar.',
+        )}
       </p>
       <div>
-        <a href="/" class="button button-primary">
-          Retour à l’accueil <span aria-hidden="true">↗</span>
+        <a href={href('/')} class="button button-primary">
+          {t('Retour à l’accueil', 'Back to home', 'Volver al inicio')}{' '}
+          <span aria-hidden="true">↗</span>
         </a>
-        <a href="/realisations" class="text-link">
-          Voir les réalisations <span aria-hidden="true">↗</span>
+        <a href={href('/realisations')} class="text-link">
+          {t('Voir les réalisations', 'Explore my work', 'Ver los proyectos')}{' '}
+          <span aria-hidden="true">↗</span>
         </a>
       </div>
     </div>

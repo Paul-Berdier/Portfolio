@@ -1,0 +1,104 @@
+---
+import { brand } from '../config/brand';
+import Mark from './Mark.astro';
+interface Props {
+  vertical?: boolean;
+  signature?: boolean;
+  onLight?: boolean;
+  variant?: 'color' | 'white' | 'dark';
+  class?: string;
+}
+const {
+  vertical = false,
+  signature = false,
+  onLight = false,
+  variant = 'color',
+  class: className = '',
+} = Astro.props;
+---
+
+<span
+  class:list={[
+    'logo',
+    className,
+    {
+      'logo-vertical': vertical,
+      'logo-dark': variant === 'dark',
+      'logo-white': variant === 'white',
+      'logo-mono': variant !== 'color',
+      'logo-on-light': onLight,
+    },
+  ]}
+>
+  <Mark variant={variant} small={!vertical} />
+  <span class="logo-type">
+    <span class="logo-name">
+      {brand.name === 'MorphAI' ? (
+        <>
+          Morph<span class="logo-ai">AI</span>
+        </>
+      ) : (
+        brand.name
+      )}
+    </span>
+    {signature && <span class="logo-signature">{brand.tagline}</span>}
+  </span>
+</span>
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.48em;
+    color: var(--ink);
+    font-family: var(--font-display);
+    line-height: 1;
+    vertical-align: middle;
+  }
+  .logo-name {
+    font-size: inherit;
+    font-weight: 600;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+  }
+  .logo-ai {
+    color: var(--brand-periwinkle);
+    letter-spacing: -0.02em;
+  }
+  .logo-type {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65em;
+  }
+  .logo-signature {
+    font-family: var(--font-body);
+    font-size: 0.23em;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+  .logo-vertical {
+    flex-direction: column;
+    gap: 0.22em;
+    text-align: center;
+  }
+  .logo-vertical :global(.brand-mark) {
+    width: 3.4em;
+    height: 1.7em;
+  }
+  .logo-dark {
+    color: var(--brand-navy);
+  }
+  .logo-white {
+    color: var(--brand-white);
+  }
+  .logo-mono .logo-ai {
+    color: inherit;
+  }
+  .logo-on-light {
+    color: var(--brand-navy);
+  }
+  .logo-on-light .logo-ai {
+    color: var(--brand-deepViolet);
+  }
+</style>

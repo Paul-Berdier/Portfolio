@@ -257,13 +257,15 @@ const nextProject = publishedProjects.find((item) => item.slug !== project.slug)
     border: 1px solid var(--line);
     position: relative;
     margin: 0 0 18px;
+    border-radius: 10px;
   }
   .architecture li:not(:last-child)::after {
     content: '';
     position: absolute;
-    width: 1px;
+    width: 23px;
     height: 18px;
-    background: var(--accent);
+    border-left: 1px solid var(--accent);
+    border-radius: 0 0 0 18px;
     top: 100%;
     left: 34px;
   }

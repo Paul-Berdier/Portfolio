@@ -2,10 +2,20 @@ import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const editorialRoutes = [
-  '/', '/services', '/services/developpement-web', '/services/automatisation',
-  '/services/data', '/services/intelligence-artificielle', '/realisations',
-  '/realisations/flux-documents', '/realisations/atelier-data', '/a-propos',
-  '/contact', '/lab', '/mentions-legales', '/confidentialite',
+  '/',
+  '/services',
+  '/services/developpement-web',
+  '/services/automatisation',
+  '/services/data',
+  '/services/intelligence-artificielle',
+  '/realisations',
+  '/realisations/flux-documents',
+  '/realisations/atelier-data',
+  '/a-propos',
+  '/contact',
+  '/lab',
+  '/mentions-legales',
+  '/confidentialite',
 ];
 const draftRoute = '/realisations/recherche-documentaire';
 
@@ -20,7 +30,9 @@ async function expectNoOverflow(page: Page) {
     viewport: document.documentElement.clientWidth,
     content: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
   }));
-  expect(dimensions.content, 'Aucun contenu ne doit dépasser horizontalement').toBeLessThanOrEqual(dimensions.viewport + 1);
+  expect(dimensions.content, 'Aucun contenu ne doit dépasser horizontalement').toBeLessThanOrEqual(
+    dimensions.viewport + 1,
+  );
 }
 
 test.describe('Pages publiques et intégrité du contenu', () => {
@@ -33,7 +45,10 @@ test.describe('Pages publiques et intégrité du contenu', () => {
       const description = await page.locator('meta[name="description"]').getAttribute('content');
       expect(description?.trim().length).toBeGreaterThan(10);
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-      await expect(page.getByRole('link', { name: 'Aller au contenu' })).toHaveAttribute('href', '#main');
+      await expect(page.getByRole('link', { name: 'Aller au contenu' })).toHaveAttribute(
+        'href',
+        '#main',
+      );
     });
   }
 
@@ -45,7 +60,9 @@ test.describe('Pages publiques et intégrité du contenu', () => {
     await openPage(page, '/realisations');
     await expect(page.locator(`a[href="${draftRoute}"]`)).toHaveCount(0);
     await expect(page.locator('main')).not.toContainText('Brouillon non publié');
-    const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const structuredData = await page
+      .locator('script[type="application/ld+json"]')
+      .allTextContents();
     expect(structuredData.join('\n')).not.toContain('recherche-documentaire');
   });
 
@@ -53,9 +70,13 @@ test.describe('Pages publiques et intégrité du contenu', () => {
     const links = new Set<string>();
     for (const path of ['/', '/services', '/realisations', '/a-propos', '/lab', '/contact']) {
       await openPage(page, path);
-      const hrefs = await page.locator('a[href]').evaluateAll((anchors) => anchors
-        .map((anchor) => anchor.getAttribute('href') || '')
-        .filter((href) => href.startsWith('/') && !href.startsWith('//')));
+      const hrefs = await page
+        .locator('a[href]')
+        .evaluateAll((anchors) =>
+          anchors
+            .map((anchor) => anchor.getAttribute('href') || '')
+            .filter((href) => href.startsWith('/') && !href.startsWith('//')),
+        );
       hrefs.forEach((href) => links.add(href.split('#')[0] || '/'));
     }
     expect(links.size).toBeGreaterThan(10);
@@ -116,7 +137,9 @@ test.describe('Mouvement et scène signature', () => {
     await expect(page.locator('[data-engine] .engine-fallback')).toHaveCSS('opacity', '1');
   });
 
-  test('auto, réduit et désactivé persistent après navigation et rechargement', async ({ page }) => {
+  test('auto, réduit et désactivé persistent après navigation et rechargement', async ({
+    page,
+  }) => {
     await openPage(page);
     for (const mode of ['reduced', 'off', 'auto']) {
       await page.locator('#motion-preference').selectOption(mode);
@@ -133,23 +156,34 @@ test.describe('Mouvement et scène signature', () => {
     }
   });
 
-  test('les quatre transformations sont commandables au clavier', async ({ page }) => {
+  test('le logo et les quatre expertises sont commandables au clavier', async ({ page }) => {
     await openPage(page);
-    const engine = page.locator('[data-engine]');
-    for (const mode of ['automation', 'data', 'ai', 'web']) {
+    const engine = page.locator('.morph-engine[data-engine]');
+    await expect(engine).toHaveAttribute('data-state', 'brand');
+    await expect(engine.locator('button[data-engine-mode="brand"]')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    for (const mode of ['web', 'automation', 'data', 'ai', 'brand']) {
       const button = engine.locator(`button[data-engine-mode="${mode}"]`);
       await button.focus();
       await button.press('Enter');
       await expect(button).toHaveAttribute('aria-pressed', 'true');
       await expect(engine.locator('button[aria-pressed="true"]')).toHaveCount(1);
       await expect(engine.locator('[data-engine-caption]')).not.toBeEmpty();
+      await expect(engine.locator('[data-engine-caption]')).not.toContainText('undefined');
+      await expect(engine).toHaveAttribute('data-state', mode);
     }
   });
 
-  test('un titre hors écran se révèle à son entrée puis retrouve son HTML en mode réduit', async ({ page }) => {
+  test('un titre hors écran se révèle à son entrée puis retrouve son HTML en mode réduit', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await openPage(page);
-    await page.evaluate(async () => { await document.fonts.ready; });
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+    });
     const title = page.locator('h2#transformation-title[data-reveal]');
     await expect(title).not.toBeInViewport();
     await expect(title.locator('div')).toHaveCount(0);
@@ -163,11 +197,21 @@ test.describe('Mouvement et scène signature', () => {
     // SplitText crée les lignes et leurs masques seulement à la première entrée.
     const lines = title.locator(':scope > div > div');
     await expect.poll(() => lines.count()).toBeGreaterThan(0);
-    await expect.poll(async () => lines.evaluateAll((elements) => elements.every((element) => {
-      const style = getComputedStyle(element);
-      const transform = new DOMMatrixReadOnly(style.transform === 'none' ? undefined : style.transform);
-      return Number(style.opacity) === 1 && Math.abs(transform.m42) < 0.5;
-    })), { message: 'Les lignes doivent être revenues dans leur masque après la révélation' }).toBe(true);
+    await expect
+      .poll(
+        async () =>
+          lines.evaluateAll((elements) =>
+            elements.every((element) => {
+              const style = getComputedStyle(element);
+              const transform = new DOMMatrixReadOnly(
+                style.transform === 'none' ? undefined : style.transform,
+              );
+              return Number(style.opacity) === 1 && Math.abs(transform.m42) < 0.5;
+            }),
+          ),
+        { message: 'Les lignes doivent être revenues dans leur masque après la révélation' },
+      )
+      .toBe(true);
     expect((await title.textContent())!.replace(/\s+/g, '')).toBe(originalText);
     await expect(title).toBeVisible();
 
@@ -188,9 +232,11 @@ test.describe('Mouvement et scène signature', () => {
     await expect(canvas).toBeVisible();
     const firstFrame = await canvas.screenshot();
     await page.locator('button[data-engine-mode="data"]').click();
-    await expect.poll(async () => (await canvas.screenshot()).equals(firstFrame), {
-      message: 'La transformation doit produire un changement réellement rendu dans le canvas',
-    }).toBe(false);
+    await expect
+      .poll(async () => (await canvas.screenshot()).equals(firstFrame), {
+        message: 'La transformation doit produire un changement réellement rendu dans le canvas',
+      })
+      .toBe(false);
   });
 
   test('cinq navigations et retour navigateur ne dupliquent pas la scène', async ({ page }) => {
@@ -204,7 +250,10 @@ test.describe('Mouvement et scène signature', () => {
       await expect(page).toHaveURL(/\/$/);
       await expect(page.locator('[data-engine] canvas')).toHaveCount(1);
       await page.locator('button[data-engine-mode="automation"]').click();
-      await expect(page.locator('button[data-engine-mode="automation"]')).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.locator('button[data-engine-mode="automation"]')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
     }
     await page.goBack();
     await expect(page).toHaveURL(/\/services$/);
@@ -228,7 +277,10 @@ test.describe('Mouvement et scène signature', () => {
     await expect(fallback).toBeVisible();
     await expect(fallback).toHaveCSS('opacity', '1');
     await page.locator('button[data-engine-mode="ai"]').click();
-    await expect(page.locator('button[data-engine-mode="ai"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('button[data-engine-mode="ai"]')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await expect(page.locator('main a[href="/contact"]').first()).toBeVisible();
   });
 });
@@ -243,13 +295,21 @@ test.describe('Adaptation, contenu et accessibilité', () => {
         await expectNoOverflow(page);
       }
       await openPage(page);
-      await page.evaluate(async () => { await document.fonts.ready; });
+      await page.evaluate(async () => {
+        await document.fonts.ready;
+      });
       await page.screenshot({ path: testInfo.outputPath(`accueil-${width}.png`), fullPage: true });
     });
   }
 
-  test('sans JavaScript, l’offre et les liens éditoriaux restent lisibles', async ({ browser, baseURL }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 1440, height: 1000 } });
+  test('sans JavaScript, l’offre et les liens éditoriaux restent lisibles', async ({
+    browser,
+    baseURL,
+  }) => {
+    const context = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 1440, height: 1000 },
+    });
     const page = await context.newPage();
     try {
       for (const path of ['/', '/services', '/realisations', '/a-propos', '/contact']) {
@@ -259,13 +319,19 @@ test.describe('Adaptation, contenu et accessibilité', () => {
         await expect(page.locator('.desktop-nav a[href="/services"]')).toBeVisible();
         await expect(page.locator('main')).not.toBeEmpty();
       }
-    } finally { await context.close(); }
+    } finally {
+      await context.close();
+    }
   });
 
-  test('scripts retardés : contenu et CTA disponibles avant chargement puis navigation', async ({ page }) => {
+  test('scripts retardés : contenu et CTA disponibles avant chargement puis navigation', async ({
+    page,
+  }) => {
     let releaseScripts!: () => void;
     let pendingScripts = 0;
-    const scriptsGate = new Promise<void>((resolve) => { releaseScripts = resolve; });
+    const scriptsGate = new Promise<void>((resolve) => {
+      releaseScripts = resolve;
+    });
     await page.route('**/*', async (route) => {
       if (route.request().resourceType() === 'script') {
         pendingScripts++;
@@ -294,7 +360,9 @@ test.describe('Adaptation, contenu et accessibilité', () => {
     }
   });
 
-  test('polices indisponibles : contenu et contact sans débordement à 360px', async ({ page }, testInfo) => {
+  test('polices indisponibles : contenu et contact sans débordement à 360px', async ({
+    page,
+  }, testInfo) => {
     let blockedFonts = 0;
     await page.setViewportSize({ width: 360, height: 844 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -303,10 +371,18 @@ test.describe('Adaptation, contenu et accessibilité', () => {
       await route.abort('failed');
     });
     await openPage(page);
-    await page.evaluate(async () => { await document.fonts.ready; });
-    expect(blockedFonts, 'Le scénario doit effectivement bloquer les polices du site').toBeGreaterThan(0);
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+    });
+    expect(
+      blockedFonts,
+      'Le scénario doit effectivement bloquer les polices du site',
+    ).toBeGreaterThan(0);
     await expectNoOverflow(page);
-    await page.screenshot({ path: testInfo.outputPath('accueil-polices-absentes-360.png'), fullPage: true });
+    await page.screenshot({
+      path: testInfo.outputPath('accueil-polices-absentes-360.png'),
+      fullPage: true,
+    });
     await page.locator('main a[href="/contact"]').first().click();
     await expect(page).toHaveURL(/\/contact$/);
     await expect(page.locator('main h1')).toBeVisible();
@@ -314,8 +390,15 @@ test.describe('Adaptation, contenu et accessibilité', () => {
     await expectNoOverflow(page);
   });
 
-  test('sans JavaScript sur mobile : navigation visible et liens utilisables', async ({ browser, baseURL }) => {
-    const context = await browser.newContext({ baseURL, javaScriptEnabled: false, viewport: { width: 360, height: 844 } });
+  test('sans JavaScript sur mobile : navigation visible et liens utilisables', async ({
+    browser,
+    baseURL,
+  }) => {
+    const context = await browser.newContext({
+      baseURL,
+      javaScriptEnabled: false,
+      viewport: { width: 360, height: 844 },
+    });
     const page = await context.newPage();
     try {
       await openPage(page);
@@ -331,7 +414,9 @@ test.describe('Adaptation, contenu et accessibilité', () => {
       await expect(page).toHaveURL(/\/contact$/);
       await expect(page.locator('[data-contact-form]')).toBeVisible();
       await expectNoOverflow(page);
-    } finally { await context.close(); }
+    } finally {
+      await context.close();
+    }
   });
 
   test('zoom simulé 200 % : reflow de lecture et contact accessible', async ({ page }) => {
@@ -347,8 +432,13 @@ test.describe('Adaptation, contenu et accessibilité', () => {
     test(`audit axe WCAG A/AA ${path}`, async ({ page }, testInfo) => {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await openPage(page, path);
-      const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
-      await testInfo.attach('axe-results', { body: JSON.stringify(result.violations, null, 2), contentType: 'application/json' });
+      const result = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      await testInfo.attach('axe-results', {
+        body: JSON.stringify(result.violations, null, 2),
+        contentType: 'application/json',
+      });
       expect(result.violations).toEqual([]);
     });
   }
@@ -362,10 +452,17 @@ test.describe('Contact fermé en préproduction', () => {
     await expect(page.locator('main')).toContainText(/préproduction/i);
   });
 
-  test('l’API refuse même une soumission directe et n’annonce aucun enregistrement', async ({ request, baseURL }) => {
+  test('l’API refuse même une soumission directe et n’annonce aucun enregistrement', async ({
+    request,
+    baseURL,
+  }) => {
     const response = await request.post('/api/contact', {
       headers: { Origin: new URL(baseURL!).origin },
-      data: { name: 'Visiteur de test', email: 'visiteur@example.test', message: 'Projet synthétique de test, sans donnée réelle.' },
+      data: {
+        name: 'Visiteur de test',
+        email: 'visiteur@example.test',
+        message: 'Projet synthétique de test, sans donnée réelle.',
+      },
     });
     expect(response.status()).toBe(503);
     expect(await response.json()).toMatchObject({ ok: false, code: 'contact_disabled' });

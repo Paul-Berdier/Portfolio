@@ -1,18 +1,24 @@
 ---
+import { symbolMarkup } from '../brand/ribbon.mjs';
 interface Props {
   class?: string;
+  variant?: 'color' | 'white' | 'dark';
+  small?: boolean;
 }
-const { class: className = '' } = Astro.props;
+const { class: className = '', variant = 'color', small = true } = Astro.props;
+const id = `ribbon-${crypto.randomUUID()}`;
 ---
 
 <svg
   class:list={['brand-mark', className]}
-  width="34"
-  height="34"
-  viewBox="0 0 40 40"
-  fill="none"
+  width="48"
+  height="26"
+  viewBox={small ? '0 -12 480 252' : '0 0 480 240'}
+  data-mark="ribbon"
   aria-hidden="true"
 >
-  <path class="mark-piece" d="M3 31V9h7l10 13v10L10 19v12Z" fill="currentColor" />
-  <path class="mark-piece" d="m22 19 8-10h7v22H27V21l-5 6Z" fill="currentColor" />
+  <g
+    transform={small ? 'translate(0 -14.4) scale(1 1.12)' : undefined}
+    set:html={symbolMarkup(id, { variant, small })}
+  />
 </svg>

@@ -1,100 +1,41 @@
 ---
-const modes = [
-  { key: 'web', label: 'Web', number: '01' },
-  { key: 'automation', label: 'Automatisation', number: '02' },
-  { key: 'data', label: 'Data', number: '03' },
-  { key: 'ai', label: 'IA', number: '04' },
-];
+import BrandAnimation from './BrandAnimation.astro';
+import ServiceVisual from './ServiceVisual.astro';
+import { engineModes } from '../config/engine';
 ---
 
-<div class="morph-engine" data-engine data-state="web">
+<div class="morph-engine" data-engine data-state="brand">
   <div class="engine-meta" aria-hidden="true">
     <span>
-      <i></i>MORPH ENGINE
+      <i />
+      MORPH ENGINE
     </span>
-    <span>MATIÈRE → SYSTÈME</span>
+    <span>UNE MATIÈRE · CINQ FORMES</span>
   </div>
   <div class="engine-stage">
-    <div class="engine-orbit orbit-one" aria-hidden="true"></div>
-    <div class="engine-orbit orbit-two" aria-hidden="true"></div>
-    <div class="engine-cross cross-one" aria-hidden="true">
-      +
+    <BrandAnimation variant="hero" canvas />
+    <div class="engine-service-fallback" aria-hidden="true">
+      {(['web', 'automation', 'data', 'ai'] as const).map((kind) => (
+        <div data-fallback-mode={kind}>
+          <ServiceVisual kind={kind} />
+        </div>
+      ))}
     </div>
-    <div class="engine-cross cross-two" aria-hidden="true">
-      +
-    </div>
-    <svg class="engine-fallback" viewBox="0 0 620 500" fill="none" aria-hidden="true">
-      <defs>
-        <linearGradient
-          id="copper"
-          x1="150"
-          y1="100"
-          x2="460"
-          y2="410"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stop-color="#ffc6a4" />
-          <stop offset=".4" stop-color="#f1814b" />
-          <stop offset="1" stop-color="#7d3117" />
-        </linearGradient>
-        <linearGradient id="copper-side">
-          <stop stop-color="#dc6b37" />
-          <stop offset="1" stop-color="#552a1b" />
-        </linearGradient>
-      </defs>
-      <g class="fallback-web" transform="translate(120 72) rotate(-12 190 180)">
-        {Array.from({ length: 19 }, (_, i) => (
-          <g transform={`translate(${i * 11} ${Math.sin(i * 0.19) * 24})`}>
-            <path d="m0 80 110-50 60 28-110 50Z" fill="url(#copper)" />
-            <path d="m0 80 60 28v170L0 250Z" fill="url(#copper-side)" />
-            <path d="m0 250 60 28 110-50-60-28Z" fill="url(#copper)" />
-          </g>
-        ))}
-      </g>
-      <g class="fallback-variant fallback-automation" stroke="#f1814b" stroke-width="2">
-        <path d="M205 180h210v160H205V180Z" stroke-dasharray="5 8" />
-        <rect x="115" y="135" width="150" height="90" rx="8" fill="#2c241b" />
-        <rect x="355" y="135" width="150" height="90" rx="8" fill="#2c241b" />
-        <rect x="115" y="295" width="150" height="90" rx="8" fill="#2c241b" />
-        <rect x="355" y="295" width="150" height="90" rx="8" fill="#2c241b" />
-        <path d="m168 180 15 15 29-32m167 19h45m-45 160h45m-240 0h45" />
-      </g>
-      <g class="fallback-variant fallback-data" fill="url(#copper)">
-        {[100, 160, 125, 210, 175, 260, 215, 245].map((height, i) => (
-          <g>
-            {Array.from({ length: Math.floor(height / 16) }, (_, j) => (
-              <rect x={95 + i * 55} y={365 - j * 16} width="37" height="10" rx="2" />
-            ))}
-          </g>
-        ))}
-      </g>
-      <g class="fallback-variant fallback-ai" stroke="#f1814b" stroke-width="2">
-        <rect x="100" y="130" width="100" height="180" rx="6" />
-        <rect x="260" y="100" width="100" height="220" rx="6" />
-        <rect x="420" y="165" width="100" height="140" rx="6" />
-        <path d="M200 220h60m100 0h60" />
-        <path d="M120 160h60m-60 25h45m135-40h60m-60 25h45m115 25h60m-60 25h40" opacity=".6" />
-      </g>
-    </svg>
-    <div class="engine-canvas" aria-hidden="true"></div>
-    <span class="engine-coordinate" aria-hidden="true">
-      TRANSFORMATION / <span data-engine-number>01</span>
-    </span>
-    <span class="engine-hint" aria-hidden="true">
-      INTERAGISSEZ AVEC LA MATIÈRE ↙
-    </span>
   </div>
   <div class="engine-controls" role="group" aria-label="Choisir une transformation du Morph Engine">
-    {modes.map((mode) => (
-      <button type="button" data-engine-mode={mode.key} aria-pressed={mode.key === 'web'}>
+    {engineModes.map((mode) => (
+      <button type="button" data-engine-mode={mode.key} aria-pressed={mode.key === 'brand'}>
         <span>{mode.number}</span>
         {mode.label}
       </button>
     ))}
   </div>
   <p class="engine-caption" aria-live="polite" data-engine-caption>
-    Des fragments deviennent une interface. Un point d’entrée pour vos idées.
+    {engineModes[0].caption}
   </p>
+  <span class="sr-only" data-engine-number>
+    00
+  </span>
 </div>
 <style>
   .morph-engine {
@@ -106,132 +47,90 @@ const modes = [
     display: flex;
     justify-content: space-between;
     font-size: 8px;
-    letter-spacing: 0.13em;
-    color: #a8a79c;
+    letter-spacing: 0.16em;
+    color: var(--muted);
     padding: 0 16px;
+    gap: 20px;
   }
   .engine-meta > span:first-child {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
   }
   .engine-meta i {
     width: 4px;
     height: 4px;
-    background: var(--accent);
     display: inline-block;
+    background: var(--accent);
+    border-radius: 50%;
   }
   .engine-stage {
-    height: 475px;
     position: relative;
-    overflow: hidden;
+    margin: 12px 0 4px;
   }
-  .engine-canvas,
-  .engine-fallback {
+  .engine-service-fallback {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .engine-canvas {
-    z-index: 2;
-  }
-  .engine-canvas :global(canvas) {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  .engine-fallback {
-    transition: opacity 0.5s;
-  }
-  .morph-engine[data-ready='true'] .engine-fallback {
-    opacity: 0;
-  }
-  .engine-orbit {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    border: 1px solid #ffffff09;
-    border-radius: 50%;
-    width: 78%;
-    height: 91%;
-    transform: translate(-50%, -50%);
+    inset: 6% 10% 24%;
     pointer-events: none;
   }
-  .orbit-two {
-    width: 94%;
-    height: 112%;
-    border-color: #ffffff05;
+  [data-fallback-mode] {
+    display: none;
+    width: 100%;
+    height: 100%;
   }
-  .engine-stage:after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 4%;
-    right: 4%;
-    height: 1px;
-    background: #ffffff05;
+  .engine-service-fallback :global(.service-visual) {
+    width: 100%;
+    height: 100%;
+    color: var(--accent);
   }
-  .engine-cross {
-    position: absolute;
-    color: #67695e;
-    font-size: 15px;
-    font-weight: 300;
+  .morph-engine[data-state='web'] [data-fallback-mode='web'],
+  .morph-engine[data-state='automation'] [data-fallback-mode='automation'],
+  .morph-engine[data-state='data'] [data-fallback-mode='data'],
+  .morph-engine[data-state='ai'] [data-fallback-mode='ai'] {
+    display: block;
   }
-  .cross-one {
-    left: 10px;
-    top: 18%;
+  .morph-engine[data-ready='true'] .engine-service-fallback {
+    visibility: hidden;
   }
-  .cross-two {
-    right: 10px;
-    bottom: 24%;
-  }
-  .engine-coordinate,
-  .engine-hint {
-    position: absolute;
-    bottom: 22px;
-    left: 15px;
-    font-size: 7px;
-    letter-spacing: 0.14em;
-    color: #777b70;
-  }
-  .engine-hint {
-    left: auto;
-    right: 15px;
-    font-size: 7px;
+  .morph-engine:not([data-state='brand']) :global(.brand-playback) {
+    visibility: hidden;
   }
   .engine-controls {
     display: grid;
-    grid-template-columns: 1fr 1.7fr 1fr 0.8fr;
-    border-top: 1px solid #ffffff24;
-    border-bottom: 1px solid #ffffff24;
-    margin-inline: 15px;
+    grid-template-columns: 0.9fr 0.75fr 1.55fr 0.7fr 0.65fr;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
   .engine-controls button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    font-size: 10px;
-    padding: 17px 7px;
     position: relative;
-    min-height: 49px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font: inherit;
+    font-size: 10px;
     color: var(--muted);
+    background: none;
+    border: 0;
+    padding: 19px 4px;
+    cursor: pointer;
+    min-height: 48px;
   }
   .engine-controls button span {
-    font-size: 8px;
-    opacity: 0.6;
+    font-size: 7px;
+    opacity: 0.75;
   }
   .engine-controls button:after {
     content: '';
     position: absolute;
+    top: -1px;
     left: 0;
     right: 0;
-    top: -1px;
     height: 2px;
     background: var(--accent);
     transform: scaleX(0);
-    transition: transform 0.4s;
+    transform-origin: left;
+    transition: transform 0.25s;
   }
   .engine-controls button[aria-pressed='true'] {
     color: var(--ink);
@@ -240,93 +139,32 @@ const modes = [
     transform: scaleX(1);
   }
   .engine-controls button:hover {
-    background: #ffffff04;
+    background: var(--surface-hover);
   }
   .engine-caption {
-    font-size: 9px;
-    color: #999c91;
-    margin: 12px 15px 0;
-    min-height: 30px;
-  }
-  .fallback-other {
-    display: none;
-  }
-  .morph-engine:not([data-state='web']) .fallback-web {
-    display: none;
-  }
-  .morph-engine:not([data-state='web']) .fallback-other {
-    display: block;
-  }
-  @media (min-width: 1700px) {
-    .engine-stage {
-      height: 550px;
-    }
-    .engine-controls button {
-      font-size: 12px;
-    }
-    .engine-caption {
-      font-size: 11px;
-    }
-  }
-  @media (max-width: 1050px) {
-    .engine-stage {
-      height: 400px;
-    }
-    .engine-meta {
-      font-size: 7px;
-    }
-    .engine-hint {
-      display: none;
-    }
-    .engine-controls button {
-      gap: 6px;
-      font-size: 9px;
-    }
+    font-size: 10px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin: 15px 15px 0;
+    min-height: 34px;
   }
   @media (max-width: 760px) {
     .engine-stage {
-      height: 330px;
+      margin-top: 22px;
     }
     .engine-meta {
-      padding-inline: 5px;
       font-size: 7px;
     }
-    .engine-controls {
-      margin-inline: 0;
-    }
     .engine-controls button {
-      font-size: 10px;
-      padding-inline: 5px;
+      font-size: 9px;
+      gap: 5px;
+    }
+    .engine-controls button span {
+      display: none;
     }
     .engine-caption {
-      margin-left: 0;
-      font-size: 9px;
+      font-size: 11px;
+      margin-top: 15px;
     }
-    .engine-coordinate {
-      bottom: 15px;
-      left: 3px;
-    }
-    .engine-hint {
-      display: block;
-      font-size: 6px;
-      bottom: 15px;
-      right: 3px;
-    }
-    .engine-orbit {
-      width: 73%;
-    }
-    .engine-cross {
-      font-size: 12px;
-    }
-  }
-</style>
-<style>
-  .fallback-variant {
-    display: none;
-  }
-  .morph-engine[data-state='automation'] .fallback-automation,
-  .morph-engine[data-state='data'] .fallback-data,
-  .morph-engine[data-state='ai'] .fallback-ai {
-    display: block;
   }
 </style>

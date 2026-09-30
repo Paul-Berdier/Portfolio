@@ -1,0 +1,216 @@
+---
+import { brand } from '../config/brand';
+import { palette } from '../brand/palette.mjs';
+import { ribbonCenterPath, symbolMarkup } from '../brand/ribbon.mjs';
+import typeArt from '../brand/type.generated.json';
+interface Props {
+  variant?: 'hero' | 'presentation';
+  canvas?: boolean;
+  controls?: boolean;
+}
+const { variant = 'presentation', canvas = false, controls = true } = Astro.props;
+const id = `animation-${crypto.randomUUID()}`;
+const wordScale = Math.min(0.85, 410 / typeArt.word.width);
+---
+
+<div
+  class:list={['brand-animation', `brand-animation-${variant}`]}
+  data-brand-animation={variant}
+  data-brand-state="complete"
+  data-brand-progress-value="1"
+  data-brand-formation="1"
+>
+  <div class="brand-stage" data-brand-stage>
+    <svg
+      class:list={{ 'engine-fallback': canvas }}
+      data-brand-art
+      viewBox="0 0 640 400"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label={`${brand.name} — ${brand.tagline}`}
+    >
+      <defs>
+        <linearGradient id={`${id}-impulse`}>
+          <stop stop-color={palette.violet} />
+          <stop offset=".7" stop-color={palette.periwinkle} />
+          <stop offset="1" stop-color={palette.ivory} />
+        </linearGradient>
+        <radialGradient id={`${id}-halo`}>
+          <stop stop-color={palette.violet} stop-opacity=".22" />
+          <stop offset="1" stop-color={palette.violet} stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="320" cy="220" rx="275" ry="150" fill={`url(#${id}-halo)`} data-brand-halo />
+      <svg
+        x="64"
+        y="24"
+        width="512"
+        height="256"
+        viewBox="-16 -8 512 256"
+        overflow="visible"
+        data-brand-symbol
+      >
+        <g data-brand-ribbon set:html={symbolMarkup(id)} />
+        <path
+          data-brand-impulse
+          d={ribbonCenterPath()}
+          fill="none"
+          stroke={`url(#${id}-impulse)`}
+          stroke-width="2"
+          stroke-linecap="round"
+          pathLength="1"
+          opacity="0"
+        />
+        <circle data-brand-light r="3" cx="459" cy="146" fill={palette.ivory} opacity="0" />
+      </svg>
+      <g
+        data-brand-name
+        color={palette.ivory}
+        transform={`translate(${(640 - typeArt.word.width * wordScale) / 2} 334) scale(${wordScale})`}
+      >
+        {brand.name === typeArt.name ? (
+          <Fragment set:html={typeArt.word.markup} />
+        ) : (
+          <text
+            x={typeArt.word.width / 2}
+            text-anchor="middle"
+            font-family="Space Grotesk Variable, sans-serif"
+            font-size="90"
+          >
+            {brand.name}
+          </text>
+        )}
+      </g>
+      <g
+        data-brand-signature
+        color={palette.ivory}
+        transform={`translate(${(640 - typeArt.signature.width) / 2} 375)`}
+        set:html={typeArt.signature.markup}
+      />
+      <style is:inline set:html={`[data-wordmark-ai]{color:${palette.periwinkle}}`} />
+    </svg>
+    {canvas && <div class="engine-canvas" aria-hidden="true" />}
+  </div>
+  {controls && (
+    <div class="brand-playback" aria-label="Commandes de l’animation du logo">
+      {variant === 'presentation' && (
+        <>
+          <button type="button" class="text-link" data-brand-action="play">
+            Lire <span aria-hidden="true">▷</span>
+          </button>
+          <button type="button" class="text-link" data-brand-action="pause">
+            Pause <span aria-hidden="true">Ⅱ</span>
+          </button>
+        </>
+      )}
+      <button type="button" class="text-link" data-brand-action="replay">
+        Rejouer <span aria-hidden="true">↻</span>
+      </button>
+      {variant === 'presentation' && (
+        <label class="brand-scrubber">
+          Progression{' '}
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.001"
+            value="1"
+            data-brand-progress
+            aria-label="Progression de l’animation"
+          />
+        </label>
+      )}
+      <output class="brand-step" data-brand-step aria-live="polite">
+        Logo final
+      </output>
+    </div>
+  )}
+</div>
+<style>
+  .brand-animation {
+    width: 100%;
+  }
+  .brand-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 8/5;
+    isolation: isolate;
+  }
+  .brand-stage > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .engine-canvas {
+    position: absolute;
+    left: 10%;
+    top: 6%;
+    width: 80%;
+    height: 64%;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .engine-canvas :global(canvas) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .brand-playback {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 16px 0;
+    font-size: 12px;
+  }
+  .brand-playback button {
+    border: 0;
+    background: none;
+    color: var(--accent);
+    padding: 6px 0;
+    cursor: pointer;
+    font: inherit;
+  }
+  .brand-scrubber {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 200px;
+    color: var(--muted);
+  }
+  input {
+    accent-color: var(--brand-periwinkle);
+    width: 100%;
+    min-width: 80px;
+  }
+  .brand-step {
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .brand-animation-hero .brand-playback {
+    justify-content: space-between;
+    padding: 2px 16px 10px;
+  }
+  :global([data-engine][data-ready='true']) [data-brand-ribbon] {
+    opacity: 0;
+  }
+  :global([data-engine]:not([data-state='brand'])) [data-brand-art] {
+    visibility: hidden;
+  }
+  :global([data-motion='off']) [data-brand-halo] {
+    opacity: 0;
+  }
+  @media (max-width: 480px) {
+    .brand-playback {
+      gap: 14px;
+    }
+    .brand-scrubber {
+      flex-basis: 100%;
+    }
+    .brand-stage {
+      min-height: 190px;
+    }
+  }
+</style>

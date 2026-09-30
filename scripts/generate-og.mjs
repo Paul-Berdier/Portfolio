@@ -1,6 +1,2 @@
-import sharp from 'sharp';
-const escape = (value) =>
-  value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
-const name = escape(process.env.PUBLIC_BRAND_NAME || 'MorphAI');
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630"><rect width="1200" height="630" fill="#101110"/><g stroke="#ffffff10" fill="none"><path d="M60 100H1140M60 540H1140"/><circle cx="965" cy="305" r="170"/><circle cx="965" cy="305" r="210"/></g><g fill="#f1814b" transform="translate(930 200) scale(4)"><path d="M3 31V9h7l10 13v10L10 19v12Z"/><path d="m22 19 8-10h7v22H27V21l-5 6Z"/></g><g font-family="Arial,sans-serif"><text x="62" y="72" fill="#eeeae3" font-size="29" font-weight="700">${name}</text><text x="60" y="209" fill="#aaa99e" font-size="15" letter-spacing="3">PAUL BERDIER · DÉVELOPPEUR INDÉPENDANT</text><text x="56" y="317" fill="#eeeae3" font-size="84" font-weight="600" letter-spacing="-4">Vos idées.</text><text x="56" y="413" fill="#f1814b" font-size="84" font-weight="600" letter-spacing="-4">En mouvement.</text><text x="60" y="493" fill="#aaa99e" font-size="21">Web · Automatisation · Data · IA</text><text x="60" y="583" fill="#aaa99e" font-size="15">Toulouse &amp; France à distance</text></g></svg>`;
-await sharp(Buffer.from(svg)).png().toFile('public/og.png');
+// Keep the existing build entry point. All identity exports share one source.
+await import('./generate-brand.mjs');

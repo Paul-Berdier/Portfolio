@@ -30,8 +30,14 @@ export const prerender = true;
         </span>
       </div>
       <div class="about-symbol" aria-hidden="true">
-        <div class="symbol-orbit orbit-one"></div>
-        <div class="symbol-orbit orbit-two"></div>
+        <svg class="symbol-sweep" viewBox="0 0 400 480" fill="none">
+          <path
+            d="M-40 365C171 478 132 19 414 151"
+            stroke="var(--accent-solid)"
+            stroke-width="43"
+          />
+          <path d="M-40 341C171 454 132 -5 414 127" stroke="var(--accent-hover)" stroke-width="1" />
+        </svg>
         <div class="symbol-core">
           <Mark />
         </div>
@@ -62,6 +68,13 @@ export const prerender = true;
           {brand.name} est le nom de travail de ce portfolio personnel. Derrière ce nom, il y a une
           personne : moi.
         </p>
+        {brand.name === 'MorphAI' && (
+          <p>
+            Le nom évoque Morphée, l’imagination et les idées qui prennent forme. Il exprime aussi
+            ma manière de travailler : adapter les technologies, dont l’intelligence artificielle,
+            au besoin réel.
+          </p>
+        )}
       </div>
     </section>
     <section class="about-section" data-reveal>
@@ -178,32 +191,27 @@ export const prerender = true;
   .about-symbol {
     position: relative;
     aspect-ratio: 1 / 1.2;
-    background: #23261e;
-    border: 1px solid #b0c19230;
+    background: var(--surface);
+    border: 1px solid var(--line);
     overflow: hidden;
     display: grid;
     place-items: center;
+    border-radius: 14px;
   }
   .symbol-core {
-    width: 45%;
-    color: #c4cea9;
-    transform: rotate(-12deg);
+    width: 65%;
+    position: relative;
+    color: var(--accent-hover);
   }
   .symbol-core :global(svg) {
     width: 100%;
     height: auto;
   }
-  .symbol-orbit {
+  .symbol-sweep {
     position: absolute;
-    border: 1px solid #bdc5a63b;
-    width: 73%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    transform: rotate(-28deg) scaleY(0.6);
-  }
-  .orbit-two {
-    transform: rotate(43deg) scaleY(0.6);
-    width: 110%;
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
   }
   .symbol-caption {
     position: absolute;
@@ -211,14 +219,14 @@ export const prerender = true;
     left: 24px;
     font: 8px monospace;
     letter-spacing: 0.15em;
-    color: #c3cbae;
+    color: var(--muted);
   }
   .symbol-coordinate {
     position: absolute;
     bottom: 24px;
     right: 24px;
     font: 9px/1.7 monospace;
-    color: #b8c2a4;
+    color: var(--muted);
     text-align: right;
   }
   .about-section {

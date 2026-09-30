@@ -1,6 +1,6 @@
 # Portfolio de Paul Berdier
 
-V1 Astro du portfolio, nom de travail **MorphAI**. Direction « Instrument de précision » : graphite, cuivre, sculpture interactive et présentation de quatre expertises. Aucun client, résultat commercial ou portrait fictif.
+Portfolio Astro, nom de travail **MorphAI**. Direction **Métamorphose** : bleu nuit, violet, pervenche, lavande et ivoire ; un M en ruban donne forme à quatre expertises. La promesse d’accueil est « Vos idées prennent forme. ». Aucun client, résultat commercial ou portrait fictif.
 
 ## Lancer sous Windows / PowerShell
 
@@ -31,16 +31,37 @@ Playwright utilise Chrome installé sous Windows avec un profil de test temporai
 ## Ce qui fonctionne
 
 - Accueil, quatre offres détaillées, réalisations filtrables, deux études de cas, à propos, lab, contact, mentions, confidentialité et 404.
-- Morph Engine : 120 modules instanciés, quatre transformations, éclairage procédural, réaction au pointeur, boutons clavier. Repli SVG avant chargement ou sans WebGL.
+- Morph Engine : cinq états, avec le logo initial puis Web, Automatisation, Data et IA. Le SVG et la surface Three.js partagent leurs courbes ; le volume conserve la silhouette XY. Éclairage réactif, boutons clavier et repli SVG avant chargement ou sans WebGL.
+- Logo animé : séquence de 2,8 secondes dans le hero et de 4,8 secondes en présentation. Lecture finie, pause hors écran, composition finale immédiate en mouvement réduit ou désactivé. L’atelier `/dev/brand` propose lecture, pause, reprise, progression, variantes et téléchargements ; il reste hors navigation et non indexé.
 - Navigation Astro, masques typographiques, scènes SVG, progression, aperçus en profondeur, états de formulaire. Mouvement auto/réduit/désactivé, ressources nettoyées à chaque navigation.
 - Lab : workflow déterministe et export JSON ; CSV éditable, nettoyage, anomalies, filtre, graphique et tableau cohérents. Données synthétiques, aucun appel métier distant.
 - Contact serveur : validation, origine, quotas persistants, clé d’idempotence, enregistrement PostgreSQL avant notification Resend, reprise privée et purge par CLI.
 
 ## Une préproduction explicite
 
-Par défaut : collecte fermée, `noindex`, robots bloqué, sitemap vide, aucun analytics. Le site n’est pas déployé. Les informations manquantes sont dans [la checklist de contenu](docs/content-checklist.md). Le contact est activable seulement avec les trois verrous et la configuration décrits dans [le guide de déploiement](docs/deployment.md). L’envoi réel de mail et l’infrastructure Railway nécessitent des accès autorisés ; les tests locaux n’affirment pas les avoir validés.
+Par défaut : collecte fermée, `noindex`, robots bloqué, sitemap vide, aucun analytics. Cette livraison est vérifiée localement ; aucun déploiement Railway n’a été validé dans cette session. Les informations manquantes sont dans [la checklist de contenu](docs/content-checklist.md). Le contact est activable seulement avec les trois verrous et la configuration décrits dans [le guide de déploiement](docs/deployment.md). L’envoi réel de mail et l’infrastructure Railway nécessitent des accès autorisés ; les tests locaux n’affirment pas les avoir validés.
 
-Le nom et les liens sont dans `src/config/brand.ts`, avec variables publiques pour les remplacer sans refonte. Les contenus typés sont dans `src/content/` ; les projets non publiés sont exclus des pages et du sitemap. Toute modification d’une variable publique nécessite un build.
+Le nom et les liens sont dans `src/config/brand.ts`, avec variables publiques pour les remplacer sans refonte. La palette et la signature ont leur source dans `src/brand/palette.mjs`, les courbes dans `src/brand/ribbon.mjs`. Les contenus typés sont dans `src/content/` ; les projets non publiés sont exclus des pages et du sitemap. Toute modification d’une variable publique nécessite un build.
+
+## Identité et exports
+
+Les références sont conservées dans `design/references/`. Les logos SVG, PNG et icônes sont dans `public/brand/` ; le favicon et l’image Open Graph sont dans `public/`. `npm run build` les régénère via le prébuild. Pour les régénérer directement :
+
+```powershell
+node --env-file-if-exists=.env scripts/generate-brand.mjs
+```
+
+Les exports vectorisent les contours par défaut de Space Grotesk avec Fontkitten, puis appliquent un épaississement optique documenté. Le logo HTML utilise Space Grotesk à la graisse 600. La signature est réservée aux grands formats ; navigation et favicons emploient une version compacte sans signature. Les règles d’usage, variantes et contrastes sont dans [design.md](docs/design.md).
+
+Avec le build démarré localement sur le port 4322, les captures de marque se lancent ainsi :
+
+```powershell
+$env:PREVIEW_URL = 'http://127.0.0.1:4322'
+node scripts/capture-brand.mjs
+node scripts/capture-brand.mjs --video --square
+```
+
+Les sorties sont dans `test-results/brand/`. `--video` ajoute un WebM horizontal ; `--square` ajoute le format carré. `--mp4` demande aussi une conversion H.264 avec FFmpeg/libx264, trouvé dans `FFMPEG_PATH` ou le PATH. Le rapport indique les captures réellement produites et les conversions non disponibles. Les commandes ne constituent pas, à elles seules, une validation visuelle ou une mesure de performance ; consulter [qa.md](docs/qa.md) pour les exécutions consignées.
 
 ## Exploitation
 

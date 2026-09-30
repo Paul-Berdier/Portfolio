@@ -96,3 +96,37 @@ Aucune de ces commandes n'a été exécutée. L'ancien package `@railway/mcp-ser
 ## Limites de la recherche
 
 Les requêtes réseau publiques par shell ont nécessité l'accès réseau autorisé de l'environnement. Les lectures `raw.githubusercontent.com` ont expiré ; l'API GitHub publique a permis de lire les mêmes fichiers, à révision fixe. Aucun token n'a été fourni. Les outils et pages évoluent : refaire ces vérifications lors d'une migration, conserver le lockfile et ne pas remplacer automatiquement les versions stables de ce projet.
+
+## Évolution du 30 septembre 2026 — identité en ruban
+
+La nouvelle demande retient explicitement le M en ruban, le bleu nuit, le violet et l'ivoire. Elle remplace la direction graphite/cuivre initiale. Les heuristiques des skills ne constituent pas une autorisation de revenir sur ce choix. Les lectures GSAP et Impeccable déjà tracées ci-dessus restent les références de méthode ; aucun nouveau système graphique, hook ou outil global n'a été installé.
+
+Le code installé a été contrôlé sans changement de version : GSAP **3.15.0**, dont `MorphSVGPlugin.version`, et Three.js **0.186.1**. Context7 et Chrome DevTools MCP ne sont toujours pas exposés dans cette session ; la vérification utilise la documentation officielle et les sources livrées dans les packages verrouillés.
+
+La transformation finale utilise une interpolation manuelle des deux bords canoniques ; MorphSVG a été consulté mais n'est pas importé dans le navigateur. Le skill local `21st-ui-build` a servi pour l'intégration dans l'existant ; aucune nouvelle génération 21st n'a été demandée, la forme et la direction étant imposées par les deux références de Paul.
+
+**Fontkitten 1.0.3** (MIT), déjà présent dans les dépendances transitives d'Astro, a été déclaré explicitement comme outil de développement à version fixe. Ses API `create`, `glyphForCodePoint` et `path.toSVG` produisent les contours du mot-symbole à partir du WOFF2 Space Grotesk existant. L'accès aux variations WOFF2 n'a pas fonctionné dans cette version : le générateur emploie les contours par défaut et un épaississement optique documenté (42 unités pour le nom, 8 pour la signature). Il n'utilise pas une police de substitution et ne prétend pas produire exactement une instance native de graisse 600. Aucun Fontkitten n'est chargé par le navigateur ; `type.generated.json` contient les tracés générés. L'installation explicite conserve les versions du socle ; npm audit a retourné zéro vulnérabilité connue.
+
+- [MorphSVG](https://gsap.com/docs/v3/Plugins/MorphSVGPlugin/) : enregistrement explicite du plugin, transformation de l'attribut `d`, contrôle du rapprochement avec `shapeIndex` et courbure avec `curveMode`. Le lissage qui redessine le tracé peut modifier la silhouette finale ; `redraw: false` préserve les points initiaux. Cette consultation n'implique pas l'utilisation effective du plugin si l'interpolation partagée SVG/Three suffit.
+- [Progression d'une timeline](<https://gsap.com/docs/v3/GSAP/Timeline/progress()/>) et [contextes GSAP](<https://gsap.com/docs/v3/GSAP/gsap.context()/>) : la progression normalisée pilote la prévisualisation ; pause, reprise et replay réutilisent le même contrôleur. Les contextes servent au nettoyage, les événements et ressources GPU conservent leur nettoyage explicite.
+- Three.js : `OrthographicCamera`, `BufferGeometry` et `BufferAttribute` ont été vérifiés dans les sources installées (`src/cameras/OrthographicCamera.js`, `src/core/BufferGeometry.js`, `src/core/BufferAttribute.js`). Projection sans changement de taille avec la profondeur, mise à jour du frustum par `updateProjectionMatrix`, attributs/index, mise à jour explicite des buffers, normales et `dispose`. Le choix `DynamicDrawUsage` précède le premier rendu. L'[index officiel Three.js](https://threejs.org/docs/) a été consulté ; ses liens individuels ont retourné 404 à l'outil de lecture, d'où le contrôle des sources exactes du package.
+
+Avant remplacement, le build local sur `127.0.0.1:4322` a fourni quatre captures dans `test-results/before-brand` : accueil automatique et page entière en mouvement réduit, à 1440 et 390 px. Les deux pages ont répondu HTTP 200, sans exception JavaScript observée. Le navigateur Chrome utilisait un profil temporaire isolé et a été fermé après capture. `capture.json` conserve la date et les résultats ; ces preuves ne valident pas la nouvelle identité.
+
+### Capture de la nouvelle animation
+
+`scripts/capture-brand.mjs` pilote les contrôles réels de `/dev/brand`, sans API globale de debug ni animation parallèle. Il prévoit quatre étapes PNG, cinq largeurs en mouvement réduit et deux vues automatiques avec canvas prêt. Les exports vont sous `test-results/brand`, ignoré par Git.
+
+```powershell
+$env:PREVIEW_URL = 'http://127.0.0.1:4322'
+node scripts/capture-brand.mjs
+node scripts/capture-brand.mjs --video --square
+```
+
+Le mode vidéo utilise l'encodeur WebM du Chrome de test, après détection de `MediaRecorder` et VP9/VP8. Il sérialise le SVG courant du véritable contrôleur à chaque progression, conserve ses styles, intègre les fichiers de polices s'il contient du texte, puis le dessine sur un fond opaque. Le rapport indique durée effectivement écoulée, format et source ; ce rendu exporté ne mesure pas la fluidité du canvas Three. Aucun son ni transparence vidéo n'est annoncé. La capture utilise un canvas attaché et peint, puis `captureStream(0)` et `requestFrame` après chaque mise à jour du contrôleur. Elle est bornée à 25 secondes par format. Le script ne marque un fichier comme validé qu'après sa lecture complète dans un second lecteur Chrome, contrôle de ses dimensions et durée, absence d'erreur et extraction d'images à 0,5 / 2,5 / 4,7 secondes. Le rapport distingue images demandées, frames totales du lecteur et frames abandonnées : il ne promet pas une cadence constante de 30 images/s. Les résultats de la version finale sont consignés dans `docs/qa.md`.
+
+FFmpeg/FFprobe ne sont pas disponibles dans le PATH, ni dans les emplacements ciblés du runtime fourni, du cache Playwright, de WinGet, de Scoop et des applications locales. Le fichier `ffmpeg.dll` de Docker n'est pas un encodeur en ligne de commande et n'est pas utilisé. Aucun encodeur n'a été installé. Une conversion MP4 optionnelle (`--mp4`) peut utiliser un FFmpeg autorisé déjà installé via `FFMPEG_PATH` ; le script signale explicitement l'absence de cet outil ou de `libx264`. Les étapes intermédiaires restent en mémoire, aucune série de centaines de frames n'est versionnée.
+
+### Profilage du démarrage WebGL
+
+La régression observée en audit mobile a été examinée avec une session CDP créée par Playwright (`Profiler.enable`, `start`, `stop`) et une instrumentation locale temporaire de `getContext` et des appels WebGL. Ce n’est pas Chrome DevTools MCP. Le profil est conservé dans `test-results/performance/engine-cpu-profile.json` ; aucune API de profilage globale n’a été ajoutée au site. La lecture de Three.js installé a aussi permis d’identifier les allocations répétées dues à `setPixelRatio` / `setSize`. Le code utilise désormais `setDrawingBufferSize` avec un garde sur les dimensions et le DPR. Les réglages GPU mobile et les mesures, y compris les variations défavorables, sont consignés dans `docs/qa.md`.

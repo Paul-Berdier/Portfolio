@@ -42,9 +42,10 @@ const { project, variant = '' } = Astro.props;
         ))}
       </div>
       <div class="flow-connector" aria-hidden="true">
-        <span></span>
-        <div>↗</div>
-        <span></span>
+        <svg viewBox="0 0 70 65" fill="none">
+          <path d="M0 45C29 63 33 9 70 22L70 34C40 20 35 75 0 57Z" fill="var(--accent-solid)" />
+          <path d="M0 45C29 63 33 9 70 22" stroke="var(--accent-hover)" stroke-width="1.5" />
+        </svg>
       </div>
       <div class="flow-results">
         <span class="tiny-label">RÈGLES APPLIQUÉES</span>
@@ -104,17 +105,18 @@ const { project, variant = '' } = Astro.props;
   .project-preview {
     padding: 28px;
     min-height: 310px;
-    border: 1px solid #a7b89524;
-    background: #20261e;
-    color: #e4eadb;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
     position: relative;
     overflow: hidden;
+    border-radius: 12px;
   }
   .project-preview.workflow {
-    background: #1d251e;
+    background: var(--surface);
   }
   .project-preview.data {
-    background: #252923;
+    background: var(--surface-raised);
   }
   .preview-top {
     display: flex;
@@ -123,19 +125,19 @@ const { project, variant = '' } = Astro.props;
     font-size: 9px;
     letter-spacing: 0.12em;
     font-family: monospace;
-    color: #b8c5ae;
+    color: var(--muted);
     padding-bottom: 25px;
-    border-bottom: 1px solid #a7b89524;
+    border-bottom: 1px solid var(--line);
   }
   .preview-dot {
     width: 6px;
     height: 6px;
-    background: #bdc9a4;
+    background: var(--accent);
     border-radius: 50%;
   }
   .preview-local {
     margin-left: auto;
-    color: #c2c9b7;
+    color: var(--muted);
     font-size: 8px;
   }
   .workflow-preview {
@@ -148,7 +150,7 @@ const { project, variant = '' } = Astro.props;
     font-size: 8px;
     font-family: monospace;
     letter-spacing: 0.1em;
-    color: #c2cab7;
+    color: var(--muted);
     display: block;
     margin-bottom: 14px;
   }
@@ -156,19 +158,20 @@ const { project, variant = '' } = Astro.props;
     display: flex;
     align-items: center;
     gap: 9px;
-    background: #2c352b;
-    border: 1px solid #abbda233;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
     margin: 8px 0;
     padding: 12px 10px;
     font: 10px monospace;
     transform: rotate(calc((var(--doc-index) - 1) * -2deg));
+    border-radius: 7px;
   }
   .document-line svg {
     flex: 0 0 auto;
-    color: #b5cfa1;
+    color: var(--accent);
   }
   .document-id {
-    color: #a6b19c;
+    color: var(--muted);
     font-size: 8px;
     margin-left: auto;
   }
@@ -177,33 +180,25 @@ const { project, variant = '' } = Astro.props;
     align-items: center;
     margin-top: 22px;
   }
-  .flow-connector span {
-    flex: 1;
-    height: 1px;
-    background: #b7c2a74d;
-  }
-  .flow-connector div {
-    width: 33px;
-    height: 33px;
-    display: grid;
-    place-items: center;
-    background: #bacd9d;
-    color: #222a1d;
-    font-size: 20px;
+  .flow-connector svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
   }
   .flow-result {
     display: flex;
     align-items: center;
     gap: 9px;
     padding: 14px 11px;
-    border: 1px solid #adc7994d;
+    border: 1px solid var(--success-line);
     font-size: 10px;
     margin: 9px 0;
-    background: #2a3528;
+    background: var(--success-soft);
+    border-radius: 8px;
   }
   .flow-result small {
     display: block;
-    color: #b2bea9;
+    color: var(--muted);
     font-size: 8px;
     margin-top: 5px;
   }
@@ -211,10 +206,10 @@ const { project, variant = '' } = Astro.props;
     margin-left: auto;
     font-weight: 400;
     font-size: 23px;
-    color: #d7e8c9;
+    color: var(--success);
   }
   .result-icon {
-    border: 1px solid #afc69a;
+    border: 1px solid var(--success);
     border-radius: 50%;
     width: 17px;
     height: 17px;
@@ -224,12 +219,15 @@ const { project, variant = '' } = Astro.props;
     flex: 0 0 auto;
   }
   .review {
-    border-color: #b69d6944;
-    background: #302e23;
+    border-color: var(--warning-line);
+    background: var(--warning-soft);
+  }
+  .review strong {
+    color: var(--warning);
   }
   .review .result-icon {
-    color: #e0c8a0;
-    border-color: #bca678;
+    color: var(--warning);
+    border-color: var(--warning);
   }
   .data-title {
     display: flex;
@@ -249,8 +247,8 @@ const { project, variant = '' } = Astro.props;
   .quality-label {
     font-size: 8px;
     padding: 5px 7px;
-    color: #d5e7bf;
-    border: 1px solid #a0b58555;
+    color: var(--success);
+    border: 1px solid var(--success-line);
     white-space: nowrap;
   }
   .preview-chart {
@@ -267,7 +265,7 @@ const { project, variant = '' } = Astro.props;
     left: 0;
     right: 0;
     height: 1px;
-    background: #b5c2a722;
+    background: var(--line);
     bottom: 25px;
   }
   .chart-rule:nth-child(2) {
@@ -290,14 +288,15 @@ const { project, variant = '' } = Astro.props;
     min-height: 1px;
     max-width: 76px;
     width: 80%;
-    background: #a7bc86;
+    background: var(--chart-web);
     flex-shrink: 1;
+    border-radius: 5px 5px 0 0;
   }
   .chart-column:nth-last-child(2) .chart-bar {
-    background: #e89b66;
+    background: var(--chart-data);
   }
   .chart-column:last-child .chart-bar {
-    background: #718665;
+    background: var(--chart-automation);
   }
   .chart-column span {
     font: 9px monospace;
@@ -314,10 +313,10 @@ const { project, variant = '' } = Astro.props;
     display: flex;
     gap: 16px;
     justify-content: space-between;
-    border-top: 1px solid #a7b89524;
+    border-top: 1px solid var(--line);
     padding-top: 14px;
     margin-top: 10px;
-    color: #b4bea9;
+    color: var(--muted);
     font: 8px monospace;
   }
   @media (max-width: 600px) {

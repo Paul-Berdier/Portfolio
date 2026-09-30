@@ -1,7 +1,8 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import { brand, navigation } from '../config/brand';
-import Mark from '../components/Mark.astro';
+import Logo from '../components/Logo.astro';
+import { palette } from '../brand/palette.mjs';
 import Arrow from '../components/Arrow.astro';
 import '../styles/global.css';
 import displayFont from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
@@ -9,10 +10,11 @@ interface Props {
   title: string;
   description?: string;
   eyebrow?: string;
+  noindex?: boolean;
 }
-const { title, description = brand.description } = Astro.props;
+const { title, description = brand.description, noindex = false } = Astro.props;
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
-const indexable = brand.production && brand.legalValidated && !!brand.siteUrl;
+const indexable = !noindex && brand.production && brand.legalValidated && !!brand.siteUrl;
 const canonical = brand.siteUrl ? new URL(pathname, brand.siteUrl).href : undefined;
 ---
 
@@ -21,7 +23,13 @@ const canonical = brand.siteUrl ? new URL(pathname, brand.siteUrl).href : undefi
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#101110" />
+    <meta name="theme-color" content={palette.navy} />
+    <style
+      is:inline
+      set:html={`:root{${Object.entries(palette)
+        .map(([key, value]) => `--brand-${key}:${value}`)
+        .join(';')}}`}
+    />
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <title>{title} — {brand.name}</title>
     <meta name="description" content={description} />
@@ -59,6 +67,7 @@ const canonical = brand.siteUrl ? new URL(pathname, brand.siteUrl).href : undefi
       />
     )}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
     <script is:inline>
       (() => {
         let preference = 'auto';
@@ -80,11 +89,7 @@ const canonical = brand.siteUrl ? new URL(pathname, brand.siteUrl).href : undefi
     </a>
     <header class="site-header container">
       <a class="brand" href="/" aria-label={`${brand.name} — accueil`}>
-        <Mark />
-        <span>
-          {brand.name}
-          <span class="brand-dot">.</span>
-        </span>
+        <Logo />
       </a>
       <nav class="desktop-nav" aria-label="Navigation principale">
         {navigation.map(({ href, label }) => (
@@ -161,8 +166,7 @@ const canonical = brand.siteUrl ? new URL(pathname, brand.siteUrl).href : undefi
         </a>
       </div>
       <div class="footer-wordmark" aria-hidden="true">
-        {brand.name}
-        <span>↗</span>
+        <Logo />
       </div>
       <div class="footer-bottom">
         <span>

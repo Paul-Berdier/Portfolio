@@ -34,8 +34,8 @@ const names = { fr: 'Français', en: 'English', es: 'Español' };
     display: grid;
     place-items: center;
     min-width: 30px;
-    min-height: 34px;
-    font-size: 10px;
+    min-height: 40px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--muted);
     border-radius: 4px;
@@ -51,8 +51,21 @@ const names = { fr: 'Français', en: 'English', es: 'Español' };
   @media (max-width: 760px) {
     a {
       min-width: 29px;
-      min-height: 38px;
-      font-size: 10px;
+      min-height: 40px;
+      font-size: 12px;
     }
   }
 </style>
+
+<script>
+  // One module-scoped listener survives Astro navigations; no listener per logo/page instance.
+  function syncLanguageHash() {
+    document.querySelectorAll<HTMLAnchorElement>('[data-language-switcher] a').forEach((link) => {
+      const url = new URL(link.href);
+      url.search = location.search;
+      url.hash = location.hash;
+      link.href = url.href;
+    });
+  }
+  window.addEventListener('hashchange', syncLanguageHash);
+</script>

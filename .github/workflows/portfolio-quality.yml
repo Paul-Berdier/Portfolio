@@ -39,6 +39,13 @@ jobs:
           node-version: '24.19.0'
           cache: npm
       - run: npm ci
+      - name: Export locked formatting tools for offline review
+        run: tar -czf /tmp/morphai-format-tools.tgz -C node_modules prettier prettier-plugin-astro @astrojs/compiler
+      - uses: actions/upload-artifact@v4
+        with:
+          name: morphai-format-tools-${{ github.sha }}
+          path: /tmp/morphai-format-tools.tgz
+          retention-days: 1
       - name: Typecheck
         run: npm run check
       - name: Lint

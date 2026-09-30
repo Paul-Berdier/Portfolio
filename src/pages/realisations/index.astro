@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ProjectPreview from '../../components/ProjectPreview.astro';
+import SelectedProjects from '../../components/SelectedProjects.astro';
 import { getPublishedProjects } from '../../content/projects';
 import { getServices } from '../../content/services';
 import { localeFromPath, translate, localizePath } from '../../i18n';
@@ -18,9 +19,9 @@ const services = getServices(locale);
     'Proyectos — Ideas llevadas a la práctica',
   )}
   description={t(
-    'Explorez les démonstrateurs de Paul Berdier : automatisation de documents et transformation de données, avec leurs résultats et leurs limites explicites.',
-    'Explore Paul Berdier’s demos: document automation and data transformation, with clear results and limitations.',
-    'Explora las demostraciones de Paul Berdier: automatización de documentos y transformación de datos, con resultados y límites explícitos.',
+    'Découvrez MissionPilot, PlumID et La Toile d’Or : projets personnels et contributions de Paul Berdier, puis testez ses démonstrateurs interactifs.',
+    'Explore MissionPilot, PlumID and La Toile d’Or: Paul Berdier’s personal projects and contributions, then try his interactive demos.',
+    'Descubre MissionPilot, PlumID y La Toile d’Or: proyectos personales y contribuciones de Paul Berdier, además de demostraciones interactivas.',
   )}
 >
   <div class="container page-shell" data-projects>
@@ -41,11 +42,13 @@ const services = getServices(locale);
         )}
       </p>
     </header>
+    <SelectedProjects />
+    <h2 class="demos-heading">{t('Démonstrateurs interactifs', 'Interactive demos', 'Demostraciones interactivas')}</h2>
     <div class="projects-toolbar">
       <div
         class="project-filters"
         role="group"
-        aria-label={t('Filtrer les réalisations', 'Filter projects', 'Filtrar proyectos')}
+        aria-label={t('Filtrer les démonstrateurs', 'Filter demos', 'Filtrar demostraciones')}
       >
         <button type="button" data-project-filter="all" aria-pressed="true" disabled>
           {t('Tout voir', 'View all', 'Ver todos')} <span>{publishedProjects.length}</span>
@@ -58,9 +61,9 @@ const services = getServices(locale);
       </div>
       <span class="toolbar-note">
         {t(
-          'PROJETS PERSONNELS & DÉMONSTRATEURS',
-          'PERSONAL PROJECTS & DEMOS',
-          'PROYECTOS PERSONALES Y DEMOSTRACIONES',
+          'DÉMONSTRATEURS PERSONNELS',
+          'PERSONAL DEMOS',
+          'DEMOSTRACIONES PERSONALES',
         )}
       </span>
     </div>
@@ -117,9 +120,9 @@ const services = getServices(locale);
       </h2>
       <p>
         {t(
-          'Aucune réalisation publiée dans ce domaine pour le moment. Je préfère montrer un projet vérifiable.',
-          'There are no published projects in this area yet. I want to show work that you can verify.',
-          'Todavía no hay proyectos publicados en esta área. Prefiero mostrar un proyecto que se pueda comprobar.',
+          'Aucun démonstrateur interactif publié dans ce domaine pour le moment. Les projets et contributions sont présentés plus haut.',
+          'There is no interactive demo in this area yet. Projects and contributions are presented above.',
+          'Todavía no hay una demostración interactiva en esta área. Los proyectos y contribuciones se presentan más arriba.',
         )}
       </p>
       <a href={localizePath('/services/intelligence-artificielle', locale)} class="text-link">

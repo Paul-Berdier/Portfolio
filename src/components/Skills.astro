@@ -1,0 +1,37 @@
+---
+import { localeFromPath, translate } from '../i18n';
+import { profile, technologyGroups, additionalTechnologies } from '../content/profile';
+const locale = localeFromPath(Astro.url.pathname);
+const copy = profile[locale];
+---
+<section class="skills-section" id="skills" aria-labelledby="skills-title">
+  <p class="eyebrow">{translate(locale, 'Compétences & outils', 'Skills & tools', 'Competencias y herramientas')}</p>
+  <h2 id="skills-title" data-reveal>{copy.skills}</h2>
+  <p class="skills-intro">{copy.skillsIntro}</p>
+  <div class="skills-grid">
+    {technologyGroups.map((group) => (
+      <article class="skill-group" data-reveal>
+        <h3>{translate(locale, group.titles[0], group.titles[1], group.titles[2])}</h3>
+        <ul>{group.items.map((item) => <li>{item}</li>)}</ul>
+      </article>
+    ))}
+  </div>
+  <details class="additional-tools">
+    <summary>{copy.more}</summary>
+    <ul>{additionalTechnologies.map((item) => <li>{item}</li>)}</ul>
+  </details>
+</section>
+<style>
+  .skills-section { padding-block: 64px; border-top: 1px solid var(--line); }
+  h2 { margin-block: 22px; }
+  .skills-intro { max-width: 70ch; color: var(--muted); font-size: 16px; line-height: 1.85; }
+  .skills-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 38px; }
+  .skill-group { padding-top: 22px; border-top: 1px solid var(--accent-line); min-width: 0; }
+  h3 { font-size: 21px; line-height: 1.3; letter-spacing: -0.025em; }
+  ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 20px 0 0; }
+  li { font-size: 14px; line-height: 1.5; padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 5px; }
+  .additional-tools { margin-top: 32px; padding: 20px; background: var(--surface-deep); border: 1px solid var(--line); border-radius: 8px; }
+  summary { cursor: pointer; font-size: 15px; line-height: 1.6; padding-block: 5px; color: var(--accent); }
+  @media (max-width: 1050px) { .skills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .skills-grid { grid-template-columns: 1fr; gap: 24px; } .skills-section { padding-block: 40px; } }
+</style>

@@ -1,303 +1,81 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Mark from '../components/Mark.astro';
-import { brand } from '../config/brand';
+import Skills from '../components/Skills.astro';
+import { getBrand, localeFromPath, localizePath, translate } from '../i18n';
+import { profile } from '../content/profile';
 export const prerender = true;
+const locale = localeFromPath(Astro.url.pathname);
+const brand = getBrand(locale);
+const copy = profile[locale];
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
+const href = (path: string) => localizePath(path, locale);
 ---
-
-<Layout
-  title={`À propos — ${brand.owner}`}
-  description={`${brand.owner}, à Toulouse et à distance en France. Une approche directe du développement web, de l’automatisation, de la data et de l’IA.`}
->
+<Layout title={copy.title} description={copy.intro}>
   <div class="container page-shell">
     <header class="about-hero">
       <div>
-        <p class="eyebrow">À propos / Studio solo</p>
-        <h1 data-line>
-          La technique,
-          <br />
-          avec quelqu’un
-          <br />
-          <em>à qui parler.</em>
-        </h1>
-        <p class="lede">
-          Je suis {brand.owner}. Je construis des sites, des applications et des outils pour rendre
-          les idées concrètes et le travail plus simple.
-        </p>
-        <span class="about-location">
-          <i></i>
-          {brand.location}
-        </span>
+        <p class="eyebrow">{t('À propos / Studio solo', 'About / Independent practice', 'Sobre mí / Estudio independiente')}</p>
+        <h1>{brand.owner}<span>{t('Des idées aux outils.', 'From ideas to tools.', 'De las ideas a las herramientas.')}</span></h1>
+        <p class="about-role">{copy.role}</p>
+        <p class="lede">{copy.intro}</p>
+        <p class="about-location">{brand.location}</p>
+        {brand.githubUrl && <a class="text-link" href={brand.githubUrl}>{copy.github} <span aria-hidden="true">↗</span></a>}
       </div>
       <div class="about-symbol" aria-hidden="true">
-        <svg class="symbol-sweep" viewBox="0 0 400 480" fill="none">
-          <path
-            d="M-40 365C171 478 132 19 414 151"
-            stroke="var(--accent-solid)"
-            stroke-width="43"
-          />
-          <path d="M-40 341C171 454 132 -5 414 127" stroke="var(--accent-hover)" stroke-width="1" />
-        </svg>
-        <div class="symbol-core">
-          <Mark />
-        </div>
-        <span class="symbol-caption">PENSER. RELIER. CONSTRUIRE.</span>
-        <span class="symbol-coordinate">
-          43°36′ N — 1°26′ E<br />
-          TOULOUSE
-        </span>
+        <svg class="symbol-sweep" viewBox="0 0 400 480" fill="none"><path d="M-40 365C171 478 132 19 414 151" stroke="var(--accent-solid)" stroke-width="43" /></svg>
+        <div class="symbol-core"><Mark /></div>
+        <span class="symbol-caption">{t('PENSER. RELIER. CONSTRUIRE.', 'THINK. CONNECT. BUILD.', 'PENSAR. CONECTAR. CONSTRUIR.')}</span>
       </div>
     </header>
-    <section class="about-section" data-reveal>
-      <p class="eyebrow">Un seul interlocuteur</p>
-      <div>
-        <h2>
-          Du premier échange
-          <br />
-          <em>au dernier détail.</em>
-        </h2>
-        <p>
-          J’aborde un projet dans son ensemble : ce qu’il doit permettre de faire, les personnes qui
-          vont l’utiliser et les contraintes qu’il doit respecter.
-        </p>
-        <p>
-          Le web, l’automatisation, les données et l’IA sont des moyens. Mon point de départ reste
-          le même : comprendre ce qui bloque et construire une réponse utile.
-        </p>
-        <p>
-          {brand.name} est le nom de travail de ce portfolio personnel. Derrière ce nom, il y a une
-          personne : moi.
-        </p>
-        {brand.name === 'MorphAI' && (
-          <p>
-            Le nom évoque Morphée, l’imagination et les idées qui prennent forme. Il exprime aussi
-            ma manière de travailler : adapter les technologies, dont l’intelligence artificielle,
-            au besoin réel.
-          </p>
-        )}
+    <section class="background-section" id="background" aria-labelledby="background-title">
+      <p class="eyebrow">{t('Parcours', 'Background', 'Trayectoria')}</p>
+      <h2 id="background-title" data-reveal>{t('Une approche concrète.', 'A practical approach.', 'Un enfoque práctico.')}</h2>
+      <div class="background-grid">
+        <article data-reveal><p class="eyebrow">{t('Formation', 'Education', 'Formación')}</p><h3>{copy.education}</h3><p>{t('Data science, automatisation et intelligence artificielle.', 'Data science, automation and artificial intelligence.', 'Ciencia de datos, automatización e inteligencia artificial.')}</p></article>
+        <article data-reveal><p class="eyebrow">{t('Expérience professionnelle', 'Professional experience', 'Experiencia profesional')}</p><h3>{copy.experience}</h3><p>{copy.experienceDetail}</p></article>
       </div>
+      <p class="current-practice">{copy.current}</p>
     </section>
-    <section class="about-section" data-reveal>
-      <p class="eyebrow">Ce qui guide le travail</p>
-      <div class="principles">
-        <article>
-          <span>01</span>
-          <div>
-            <h3>Comprendre avant de produire.</h3>
-            <p>
-              Définir le besoin, les usages et les critères qui permettront de dire que le projet
-              est réussi.
-            </p>
-          </div>
-        </article>
-        <article>
-          <span>02</span>
-          <div>
-            <h3>Rendre visible, tôt.</h3>
-            <p>
-              Mettre une première version entre vos mains. Recueillir les retours et ajuster sur
-              quelque chose de concret.
-            </p>
-          </div>
-        </article>
-        <article>
-          <span>03</span>
-          <div>
-            <h3>Faire des choix explicables.</h3>
-            <p>
-              Discuter du périmètre, des coûts et des compromis. Choisir une solution proportionnée
-              au problème.
-            </p>
-          </div>
-        </article>
-        <article>
-          <span>04</span>
-          <div>
-            <h3>Préparer la suite.</h3>
-            <p>
-              Livrer un outil compréhensible et documenté, avec des limites et des possibilités
-              d’évolution claires.
-            </p>
-          </div>
-        </article>
-      </div>
+    <section class="approach-section" aria-labelledby="approach-title">
+      <div><p class="eyebrow">{t('Ma manière de travailler', 'How I work', 'Mi manera de trabajar')}</p><h2 id="approach-title" data-reveal>{copy.approach}</h2><p>{copy.motivation}</p></div>
+      <ol class="principles">{copy.principles.map(([title, description], i) => <li data-reveal><span aria-hidden="true">0{i + 1}</span><div><h3>{title}</h3><p>{description}</p></div></li>)}</ol>
     </section>
-    <section class="about-section" data-reveal>
-      <p class="eyebrow">Les preuves</p>
-      <div>
-        <h2>
-          Commencer par
-          <br />
-          ce que vous pouvez voir.
-        </h2>
-        <p>
-          Les réalisations actuellement présentées sont des démonstrateurs personnels. Vous pouvez
-          manipuler leurs interfaces, comprendre leur fonctionnement et consulter leurs limites.
-        </p>
-        <a href="/realisations" class="text-link">
-          Explorer les réalisations <span aria-hidden="true">↗</span>
-        </a>
-      </div>
+    <Skills />
+    <section class="origin-section" aria-labelledby="origin-title">
+      <p class="eyebrow">{t('Le nom', 'The name', 'El nombre')}</p>
+      <h2 id="origin-title" data-reveal>{brand.name}</h2>
+      <p>{brand.name === 'MorphAI' ? copy.origin : t('Une activité indépendante, un interlocuteur : Paul Berdier.', 'An independent practice, one point of contact: Paul Berdier.', 'Una actividad independiente, un interlocutor: Paul Berdier.')}</p>
+      <a class="text-link" href={href('/realisations')}>{copy.work} <span aria-hidden="true">↗</span></a>
     </section>
-    <div class="about-contact" data-reveal>
-      <p class="eyebrow">Un projet en tête ?</p>
-      <h2>
-        Commençons
-        <br />
-        <em>par en parler.</em>
-      </h2>
-      <a href="/contact" class="button button-primary">
-        Parler de votre projet <span aria-hidden="true">↗</span>
-      </a>
-    </div>
+    <div class="about-contact"><a href={href('/contact')} class="button button-primary">{copy.contact}<span aria-hidden="true">↗</span></a></div>
   </div>
 </Layout>
 <style>
-  h1 em,
-  h2 em {
-    color: var(--accent);
-    font-style: normal;
-  }
-  .about-hero {
-    display: grid;
-    grid-template-columns: 1.25fr 1fr;
-    gap: 7%;
-    align-items: center;
-    margin-bottom: 120px;
-  }
-  .about-hero h1 {
-    font-size: clamp(43px, 6.8vw, 96px);
-    line-height: 1.02;
-    letter-spacing: -0.065em;
-    margin: 27px 0 35px;
-  }
-  .about-hero .lede {
-    max-width: 570px;
-  }
-  .about-location {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: var(--muted);
-    font-size: 11px;
-    margin-top: 30px;
-  }
-  .about-location i {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-  .about-symbol {
-    position: relative;
-    aspect-ratio: 1 / 1.2;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    overflow: hidden;
-    display: grid;
-    place-items: center;
-    border-radius: 14px;
-  }
-  .symbol-core {
-    width: 65%;
-    position: relative;
-    color: var(--accent-hover);
-  }
-  .symbol-core :global(svg) {
-    width: 100%;
-    height: auto;
-  }
-  .symbol-sweep {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0.3;
-  }
-  .symbol-caption {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    font: 8px monospace;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-  }
-  .symbol-coordinate {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    font: 9px/1.7 monospace;
-    color: var(--muted);
-    text-align: right;
-  }
-  .about-section {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 6%;
-    padding: 65px 0;
-    border-top: 1px solid var(--line);
-  }
-  .about-section h2 {
-    font-size: clamp(32px, 4.5vw, 61px);
-    line-height: 1.07;
-    letter-spacing: -0.05em;
-    margin-bottom: 30px;
-  }
-  .about-section p:not(.eyebrow) {
-    color: var(--muted);
-    font-size: 17px;
-    line-height: 1.85;
-    margin: 20px 0;
-    max-width: 670px;
-  }
-  .principles article {
-    display: grid;
-    grid-template-columns: 35px 1fr;
-    gap: 15px;
-    padding: 0 0 25px;
-  }
-  .principles article > span {
-    font: 11px monospace;
-    color: var(--accent);
-    padding-top: 9px;
-  }
-  .principles h3 {
-    font-size: 25px;
-    letter-spacing: -0.035em;
-  }
-  .principles p {
-    font-size: 15px !important;
-    margin-top: 14px !important;
-  }
-  .about-contact {
-    padding: 65px 0 0;
-    margin-left: 35%;
-  }
-  .about-contact h2 {
-    font-size: clamp(45px, 6vw, 82px);
-    letter-spacing: -0.065em;
-    line-height: 1.02;
-    margin: 25px 0 32px;
-  }
-  @media (max-width: 767px) {
-    .about-hero {
-      grid-template-columns: 1fr;
-      gap: 45px;
-      margin-bottom: 65px;
-    }
-    .about-symbol {
-      max-width: 500px;
-      aspect-ratio: 1.3;
-    }
-    .about-section {
-      grid-template-columns: 1fr;
-      gap: 24px;
-      padding: 40px 0;
-    }
-    .about-contact {
-      margin-left: 0;
-    }
-    .about-section p:not(.eyebrow) {
-      font-size: 16px;
-    }
-  }
+  .about-hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 7%; align-items: center; margin-bottom: 72px; }
+  h1 { font-size: clamp(46px, 6vw, 90px); line-height: 1.07; margin-block: 26px; }
+  h1 span { display: block; font-size: .48em; letter-spacing: -0.035em; margin-top: 16px; color: var(--accent); }
+  .about-role { font-size: 18px; line-height: 1.6; color: var(--accent-hover); max-width: 40ch; margin-bottom: 20px; }
+  .about-hero .lede { max-width: 54ch; }
+  .about-location { font-size: 14px; color: var(--muted); margin: 24px 0 12px; }
+  .about-symbol { position: relative; aspect-ratio: 1 / 1.1; background: var(--surface); border: 1px solid var(--line); overflow: hidden; display: grid; place-items: center; border-radius: 14px; }
+  .symbol-core { width: 70%; position: relative; }
+  .symbol-core :global(svg) { width: 100%; height: auto; }
+  .symbol-sweep { position: absolute; width: 100%; height: 100%; opacity: .24; }
+  .symbol-caption { position: absolute; top: 24px; left: 24px; right: 24px; font-size: 12px; letter-spacing: .08em; color: var(--muted); }
+  .background-section, .approach-section, .origin-section { padding-block: 64px; border-top: 1px solid var(--line); }
+  h2 { margin: 22px 0 30px; }
+  .background-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 32px; }
+  .background-grid article { padding: 28px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-deep); }
+  h3 { font-size: 24px; line-height: 1.3; margin: 16px 0; }
+  .background-section p:not(.eyebrow), .approach-section p:not(.eyebrow), .origin-section p:not(.eyebrow) { color: var(--muted); font-size: 16px; line-height: 1.85; max-width: 68ch; }
+  .current-practice { margin-top: 28px; }
+  .approach-section { display: grid; grid-template-columns: 1fr 1fr; gap: 7%; }
+  .principles { list-style: none; margin: 0; padding: 0; }
+  .principles li { display: grid; grid-template-columns: 28px 1fr; gap: 16px; padding-bottom: 28px; }
+  .principles li > span { color: var(--accent); font-size: 13px; padding-top: 21px; }
+  .principles h3 { font-size: 22px; }
+  .origin-section .text-link { margin-top: 20px; }
+  .about-contact { padding-block: 12px 36px; }
+  @media (max-width: 760px) { .about-hero, .background-grid, .approach-section { grid-template-columns: 1fr; gap: 28px; } .about-hero { margin-bottom: 42px; } .about-symbol { aspect-ratio: 1.65; max-width: 500px; } .background-section, .approach-section, .origin-section { padding-block: 40px; } .background-grid article { padding: 22px; } }
 </style>

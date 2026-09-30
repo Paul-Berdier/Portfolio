@@ -1,0 +1,62 @@
+/* Editorial readability layer. Diagram labels and the animated ribbon keep their own scale. */
+body { font-size: 16px; }
+body .eyebrow, body .tag, body .section-label { font-size: 12px; line-height: 1.65; }
+body .button, body .text-link { font-size: 15px; min-height: 44px; }
+body .desktop-nav a { font-size: 14px; }
+body .header-contact { font-size: 14px; }
+body .hero-eyebrow { font-size: 12px; }
+body .hero-description { font-size: 16px; line-height: 1.85; max-width: 46ch; }
+body .hero-actions { flex-wrap: wrap; gap: 12px 20px; }
+body .hero-actions .button, body .hero-secondary { font-size: 14px; min-height: 48px; }
+body .hero-secondary { white-space: normal; }
+body .hero-signature p { font-size: 14px; }
+body .hero-signature p span { font-size: 12px; line-height: 1.7; }
+body .hero-bottom { font-size: 11px; gap: 18px; line-height: 1.7; }
+body .hero-bottom > span { text-align: right; }
+body .section-intro, body .service-copy p { font-size: 16px; line-height: 1.8; }
+body .service-tags span { font-size: 12px; }
+body .method-steps p { font-size: 15px; line-height: 1.8; }
+body .about-copy > p:not(.section-label) { font-size: 16px; line-height: 1.85; }
+body .about-small, body .about-coordinate { font-size: 12px; line-height: 1.6; letter-spacing: .06em; right: 20px; }
+body .home-project > p, body .project-item > p { font-size: 16px; line-height: 1.8; }
+body .project-caption .eyebrow, body .project-meta { font-size: 12px; }
+body .project-honesty, body .honesty-note p { font-size: 14px; line-height: 1.8; }
+body .demos-heading { margin: 22px 0 28px; font-size: clamp(30px, 3vw, 44px); }
+body .toolbar-note { font-size: 11px; }
+body .project-filters button { min-height: 44px; font-size: 14px; }
+body .project-filters button span { font-size: 12px; }
+body .footer-meta p { font-size: 14px; line-height: 1.8; }
+body .footer-bottom, body .footer-bottom a { font-size: 12px; line-height: 1.7; }
+body .footer-bottom > div { flex-wrap: wrap; }
+body .motion-control { font-size: 12px; }
+body .motion-control select { min-height: 40px; font-size: 14px; }
+body .preview-note { font-size: 12px; line-height: 1.8; }
+body .field label, body .form-help, body .field-hint, body .field-error { font-size: 14px; line-height: 1.7; }
+body .field input, body .field select, body .field textarea { font-size: 16px; }
+body .contact-aside p, body .contact-aside dd, body .contact-notice p { font-size: 15px; line-height: 1.85; }
+body .service-detail p, body .case-section > p { font-size: 16px; line-height: 1.85; }
+@media (max-width: 1150px) {
+  body .desktop-nav { gap: 14px; }
+  body .header-contact span { display: none; }
+  body .header-contact { padding: 10px; gap: 0; }
+}
+@media (min-width: 761px) and (max-width: 900px) {
+  body .site-header { flex-wrap: wrap; height: auto; min-height: 106px; padding-block: 15px; gap: 12px; }
+  body .desktop-nav { order: 5; width: 100%; justify-content: center; flex-wrap: wrap; }
+}
+@media (max-width: 760px) {
+  body .site-header > .header-contact { display: none; }
+  body .site-header > .language-switcher { margin-left: auto; }
+  body .site-header > .brand { font-size: 21px; }
+  body .site-header > .menu-toggle { flex-shrink: 0; }
+  body .hero-description { font-size: 16px; }
+  body .hero-actions .button, body .hero-secondary { font-size: 15px; }
+  body .hero-actions { gap: 12px; align-items: flex-start; flex-direction: column; }
+  body .hero-bottom { font-size: 11px; }
+  body .hero h1 { white-space: normal; font-size: clamp(42px, 10.2vw, 72px); }
+  body .hero-emphasis { display: inline-block; }
+  body .footer-invitation .eyebrow { font-size: 12px; letter-spacing: .05em; }
+  body .footer-invitation { flex-wrap: wrap; }
+  body .projects-toolbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  body .about-graphic { min-height: 360px; }
+}

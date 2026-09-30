@@ -311,7 +311,7 @@ export const prerender = true;
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: #b9ca9e;
+    background: var(--success);
   }
   .lab-jump {
     display: flex;
@@ -360,7 +360,9 @@ export const prerender = true;
     display: grid;
     grid-template-columns: 1fr 1.15fr;
     border: 1px solid var(--line);
-    background: #1a1d18;
+    background: var(--surface);
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
   }
   .source-panel,
   .result-panel {
@@ -369,34 +371,34 @@ export const prerender = true;
   }
   .source-panel {
     border-right: 1px solid var(--line);
-    background: #171a16;
+    background: var(--surface-deep);
   }
   .panel-header {
     display: flex;
     justify-content: space-between;
     gap: 14px;
-    color: #bcc5ae;
+    color: var(--muted);
     font: 9px monospace;
     letter-spacing: 0.1em;
     padding-bottom: 24px;
-    border-bottom: 1px solid #c0cfa221;
+    border-bottom: 1px solid var(--line);
     margin-bottom: 24px;
   }
   .source-panel label,
   .result-controls label {
     display: block;
     font-size: 12px;
-    color: #d1d6c9;
+    color: var(--ink);
     margin-bottom: 12px;
   }
   .source-panel textarea {
     width: 100%;
     min-height: 265px;
     padding: 18px;
-    border: 1px solid #b7cba22b;
-    background: #111510;
-    color: #c9d5b9;
-    border-radius: 0;
+    border: 1px solid var(--border-control);
+    background: var(--bg);
+    color: var(--ink);
+    border-radius: 8px;
     font: 12px/1.8 monospace;
     resize: vertical;
     box-sizing: border-box;
@@ -434,12 +436,13 @@ export const prerender = true;
   }
   .result-controls select {
     max-width: 230px;
-    background: #272e22;
-    color: #e1e6d7;
-    border: 1px solid #b7cba23b;
+    background: var(--surface-raised);
+    color: var(--ink);
+    border: 1px solid var(--border-control);
     padding: 10px 30px 10px 10px;
     font: inherit;
     font-size: 11px;
+    border-radius: 7px;
   }
   .data-stats {
     display: grid;
@@ -460,7 +463,7 @@ export const prerender = true;
     margin-top: 4px;
   }
   .data-stats > div:first-child strong {
-    color: #bdce9e;
+    color: var(--success);
   }
   .data-stats > div:last-child strong {
     color: var(--accent);
@@ -477,7 +480,7 @@ export const prerender = true;
   }
   .lab-chart-row > span {
     font-size: 10px;
-    color: #d2d9c7;
+    color: var(--muted);
   }
   .lab-chart-row strong {
     font: 10px monospace;
@@ -486,17 +489,19 @@ export const prerender = true;
   }
   .lab-chart-track {
     height: 22px;
-    background: #ffffff08;
+    background: var(--surface-hover);
+    border-radius: 0 5px 5px 0;
+    overflow: hidden;
   }
   .lab-chart-bar {
-    background: #b5c796;
+    background: var(--chart-web);
     height: 100%;
   }
   .lab-chart-row:nth-child(2) .lab-chart-bar {
-    background: #e89561;
+    background: var(--chart-data);
   }
   .lab-chart-row:nth-child(3) .lab-chart-bar {
-    background: #81946a;
+    background: var(--chart-automation);
   }
   .chart-caption {
     color: var(--muted);
@@ -506,14 +511,14 @@ export const prerender = true;
   }
   .lab-status {
     font-size: 12px;
-    color: #d1dbc3;
+    color: var(--muted);
     border-top: 1px solid var(--line);
     line-height: 1.8;
     padding-top: 17px;
     margin-bottom: 15px;
   }
   .lab-status[data-state='error'] {
-    color: #ffb18d;
+    color: var(--error);
   }
   .issues {
     font-size: 11px;
@@ -530,6 +535,7 @@ export const prerender = true;
     border: 1px solid var(--line);
     border-top: 0;
     padding: 20px 28px;
+    border-radius: 0 0 12px 12px;
   }
   .data-table-details > summary {
     font-size: 13px;
@@ -594,9 +600,10 @@ export const prerender = true;
     padding-top: 130px;
   }
   .workflow-workspace {
-    background: #1b211a;
+    background: var(--surface);
     border: 1px solid var(--line);
     padding: 28px;
+    border-radius: 12px;
   }
   .workflow-steps {
     display: grid;
@@ -614,20 +621,22 @@ export const prerender = true;
   .workflow-steps li:not(:last-child)::after {
     content: '';
     position: absolute;
-    height: 1px;
+    height: 15px;
     top: 17px;
     left: 52px;
     right: 0;
-    background: #bdd29d33;
+    border-top: 1px solid var(--accent-line);
+    border-radius: 50%;
   }
   .step-number {
     width: 35px;
     height: 35px;
-    border: 1px solid #a6bd8c55;
+    border: 1px solid var(--border-control);
     display: grid;
     place-items: center;
     font: 11px monospace;
-    color: #b7caa2;
+    color: var(--accent);
+    border-radius: 11px;
   }
   .workflow-steps h3 {
     font-size: 16px;
@@ -641,7 +650,7 @@ export const prerender = true;
   }
   .step-state {
     font: 9px monospace;
-    color: #a8b59b;
+    color: var(--muted);
   }
   .workflow-steps li[data-state='active'] .step-number {
     background: var(--accent);
@@ -649,11 +658,11 @@ export const prerender = true;
     border-color: var(--accent);
   }
   .workflow-steps li[data-state='done'] .step-number {
-    background: #b8cba0;
+    background: var(--success);
     color: var(--bg);
   }
   .workflow-steps li[data-state='done'] .step-state {
-    color: #c2d5ac;
+    color: var(--success);
   }
   .workflow-options {
     display: flex;
@@ -687,7 +696,7 @@ export const prerender = true;
     margin-top: 25px;
   }
   .workflow-table td:last-child {
-    color: #c5d7b2;
+    color: var(--ink);
   }
   .lab-cta {
     text-align: center;
@@ -786,6 +795,9 @@ export const prerender = true;
       left: 17px;
       top: 46px;
       bottom: -15px;
+      border-top: 0;
+      border-left: 1px solid var(--accent-line);
+      border-radius: 0;
     }
     .step-number {
       flex-shrink: 0;

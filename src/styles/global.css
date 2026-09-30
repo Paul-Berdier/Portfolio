@@ -17,19 +17,51 @@
 }
 
 @theme {
-  --color-copper: #f1814b;
-  --color-charcoal: #101110;
+  --color-violet: var(--brand-violet);
+  --color-navy: var(--brand-navy);
   --font-sans: 'Manrope Variable', sans-serif;
 }
 :root {
-  --bg: #101110;
-  --surface: #191a18;
-  --ink: #eeeae3;
-  --muted: #aaa99e;
-  --accent: #f1814b;
-  --line: #ffffff20;
-  --display: 'Space Grotesk Variable', sans-serif;
-  --body: 'Manrope Variable', sans-serif;
+  /* La palette canonique src/brand/palette.mjs est exposée par Layout. */
+  --background: var(--brand-navy);
+  --surface: var(--brand-surface);
+  --text: var(--brand-ivory);
+  --text-muted: var(--brand-muted);
+  --bg: var(--background);
+  --ink: var(--text);
+  --muted: var(--text-muted);
+  --accent: var(--brand-periwinkle);
+  --accent-hover: var(--brand-lavender);
+  --accent-solid: var(--brand-violet);
+  --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
+  --accent-line: color-mix(in srgb, var(--accent) 42%, transparent);
+  --action: color-mix(in srgb, var(--brand-violet) 92%, var(--brand-navy));
+  --action-hover: color-mix(in srgb, var(--brand-violet) 82%, var(--brand-navy));
+  --action-text: var(--brand-ivory);
+  --border: color-mix(in srgb, var(--brand-muted) 24%, transparent);
+  --border-control: color-mix(in srgb, var(--brand-muted) 65%, var(--surface));
+  --line: var(--border);
+  --focus: var(--brand-lavender);
+  --surface-deep: color-mix(in srgb, var(--bg) 82%, var(--surface));
+  --surface-raised: color-mix(in srgb, var(--brand-violet) 10%, var(--surface));
+  --surface-highlight: color-mix(in srgb, var(--brand-lavender) 7%, var(--surface));
+  --surface-hover: color-mix(in srgb, var(--brand-periwinkle) 5%, transparent);
+  --success: var(--brand-success);
+  --success-soft: color-mix(in srgb, var(--success) 9%, var(--surface));
+  --success-line: color-mix(in srgb, var(--success) 46%, var(--surface));
+  --warning: var(--brand-warning);
+  --warning-soft: color-mix(in srgb, var(--warning) 9%, var(--surface));
+  --warning-line: color-mix(in srgb, var(--warning) 46%, var(--surface));
+  --error: var(--brand-error);
+  --error-soft: color-mix(in srgb, var(--error) 9%, var(--surface));
+  --chart-web: var(--brand-periwinkle);
+  --chart-data: var(--brand-lavender);
+  --chart-automation: var(--brand-violet);
+  --overlay: color-mix(in srgb, var(--brand-navy) 82%, transparent);
+  --font-display: 'Space Grotesk Variable', sans-serif;
+  --font-body: 'Manrope Variable', sans-serif;
+  --display: var(--font-display);
+  --body: var(--font-body);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   color-scheme: dark;
 }
@@ -122,7 +154,7 @@ button {
   color: var(--bg);
 }
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus);
   outline-offset: 6px;
 }
 #main:focus {
@@ -154,6 +186,7 @@ button {
   width: 5px;
   height: 5px;
   background: var(--accent);
+  border-radius: 50%;
 }
 .status-dot {
   display: inline-block;
@@ -161,7 +194,7 @@ button {
   height: 6px;
   background: var(--accent);
   border-radius: 50%;
-  box-shadow: 0 0 0 4px #f1814b10;
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 .tag {
   display: inline-flex;
@@ -185,7 +218,7 @@ button {
   gap: 28px;
   min-height: 52px;
   padding: 14px 23px;
-  border-radius: 3px;
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 650;
   line-height: 1.5;
@@ -195,18 +228,19 @@ button {
     box-shadow 0.2s;
 }
 .button-primary {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--action);
+  color: var(--action-text);
 }
-.button-primary:hover {
-  background: #ffa574;
+.button-primary:hover,
+.button-primary:focus-visible {
+  background: var(--action-hover);
 }
 .button-secondary {
-  border: 1px solid #ffffff35;
+  border: 1px solid var(--border-control);
   background: transparent;
 }
 .button-secondary:hover {
-  background: #ffffff0c;
+  background: var(--surface-highlight);
 }
 .button .arrow-icon,
 .text-link .arrow-icon {
@@ -217,14 +251,14 @@ button {
   transform: translate(3px, -3px);
 }
 .button:active {
-  box-shadow: inset 0 0 0 2px #0004;
+  box-shadow: inset 0 0 0 2px var(--accent-line);
 }
 .text-link {
   display: inline-flex;
   align-items: center;
   gap: 22px;
   font-size: 12px;
-  border-bottom: 1px solid #ffffff45;
+  border-bottom: 1px solid var(--border-control);
   padding: 12px 0;
   min-height: 44px;
 }
@@ -237,7 +271,7 @@ button {
   left: 20px;
   top: -100px;
   background: var(--accent);
-  color: #111;
+  color: var(--bg);
   padding: 12px 20px;
   z-index: 999;
 }
@@ -257,20 +291,16 @@ button {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 12px;
   font: 650 28px/1 var(--display);
   letter-spacing: -0.055em;
 }
 .brand-mark {
   color: var(--accent);
-  width: 30px;
-  height: 30px;
-}
-.brand-dot {
-  color: var(--accent);
-  font-size: 24px;
-  vertical-align: top;
-  margin-left: 2px;
+  display: block;
+  width: 1.72em;
+  height: auto;
+  flex-shrink: 0;
 }
 .desktop-nav {
   display: flex;
@@ -309,9 +339,9 @@ button {
   gap: 23px;
   align-items: center;
   font-size: 11px;
-  border: 1px solid #ffffff35;
+  border: 1px solid var(--border-control);
   padding: 12px 18px;
-  border-radius: 3px;
+  border-radius: 8px;
   min-height: 45px;
   transition: background 0.2s;
 }
@@ -350,7 +380,7 @@ button {
   z-index: 100;
 }
 .mobile-menu::backdrop {
-  background: #0009;
+  background: var(--overlay);
 }
 .menu-top {
   display: flex;
@@ -460,7 +490,7 @@ button {
 .footer-arrow {
   width: 105px;
   height: 105px;
-  border: 1px solid #ffffff40;
+  border: 1px solid var(--border-control);
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -492,19 +522,22 @@ button {
   color: var(--ink);
 }
 .footer-wordmark {
-  font: 550 clamp(70px, 18.8vw, 284px)/0.95 var(--display);
-  letter-spacing: -0.07em;
-  white-space: nowrap;
+  font: 600 clamp(48px, 14vw, 210px)/1 var(--font-display);
   margin: 80px 0 35px;
   padding-bottom: 12px;
+}
+.footer-wordmark .logo {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.38em;
+  max-width: 100%;
 }
-.footer-wordmark > span {
-  color: var(--accent);
-  font-size: 0.75em;
-  display: block;
+.footer-wordmark .logo-type {
+  min-width: 0;
+}
+.footer-wordmark .logo-name {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .footer-bottom {
   display: flex;
@@ -531,7 +564,7 @@ button {
 .motion-control select {
   background: var(--bg);
   color: var(--ink);
-  border: 1px solid var(--line);
+  border: 1px solid var(--border-control);
   padding: 9px 8px;
   border-radius: 3px;
   font-size: 10px;
@@ -540,7 +573,7 @@ button {
 .preview-note {
   font-size: 9px;
   letter-spacing: 0.03em;
-  color: #898a7f;
+  color: var(--muted);
   padding-bottom: 24px;
 }
 .read-progress {
@@ -674,7 +707,7 @@ button {
   }
   .footer-wordmark {
     margin: 50px 0 25px;
-    font-size: 19vw;
+    font-size: 14vw;
   }
   .footer-bottom {
     justify-content: start;

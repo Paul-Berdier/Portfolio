@@ -82,7 +82,7 @@ export const prerender = true;
     align-items: center;
   }
   .service-row:nth-child(even) .service-art {
-    background: #1e241d;
+    background: var(--surface-raised);
   }
   .service-copy h2 {
     font-size: clamp(30px, 4.5vw, 59px);
@@ -109,9 +109,10 @@ export const prerender = true;
     list-style: none;
   }
   .service-art {
-    background: #22211c;
+    background: var(--surface);
     border: 1px solid var(--line);
     padding: 18px;
+    border-radius: 14px;
   }
   .cross-section {
     margin-top: 100px;

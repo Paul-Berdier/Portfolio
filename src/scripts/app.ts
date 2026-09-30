@@ -5,11 +5,15 @@ import { motion, getMotion, type MotionPreference } from '../config/motion';
 import { initLab } from './lab';
 import { initProjects } from './projects';
 import { initContact } from './contact';
+import { initBrandAnimations } from './brand-animation';
+import { engineModes } from '../config/engine';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 let disposePage: (() => void) | undefined;
+let sessionPreference: MotionPreference | undefined;
 const media = matchMedia('(prefers-reduced-motion: reduce)');
 function readPreference(): MotionPreference {
+  if (sessionPreference) return sessionPreference;
   try {
     const value = localStorage.getItem('motion-preference');
     return value === 'off' || value === 'reduced' ? value : 'auto';
@@ -36,6 +40,7 @@ function initialize() {
     preference.addEventListener(
       'change',
       () => {
+        sessionPreference = preference.value as MotionPreference;
         try {
           localStorage.setItem('motion-preference', preference.value);
         } catch {}
@@ -84,25 +89,21 @@ function initialize() {
   cleanups.push(initLab(), initProjects(), initContact());
   const engine = document.querySelector<HTMLElement>('[data-engine]');
   if (engine) {
-    const captions: Record<string, string> = {
-      web: 'Des fragments deviennent une interface. Un point d’entrée pour vos idées.',
-      automation: 'Des modules se connectent. Les tâches trouvent leur chemin.',
-      data: 'La matière s’ordonne. Vos données prennent une forme lisible.',
-      ai: 'Des documents, des liens, des sources. L’information se met en relation.',
-    };
-    engine.querySelectorAll<HTMLButtonElement>('[data-engine-mode]').forEach((button, index) => {
+    engine.querySelectorAll<HTMLButtonElement>('[data-engine-mode]').forEach((button) => {
       button.addEventListener(
         'click',
         () => {
           const mode = button.dataset.engineMode!;
+          const definition = engineModes.find((item) => item.key === mode);
+          if (!definition) return;
           engine.dataset.state = mode;
           engine
-            .querySelectorAll('button')
+            .querySelectorAll('[data-engine-mode]')
             .forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
           const caption = engine.querySelector('[data-engine-caption]');
-          if (caption) caption.textContent = captions[mode]!;
+          if (caption) caption.textContent = definition.caption;
           const number = engine.querySelector('[data-engine-number]');
-          if (number) number.textContent = `0${index + 1}`;
+          if (number) number.textContent = definition.number;
           engine.dispatchEvent(new CustomEvent('engine:mode', { detail: mode }));
         },
         { signal },
@@ -114,8 +115,16 @@ function initialize() {
           if (alive && getMotion() === 'auto') {
             try {
               cleanups.push(createEngine(engine));
+              // createEngine reads the current mode; avoid interrupting an intro
+              // that began while the deferred module was downloading.
+              const animation = engine.querySelector<HTMLElement>('[data-brand-animation]');
               engine.dispatchEvent(
-                new CustomEvent('engine:mode', { detail: engine.dataset.state }),
+                new CustomEvent('engine:progress', {
+                  detail: {
+                    formation: Number(animation?.dataset.brandFormation ?? 1),
+                    light: Number(animation?.dataset.brandProgressValue ?? 1),
+                  },
+                }),
               );
             } catch {
               engine.dataset.fallback = 'unavailable';
@@ -127,6 +136,7 @@ function initialize() {
         });
     }
   }
+  cleanups.push(initBrandAnimations());
   if (getMotion() === 'auto') {
     const splits: SplitText[] = [];
     // Keep off-screen text untouched until it is needed. One observer replaces
@@ -150,14 +160,22 @@ function initialize() {
       revealObserver.observe(element);
     };
     const context = gsap.context(() => {
-      gsap.from('.brand .mark-piece', {
-        x: (i) => (i ? -5 : 5),
-        y: (i) => (i ? -8 : 8),
-        opacity: 0.3,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: motion.ease,
-      });
+      const navigationMark = document.querySelector<HTMLElement>('.brand');
+      const shade = navigationMark?.querySelector('[data-ribbon-shade]');
+      if (navigationMark && shade) {
+        const glint = () =>
+          gsap.fromTo(
+            shade,
+            { opacity: 0.15 },
+            { opacity: 1, duration: 0.45, ease: 'power2.out', overwrite: true },
+          );
+        navigationMark.addEventListener('pointerenter', glint, { signal });
+        navigationMark.addEventListener('focus', glint, { signal });
+        cleanups.push(() => {
+          gsap.killTweensOf(shade);
+          gsap.set(shade, { clearProps: 'opacity' });
+        });
+      }
       const heroArt = document.querySelector('.hero-art');
       if (heroArt) gsap.from(heroArt, { opacity: 0.45, duration: 1.1, ease: 'power2.out' });
       const underline = document.querySelector('.hero-emphasis svg path');
@@ -266,7 +284,7 @@ function initialize() {
             duration: 0.5,
           });
           gsap.from(element.querySelector('.method-number'), {
-            color: '#f1814b',
+            color: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
             duration: 1,
           });
         });

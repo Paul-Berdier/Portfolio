@@ -254,8 +254,8 @@ const key = randomUUID();
     min-width: 0;
     color: var(--ink);
     background: var(--surface);
-    border: 1px solid #41423b;
-    border-radius: 5px;
+    border: 1px solid var(--border-control);
+    border-radius: 8px;
     padding: 0.95rem 1rem;
     font: inherit;
     font-size: 0.88rem;
@@ -265,7 +265,7 @@ const key = randomUUID();
   }
   input::placeholder,
   textarea::placeholder {
-    color: #92968c;
+    color: var(--muted);
     opacity: 1;
   }
   textarea {
@@ -279,12 +279,12 @@ const key = randomUUID();
   input:focus-visible,
   textarea:focus-visible,
   select:focus-visible {
-    border-color: var(--accent);
-    outline: 2px solid var(--accent);
+    border-color: var(--focus);
+    outline: 2px solid var(--focus);
     outline-offset: 3px;
   }
   [aria-invalid='true'] {
-    border-color: #f7a58e !important;
+    border-color: var(--error) !important;
   }
   fieldset:disabled input,
   fieldset:disabled textarea,
@@ -302,13 +302,13 @@ const key = randomUUID();
     line-height: 1.6;
   }
   .field-error {
-    color: #ffc4b3;
+    color: var(--error);
     font-size: 0.78rem;
     margin: 0.6rem 0 0;
   }
   .form-divider {
     height: 1px;
-    background: #36372f;
+    background: var(--line);
     margin: 2.5rem 0;
   }
   .form-submit {
@@ -330,13 +330,14 @@ const key = randomUUID();
     line-height: 1.6;
   }
   .form-status[data-state='error'] {
-    color: #ffc4b3;
+    color: var(--error);
   }
   .form-status[data-state='success'] {
-    color: #c5db9d;
+    color: var(--success);
     padding: 1.25rem;
-    border: 1px solid #607644;
-    border-radius: 5px;
+    border: 1px solid var(--success-line);
+    border-radius: 8px;
+    background: var(--success-soft);
   }
   .privacy-note {
     font-size: 0.72rem;

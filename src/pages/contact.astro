@@ -40,10 +40,14 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
     <div class="contact-columns">
       <aside class="contact-aside">
         <div class="contact-mark" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
+          <svg viewBox="0 0 90 45" fill="none">
+            <path
+              d="M3 35C26 43 20 3 43 9S61 43 87 8"
+              stroke="var(--accent)"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
         </div>
         <h2>
           Votre contexte.
@@ -131,7 +135,7 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
     display: grid;
     grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
     gap: clamp(2rem, 7vw, 8rem);
-    border-top: 1px solid #3b3c34;
+    border-top: 1px solid var(--line);
     padding-top: 3rem;
   }
   .contact-aside h2 {
@@ -170,22 +174,12 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
     margin-top: 1.2rem;
   }
   .contact-mark {
-    display: flex;
-    align-items: end;
-    gap: 5px;
-    height: 38px;
+    width: 90px;
+    height: 45px;
   }
-  .contact-mark span {
-    width: 12px;
-    height: 38px;
-    background: var(--accent);
-    transform: skew(-20deg);
-  }
-  .contact-mark span:nth-child(2) {
-    height: 23px;
-  }
-  .contact-mark span:nth-child(3) {
-    height: 23px;
+  .contact-mark svg {
+    width: 100%;
+    height: 100%;
   }
   .contact-main {
     min-width: 0;
@@ -194,8 +188,8 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
     display: flex;
     gap: 0.9rem;
     padding: 1.2rem;
-    background: #23261d;
-    border: 1px solid #414a32;
+    background: var(--warning-soft);
+    border: 1px solid var(--warning-line);
     border-radius: 5px;
     margin-bottom: 2.5rem;
   }
@@ -203,7 +197,7 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
     display: block;
     font-size: 0.86rem;
     font-weight: 500;
-    color: #d1dfb4;
+    color: var(--warning);
   }
   .contact-notice p {
     margin: 0.45rem 0 0;
@@ -215,7 +209,7 @@ if (!config.enabled) Astro.response.headers.set('X-Robots-Tag', 'noindex, nofoll
     margin-top: 0.35rem;
     width: 6px;
     height: 6px;
-    background: #c5db9d;
+    background: var(--warning);
     border-radius: 50%;
     flex: none;
   }

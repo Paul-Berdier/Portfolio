@@ -1,3 +1,4 @@
+import { tagline } from '../brand/palette.mjs';
 const optionalUrl = (value: string | undefined) => {
   if (!value) return undefined;
   try {
@@ -10,6 +11,7 @@ const optionalUrl = (value: string | undefined) => {
 
 export const brand = {
   name: import.meta.env.PUBLIC_BRAND_NAME || 'MorphAI',
+  tagline,
   owner: 'Paul Berdier',
   location: 'Toulouse · France à distance',
   description:

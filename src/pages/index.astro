@@ -23,22 +23,18 @@ const steps = [
         <span class="status-dot"></span>Développeur indépendant · Toulouse
       </p>
       <h1 id="hero-title">
-        Vos idées.
+        Vos idées
         <br />
-        En{' '}
         <span class="hero-emphasis">
-          mouvement
+          prennent forme.
           <svg viewBox="0 0 500 18" fill="none" aria-hidden="true">
-            <path d="M2 13C160 1 310 1 498 8" stroke="currentColor" stroke-width="2" />
+            <path d="M2 13C111 1 218 2 285 9S425 16 498 5" stroke="currentColor" stroke-width="2" />
           </svg>
         </span>
-        <span class="accent-period">.</span>
       </h1>
       <p class="hero-description">
-        Je transforme vos besoins en outils qui font avancer votre activité.{' '}
-        <strong>Web, automatisation, data & IA.</strong>
-        <br />
-        Du premier échange à la mise en ligne.
+        <strong>Sites, applications, automatisation, data et intelligence artificielle.</strong> Je
+        conçois les outils adaptés à votre activité.
       </p>
       <div class="hero-actions">
         <a class="button button-primary" href="/contact">
@@ -54,7 +50,7 @@ const steps = [
         <span class="signature-line"></span>
         <p>
           {brand.owner}
-          <span>La précision du code. La liberté du sur-mesure.</span>
+          <span>Des idées aux outils. Un seul interlocuteur.</span>
         </p>
       </div>
     </div>
@@ -254,13 +250,21 @@ const steps = [
   </section>
   <section class="about-section container">
     <div class="about-graphic" aria-hidden="true">
-      <span class="about-small">L’INDÉPENDANCE COMME MÉTHODE</span>
-      <div class="about-monogram">
-        <span>P</span>
-        <span>B</span>
-        <i>↗</i>
-      </div>
-      <span class="about-coordinate">43.6047° N / TOULOUSE</span>
+      <span class="about-small">UNE PERSONNE. UN FIL CONDUCTEUR.</span>
+      <svg class="about-flow" viewBox="0 0 520 350" fill="none">
+        <path
+          d="M-24 283C108 354 122 67 272 94S419 318 551 183"
+          stroke="var(--accent-solid)"
+          stroke-width="34"
+        />
+        <path
+          d="M-24 273C108 344 122 57 272 84S419 308 551 173"
+          stroke="var(--accent-hover)"
+          stroke-width="1.5"
+        />
+      </svg>
+      <p class="about-name">{brand.owner}</p>
+      <span class="about-coordinate">{brand.location}</span>
     </div>
     <div class="about-copy">
       <p class="section-label">04 / Derrière les outils</p>
@@ -304,7 +308,7 @@ const steps = [
     margin-bottom: 32px;
   }
   .hero h1 {
-    font-size: clamp(61px, 6.9vw, 106px);
+    font-size: clamp(52px, 6vw, 91px);
     line-height: 1.045;
     letter-spacing: -0.064em;
     white-space: nowrap;
@@ -322,14 +326,11 @@ const steps = [
     overflow: visible;
     opacity: 0.7;
   }
-  .accent-period {
-    color: var(--accent);
-  }
   .hero-description {
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.9;
     color: var(--muted);
-    max-width: 360px;
+    max-width: 395px;
     margin-top: 36px;
   }
   .hero-description strong {
@@ -377,7 +378,7 @@ const steps = [
     display: block;
     font-size: 9px;
     margin-top: 3px;
-    color: #82877b;
+    color: var(--muted);
   }
   .hero-art {
     min-width: 0;
@@ -391,7 +392,7 @@ const steps = [
     justify-content: space-between;
     margin-top: 55px;
     padding-bottom: 27px;
-    color: #878c80;
+    color: var(--muted);
     font-size: 7px;
     letter-spacing: 0.13em;
   }
@@ -407,7 +408,7 @@ const steps = [
   }
   .expertise-ribbon {
     border-block: 1px solid var(--line);
-    background: #151613;
+    background: var(--surface-deep);
   }
   .expertise-ribbon > .container {
     display: flex;
@@ -417,7 +418,7 @@ const steps = [
     padding-block: 25px;
     font: 400 clamp(15px, 1.65vw, 24px)/1 var(--display);
     letter-spacing: -0.035em;
-    color: #b8baae;
+    color: var(--muted);
   }
   .expertise-ribbon i {
     font-style: normal;
@@ -431,17 +432,17 @@ const steps = [
     margin-bottom: 26px;
   }
   .muted-heading {
-    color: #797e72;
+    color: var(--muted);
   }
   .section-intro {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--muted);
     line-height: 1.9;
     max-width: 290px;
     padding-bottom: 5px;
   }
   .service-list {
-    border-top: 1px solid #ffffff35;
+    border-top: 1px solid var(--border-control);
   }
   .service-row {
     display: grid;
@@ -458,12 +459,13 @@ const steps = [
     content: '';
     position: absolute;
     inset: 0 -20px;
-    background: #ffffff03;
+    background: var(--surface-hover);
     opacity: 0;
     transition: opacity 0.3s;
     z-index: -1;
   }
-  .service-row:hover:before {
+  .service-row:hover:before,
+  .service-row:focus-visible:before {
     opacity: 1;
   }
   .service-number {
@@ -476,7 +478,7 @@ const steps = [
     gap: 38px;
   }
   .service-number span {
-    color: #666e60;
+    color: var(--muted);
     font-size: 20px;
   }
   .service-copy h3 {
@@ -484,12 +486,13 @@ const steps = [
     margin-bottom: 14px;
     transition: color 0.3s;
   }
-  .service-row:hover h3 {
+  .service-row:hover h3,
+  .service-row:focus-visible h3 {
     color: var(--accent);
   }
   .service-copy p {
     max-width: 460px;
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     line-height: 1.9;
   }
@@ -497,7 +500,7 @@ const steps = [
     display: flex;
     gap: 15px;
     margin-top: 20px;
-    color: #8f9588;
+    color: var(--muted);
     font-size: 8px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -508,7 +511,8 @@ const steps = [
     opacity: 0.75;
     transition: opacity 0.3s;
   }
-  .service-row:hover .service-visual {
+  .service-row:hover .service-visual,
+  .service-row:focus-visible .service-visual {
     opacity: 1;
   }
   .service-link-icon {
@@ -522,12 +526,13 @@ const steps = [
       background 0.3s,
       color 0.3s;
   }
-  .service-row:hover .service-link-icon {
+  .service-row:hover .service-link-icon,
+  .service-row:focus-visible .service-link-icon {
     background: var(--accent);
     color: var(--bg);
   }
   .transformation-section {
-    background: #1b1d18;
+    background: var(--surface);
     border-block: 1px solid var(--line);
     padding-block: 96px;
   }
@@ -564,7 +569,7 @@ const steps = [
     top: 33px;
     bottom: 0;
     width: 1px;
-    background: #f1814b30;
+    background: var(--accent-soft);
   }
   .story-step:last-child {
     padding-bottom: 0;
@@ -578,7 +583,7 @@ const steps = [
     place-items: center;
     width: 33px;
     height: 33px;
-    border: 1px solid #f1814b55;
+    border: 1px solid var(--accent-line);
     border-radius: 50%;
     color: var(--accent);
   }
@@ -605,23 +610,26 @@ const steps = [
   .story-fragments i {
     width: 22px;
     height: 18px;
-    border: 1px solid #f1814b90;
+    border: 1px solid var(--accent);
+    border-radius: 80% 12% 70% 10%;
     transform: rotate(-17deg) translateY(5px);
   }
   .story-fragments i:nth-child(2n) {
     transform: rotate(19deg) translateY(-4px);
-    background: #f1814b30;
+    background: var(--accent-soft);
   }
   .story-system i {
     width: 29px;
     height: 24px;
     border: 1px solid var(--accent);
-    background: #f1814b20;
+    background: var(--accent-soft);
+    border-radius: 8px 3px 8px 3px;
   }
   .story-system span {
     width: 28px;
-    height: 1px;
-    background: var(--accent);
+    height: 13px;
+    border-top: 1px solid var(--accent);
+    border-radius: 50%;
   }
   .projects-section {
     padding-block: 114px;
@@ -639,14 +647,15 @@ const steps = [
     aspect-ratio: 1.45;
     position: relative;
     overflow: hidden;
-    background: #1b211d;
-    border: 1px solid #ffffff12;
+    background: var(--surface);
+    border: 1px solid var(--line);
     padding: 36px;
     display: grid;
     align-items: center;
+    border-radius: 14px;
   }
   .home-project-2 .project-image {
-    background: #211b17;
+    background: var(--surface-raised);
   }
   .project-open {
     position: absolute;
@@ -656,13 +665,14 @@ const steps = [
     height: 36px;
     display: grid;
     place-items: center;
-    border: 1px solid #ffffff20;
+    border: 1px solid var(--line);
     border-radius: 50%;
     transition:
       color 0.3s,
       background 0.3s;
   }
-  .home-project:hover .project-open {
+  .home-project:hover .project-open,
+  .home-project:focus-visible .project-open {
     background: var(--accent);
     color: var(--bg);
   }
@@ -685,7 +695,7 @@ const steps = [
     color: var(--muted);
   }
   .home-project > p {
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.8;
     color: var(--muted);
     max-width: 400px;
@@ -693,7 +703,7 @@ const steps = [
   }
   .project-honesty {
     font-size: 10px;
-    color: #969a8f;
+    color: var(--muted);
     margin-top: 38px;
     max-width: 680px;
     line-height: 1.9;
@@ -719,7 +729,7 @@ const steps = [
     font-family: var(--display);
     font-size: 43px;
     letter-spacing: -0.07em;
-    color: #666d60;
+    color: var(--muted);
   }
   .method-track {
     height: 32px;
@@ -731,7 +741,7 @@ const steps = [
   .method-track:before {
     content: '';
     height: 1px;
-    background: #ffffff25;
+    background: var(--line);
     position: absolute;
     left: 0;
     right: -25px;
@@ -771,21 +781,9 @@ const steps = [
     align-items: center;
     justify-content: center;
     border: 1px solid var(--line);
-    background:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 39px,
-        #ffffff04 39px,
-        #ffffff04 40px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 39px,
-        #ffffff04 39px,
-        #ffffff04 40px
-      );
+    background: var(--surface);
+    overflow: hidden;
+    border-radius: 14px;
   }
   .about-small,
   .about-coordinate {
@@ -793,7 +791,7 @@ const steps = [
     left: 20px;
     font-size: 7px;
     letter-spacing: 0.14em;
-    color: #999e90;
+    color: var(--muted);
   }
   .about-small {
     top: 20px;
@@ -801,27 +799,22 @@ const steps = [
   .about-coordinate {
     bottom: 20px;
   }
-  .about-monogram {
+  .about-name {
     position: relative;
-    font: 400 165px/1 var(--display);
-    letter-spacing: -0.11em;
-    display: flex;
-    color: #c4c7b4;
+    z-index: 1;
+    font: 400 clamp(55px, 6vw, 86px)/0.98 var(--display);
+    max-width: 4.8em;
+    letter-spacing: -0.07em;
+    color: var(--ink);
   }
-  .about-monogram > span:first-child {
-    transform: translateY(-18px);
-  }
-  .about-monogram > span:nth-child(2) {
-    color: var(--accent);
-    transform: translate(-8px, 18px);
-  }
-  .about-monogram i {
-    font-style: normal;
-    font-size: 46px;
+  .about-flow {
     position: absolute;
-    top: 1px;
-    right: -29px;
-    color: var(--accent);
+    width: 115%;
+    max-width: none;
+    left: -8%;
+    top: 0;
+    height: 100%;
+    opacity: 0.45;
   }
   .about-copy h2 {
     font-size: clamp(43px, 5vw, 69px);
@@ -871,7 +864,7 @@ const steps = [
   }
   @media (max-width: 1150px) {
     .hero h1 {
-      font-size: 6.4vw;
+      font-size: 6vw;
     }
     .hero-actions {
       gap: 16px;
@@ -882,7 +875,7 @@ const steps = [
       margin-top: 23px;
     }
     .hero-description {
-      font-size: 12px;
+      font-size: 14px;
       max-width: 320px;
     }
     .service-row {
@@ -922,7 +915,7 @@ const steps = [
       letter-spacing: -0.065em;
     }
     .hero-description {
-      font-size: 12px;
+      font-size: 14px;
       max-width: 340px;
       margin-top: 30px;
     }
@@ -934,12 +927,12 @@ const steps = [
       margin-top: 24px;
     }
     .hero-actions .button {
-      font-size: 10px;
+      font-size: 11px;
       gap: 14px;
       padding-inline: 15px;
     }
     .hero-secondary {
-      font-size: 9px;
+      font-size: 10px;
       gap: 8px;
     }
     .hero-signature {
@@ -973,7 +966,7 @@ const steps = [
       margin-bottom: 20px;
     }
     .section-intro {
-      font-size: 12px;
+      font-size: 13px;
       max-width: 350px;
     }
     .service-row {
@@ -988,7 +981,7 @@ const steps = [
       margin-bottom: 12px;
     }
     .service-copy p {
-      font-size: 10px;
+      font-size: 12px;
     }
     .service-tags {
       font-size: 7px;
@@ -1005,7 +998,16 @@ const steps = [
       font-size: 16px;
     }
     .service-visual {
-      display: none;
+      display: block;
+      grid-column: 2;
+      max-width: 170px;
+      height: auto;
+      margin-top: 7px;
+      opacity: 1;
+    }
+    .service-link-icon {
+      grid-column: 3;
+      grid-row: 1;
     }
     .service-link-icon {
       width: 27px;
@@ -1123,8 +1125,8 @@ const steps = [
     .about-copy > p:not(.section-label) {
       font-size: 12px;
     }
-    .about-monogram {
-      font-size: 145px;
+    .about-name {
+      font-size: 70px;
     }
   }
 </style>

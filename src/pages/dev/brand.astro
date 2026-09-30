@@ -1,0 +1,331 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Logo from '../../components/Logo.astro';
+import Mark from '../../components/Mark.astro';
+import BrandAnimation from '../../components/BrandAnimation.astro';
+import { palette } from '../../brand/palette.mjs';
+import { brand } from '../../config/brand';
+export const prerender = true;
+---
+
+<Layout
+  title="Atelier de marque"
+  description="Contrôle des formes, variantes et animations de la nouvelle identité MorphAI."
+  noindex
+>
+  <div class="container brand-lab">
+    <header>
+      <p class="eyebrow">Métamorphose · Atelier de marque</p>
+      <h1>
+        Une matière.
+        <br />
+        <em>Une identité.</em>
+      </h1>
+      <p class="intro">
+        Le M en ruban, de l’impulsion à la forme finale. Cette page de contrôle est hors navigation
+        commerciale et non indexée.
+      </p>
+    </header>
+    <section aria-labelledby="presentation-title">
+      <div class="section-label">
+        <h2 id="presentation-title">01 / La signature en mouvement</h2>
+        <span>4,8 secondes · tracés réels</span>
+      </div>
+      <div class="presentation">
+        <BrandAnimation />
+      </div>
+    </section>
+    <section aria-labelledby="hero-preview">
+      <div class="section-label">
+        <h2 id="hero-preview">02 / Le rythme du web</h2>
+        <span>2,8 secondes · sans attente pour la page</span>
+      </div>
+      <div class="web-preview">
+        <BrandAnimation variant="hero" />
+      </div>
+    </section>
+    <section aria-labelledby="variants">
+      <h2 id="variants">03 / Une même silhouette</h2>
+      <div class="variants">
+        <figure class="identity identity-color">
+          <Logo vertical signature />
+          <figcaption>Couleur · fond sombre</figcaption>
+        </figure>
+        <figure class="identity identity-light">
+          <Logo vertical signature variant="dark" />
+          <figcaption>Sombre plein · fond clair</figcaption>
+        </figure>
+        <figure class="identity identity-mono">
+          <Logo vertical signature variant="white" />
+          <figcaption>Blanc plein · aucun dégradé</figcaption>
+        </figure>
+        <figure class="identity identity-horizontal">
+          <Logo />
+          <figcaption>Navigation · sans signature</figcaption>
+        </figure>
+        <figure class="identity identity-light">
+          <Logo vertical signature onLight />
+          <figcaption>Couleur · fond clair</figcaption>
+        </figure>
+        <figure class="identity identity-horizontal">
+          <Mark small={false} />
+          <figcaption>Symbole seul · transparence</figcaption>
+        </figure>
+      </div>
+      <div class="small-sizes">
+        {[16, 24, 32, 48].map((size) => (
+          <div>
+            <span style={`width:${size}px;display:block`}>
+              <Mark />
+            </span>
+            <small>{size} px</small>
+          </div>
+        ))}
+      </div>
+    </section>
+    <section aria-labelledby="motion-previews">
+      <h2 id="motion-previews">04 / Lisible, avec ou sans mouvement</h2>
+      <div class="motion-previews">
+        <figure>
+          <Logo vertical signature />
+          <figcaption>Réduit · silhouette finale immédiate</figcaption>
+        </figure>
+        <figure>
+          <Logo vertical signature />
+          <figcaption>Désactivé · aucun mouvement décoratif</figcaption>
+        </figure>
+      </div>
+      <p>
+        Le réglage « Animations » du pied de page s’applique aussi à cet atelier. Le mode
+        automatique respecte votre préférence système.
+      </p>
+    </section>
+    <section aria-labelledby="palette">
+      <h2 id="palette">05 / Matière & lumière</h2>
+      <div class="palette">
+        {Object.entries(palette).map(([name, color]) => (
+          <div>
+            <span style={`background:${color}`} />
+            <strong>{name}</strong>
+            <code>{color}</code>
+          </div>
+        ))}
+      </div>
+    </section>
+    <section class="downloads">
+      <h2>Des tracés réutilisables</h2>
+      <p>
+        Une source de courbes commune au SVG, à l’animation et au volume. Les contours
+        typographiques des exports proviennent de Space Grotesk, déjà utilisée sur le site.
+      </p>
+      <div>
+        {[
+          'symbol-color.svg',
+          'symbol-white.svg',
+          'symbol-dark.svg',
+          'logo-horizontal-dark.svg',
+          'logo-horizontal-light.svg',
+          'logo-vertical-dark.svg',
+          'logo-vertical-light.svg',
+        ].map((file) => (
+          <a class="text-link" href={`/brand/${file}`} download>
+            {file} ↓
+          </a>
+        ))}
+      </div>
+      <p class="note">
+        {brand.name} reste le nom configurable du projet. Cette reconstruction graphique ne
+        constitue pas une vérification juridique de disponibilité.
+      </p>
+    </section>
+  </div>
+</Layout>
+<style>
+  .brand-lab {
+    padding-top: 90px;
+    padding-bottom: 80px;
+  }
+  .brand-lab header {
+    max-width: 780px;
+    margin-bottom: 90px;
+  }
+  .brand-lab h1 {
+    font-size: clamp(50px, 6.8vw, 100px);
+    line-height: 1.03;
+    letter-spacing: -0.06em;
+    margin: 30px 0;
+  }
+  .intro {
+    max-width: 600px;
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+  section {
+    margin-top: 90px;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin: 0 0 28px;
+  }
+  .section-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .section-label > span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .presentation {
+    max-width: 960px;
+    margin: auto;
+    padding: 25px 50px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .web-preview {
+    max-width: 620px;
+    margin: auto;
+  }
+  .variants {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  figure {
+    margin: 0;
+  }
+  .identity {
+    padding: 50px 35px;
+    background: var(--bg);
+    display: grid;
+    place-items: center;
+    gap: 40px;
+    font-size: clamp(30px, 4vw, 56px);
+  }
+  .identity-light {
+    background: var(--brand-ivory);
+    color: var(--brand-navy);
+  }
+  .identity-horizontal {
+    background: var(--surface);
+  }
+  figcaption {
+    font-size: 12px;
+    line-height: 1.6;
+    opacity: 0.85;
+    text-align: center;
+  }
+  .identity-light :global(.logo) {
+    --ink: var(--brand-navy);
+  }
+  .small-sizes {
+    display: flex;
+    align-items: center;
+    gap: 55px;
+    padding: 35px;
+  }
+  .small-sizes div {
+    display: grid;
+    gap: 12px;
+    text-align: center;
+  }
+  .small-sizes :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+  .small-sizes small {
+    color: var(--muted);
+  }
+  .motion-previews {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+  .motion-previews figure {
+    border-top: 1px solid var(--line);
+    padding: 40px;
+    font-size: 42px;
+    display: grid;
+    place-items: center;
+    gap: 30px;
+  }
+  .motion-previews + p,
+  .downloads p {
+    color: var(--muted);
+    max-width: 800px;
+    line-height: 1.8;
+  }
+  .palette {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 20px;
+  }
+  .palette > div {
+    display: grid;
+    gap: 8px;
+    font-size: 11px;
+    min-width: 0;
+  }
+  .palette span {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+  }
+  .palette code {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .downloads > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 30px 0;
+    font-size: 12px;
+  }
+  .note {
+    font-size: 12px;
+  }
+  @media (max-width: 760px) {
+    .brand-lab {
+      padding-top: 55px;
+    }
+    .brand-lab header {
+      margin-bottom: 55px;
+    }
+    section {
+      margin-top: 60px;
+    }
+    .presentation {
+      padding: 10px;
+    }
+    .variants,
+    .motion-previews {
+      grid-template-columns: 1fr;
+    }
+    .identity {
+      padding: 40px 20px;
+    }
+    .palette {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .small-sizes {
+      gap: 35px;
+      padding: 30px 10px;
+    }
+    .section-label > span {
+      margin-bottom: 20px;
+    }
+    .motion-previews figure {
+      font-size: 34px;
+    }
+  }
+</style>

@@ -58,14 +58,7 @@ const names = { fr: 'Français', en: 'English', es: 'Español' };
 </style>
 
 <script>
-  // One module-scoped listener survives Astro navigations; no listener per logo/page instance.
-  function syncLanguageHash() {
-    document.querySelectorAll<HTMLAnchorElement>('[data-language-switcher] a').forEach((link) => {
-      const url = new URL(link.href);
-      url.search = location.search;
-      url.hash = location.hash;
-      link.href = url.href;
-    });
-  }
-  window.addEventListener('hashchange', syncLanguageHash);
+  import { syncLanguageLinks } from '../scripts/language-links';
+  // One module-scoped listener survives Astro navigations.
+  window.addEventListener('hashchange', syncLanguageLinks);
 </script>

@@ -27,25 +27,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Archive tracked sources for review
-        run: git archive --format=zip --output=/tmp/morphai-source.zip HEAD
-      - uses: actions/upload-artifact@v4
-        with:
-          name: morphai-source-${{ github.sha }}
-          path: /tmp/morphai-source.zip
-          retention-days: 3
       - uses: actions/setup-node@v4
         with:
           node-version: '24.19.0'
           cache: npm
       - run: npm ci
-      - name: Export locked formatting tools for offline review
-        run: tar -czf /tmp/morphai-format-tools.tgz -C node_modules prettier prettier-plugin-astro @prettier/parse-srcset sass-formatter suf-log s.color
-      - uses: actions/upload-artifact@v4
-        with:
-          name: morphai-format-tools-${{ github.sha }}
-          path: /tmp/morphai-format-tools.tgz
-          retention-days: 1
       - name: Typecheck
         run: npm run check
       - name: Lint

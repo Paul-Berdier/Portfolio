@@ -8,6 +8,7 @@ import { initContact } from './contact';
 import { initBrandAnimations } from './brand-animation';
 import { getEngineModes } from '../config/engine';
 import { localeFromPath } from '../i18n';
+import { syncLanguageLinks } from './language-links';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 let disposePage: (() => void) | undefined;
@@ -36,12 +37,7 @@ function initialize() {
   const { signal } = controller;
   const locale = localeFromPath(location.pathname);
   const engineModes = getEngineModes(locale);
-  document.querySelectorAll<HTMLAnchorElement>('[data-language-switcher] a').forEach((link) => {
-    const destination = new URL(link.href);
-    destination.search = location.search;
-    destination.hash = location.hash;
-    link.href = destination.href;
-  });
+  syncLanguageLinks();
   let alive = true;
   const preference = document.querySelector<HTMLSelectElement>('#motion-preference');
   if (preference) {
@@ -96,7 +92,7 @@ function initialize() {
     });
   }
   cleanups.push(initLab(), initProjects(), initContact());
-  const engine = document.querySelector<HTMLElement>('[data-engine]');
+  const engine = document.querySelector<HTMLElement>('.morph-engine[data-engine]');
   if (engine) {
     engine.querySelectorAll<HTMLButtonElement>('[data-engine-mode]').forEach((button) => {
       button.addEventListener(
@@ -124,6 +120,13 @@ function initialize() {
           if (alive && getMotion() === 'auto') {
             try {
               cleanups.push(createEngine(engine));
+              // Three.js adds its own data-engine diagnostic to the canvas.
+              // Preserve it under data-renderer; data-engine identifies our host only.
+              const canvas = engine.querySelector<HTMLCanvasElement>('canvas[data-engine]');
+              if (canvas) {
+                canvas.dataset.renderer = canvas.dataset.engine || 'three.js';
+                canvas.removeAttribute('data-engine');
+              }
               // createEngine reads the current mode; avoid interrupting an intro
               // that began while the deferred module was downloading.
               const animation = engine.querySelector<HTMLElement>('[data-brand-animation]');

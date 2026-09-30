@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { brand } from '../config/brand';
+export const prerender = true;
+---
+
+<Layout
+  title="Mentions légales"
+  description="Informations sur l’édition du portfolio personnel de Paul Berdier et état de validation des mentions légales."
+>
+  <div class="container page-shell legal-page">
+    <header class="page-heading">
+      <p class="eyebrow">Informations / Édition</p>
+      <h1>Mentions légales.</h1>
+      <p class="lede">Un portfolio personnel. Des informations explicites.</p>
+    </header>
+    <div class="legal-notice">
+      <strong>Document préparatoire — informations à valider.</strong>
+      <p>
+        Ce site est livré en préproduction. L’identité professionnelle complète, les coordonnées
+        légales et l’hébergement effectif doivent être validés avant l’ouverture de la collecte au
+        public.
+      </p>
+    </div>
+    <div class="prose legal-copy">
+      <h2>Édition du site</h2>
+      <p>
+        Le portfolio présente le travail et les domaines d’intervention de {brand.owner}. «{' '}
+        {brand.name} » est un nom de travail, dont la disponibilité juridique n’a pas été validée.
+        Ce site ne déclare aucune immatriculation ni marque déposée.
+      </p>
+      <p>
+        Zone d’intervention annoncée : {brand.location}. Cette indication n’est pas une adresse
+        professionnelle.
+      </p>
+      {brand.email ? (
+        <p>
+          Contact : <a href={`mailto:${brand.email}`}>{brand.email}</a>.
+        </p>
+      ) : (
+        <p>
+          Les coordonnées de contact publiques restent à configurer et à valider par {brand.owner}.
+        </p>
+      )}
+      <h2>Informations avant mise en production</h2>
+      <p>
+        Le statut de l’éditeur, l’adresse de publication autorisée, les coordonnées professionnelles
+        et, selon le statut retenu, les informations d’immatriculation doivent être renseignés.
+        Aucun numéro ou statut n’est présumé dans cette version.
+      </p>
+      <h2>Hébergement</h2>
+      <p>
+        Railway est l’hébergement envisagé. Aucun hébergement effectif n’est attesté par cette page.
+        Les informations du prestataire contractuel, la localisation des services retenus et les
+        coordonnées requises seront renseignées à partir du déploiement réellement autorisé.
+      </p>
+      <h2>Contenus et réalisations</h2>
+      <p>
+        Les projets publiés sont identifiés comme démonstrateurs ou projets personnels. Leurs
+        données sont synthétiques, leurs limites sont documentées et aucun résultat commercial n’est
+        attribué à un client fictif.
+      </p>
+      <h2>Données personnelles</h2>
+      <p>
+        Le fonctionnement prévu du contact, les données utilisées et les droits sont détaillés sur
+        la page <a href="/confidentialite">Confidentialité</a>. La collecte reste désactivée tant
+        que la configuration requise n’est pas validée.
+      </p>
+    </div>
+  </div>
+</Layout>
+<style>
+  .legal-page {
+    max-width: 1000px;
+  }
+  .legal-notice {
+    border-left: 2px solid var(--accent);
+    background: var(--surface);
+    padding: 22px 28px;
+    margin-bottom: 55px;
+  }
+  .legal-notice strong {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .legal-notice p {
+    margin: 12px 0 0;
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 14px;
+  }
+  .legal-copy {
+    max-width: 740px;
+  }
+  .legal-copy h2 {
+    font-size: 26px;
+    letter-spacing: -0.035em;
+    margin: 40px 0 16px;
+  }
+  .legal-copy p {
+    color: var(--muted);
+    line-height: 1.9;
+    font-size: 15px;
+  }
+  .legal-copy a {
+    color: var(--ink);
+    text-underline-offset: 4px;
+  }
+</style>

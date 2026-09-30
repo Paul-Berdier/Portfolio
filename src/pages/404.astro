@@ -1,0 +1,105 @@
+---
+import Layout from '../layouts/Layout.astro';
+export const prerender = true;
+---
+
+<Layout
+  title="Page introuvable"
+  description="Cette page n’existe pas ou a changé de chemin. Retrouvez les expertises et réalisations de Paul Berdier."
+>
+  <section class="container page-shell missing-page">
+    <div class="missing-code" aria-hidden="true" data-service-scene="404">
+      <span class="scene-part">4</span>
+      <span class="zero scene-part">↗</span>
+      <span class="scene-part">4</span>
+    </div>
+    <div class="missing-copy">
+      <p class="eyebrow">Cette piste s’arrête ici</p>
+      <h1>
+        Retrouvons
+        <br />
+        <em>le bon chemin.</em>
+      </h1>
+      <p>
+        La page demandée n’existe pas ou a changé d’adresse. Le reste de l’exploration vous attend.
+      </p>
+      <div>
+        <a href="/" class="button button-primary">
+          Retour à l’accueil <span aria-hidden="true">↗</span>
+        </a>
+        <a href="/realisations" class="text-link">
+          Voir les réalisations <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+<style>
+  .missing-page {
+    min-height: 75vh;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 7%;
+    align-items: center;
+  }
+  .missing-code {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(80px, 12vw, 190px);
+    line-height: 1;
+    letter-spacing: -0.09em;
+    color: #858d76;
+    font-weight: 500;
+  }
+  .missing-code .zero {
+    border: 1px solid #858d7655;
+    border-radius: 50%;
+    width: 0.85em;
+    height: 0.85em;
+    display: grid;
+    place-items: center;
+    color: var(--accent);
+    font-size: 0.8em;
+    margin: 0 0.06em;
+  }
+  .missing-copy h1 {
+    font-size: clamp(42px, 5.5vw, 78px);
+    line-height: 1.03;
+    letter-spacing: -0.06em;
+    margin: 25px 0;
+  }
+  .missing-copy h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .missing-copy p:not(.eyebrow) {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 430px;
+  }
+  .missing-copy > div {
+    display: flex;
+    gap: 25px;
+    margin-top: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .missing-copy .text-link {
+    font-size: 13px;
+  }
+  @media (max-width: 767px) {
+    .missing-page {
+      grid-template-columns: 1fr;
+      gap: 45px;
+    }
+    .missing-code {
+      font-size: 130px;
+      justify-content: start;
+    }
+    .missing-copy h1 {
+      font-size: 48px;
+    }
+  }
+</style>

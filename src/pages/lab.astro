@@ -1,0 +1,829 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {
+  sampleCsv,
+  sampleData,
+  sampleSummary,
+  sampleDocuments,
+  workflowSteps,
+  formatAmount,
+  dataCategories,
+} from '../content/lab';
+export const prerender = true;
+---
+
+<Layout
+  title="Le lab — Deux expériences à manipuler"
+  description="Transformez un petit CSV et déclenchez un workflow de documents : deux démonstrateurs locaux avec des données synthétiques, sans compte ni transmission."
+>
+  <div class="container page-shell">
+    <header class="page-heading">
+      <p class="eyebrow">Le lab / Expériences ouvertes</p>
+      <h1 data-line>
+        Moins de promesses.
+        <br />
+        <em>À vous de jouer.</em>
+      </h1>
+      <p class="lede">
+        Deux petites expériences pour voir une idée devenir un outil. Modifiez une entrée. Lancez
+        une action. Observez ce qui change.
+      </p>
+      <div class="lab-notes">
+        <span>
+          <i></i>Dans votre navigateur
+        </span>
+        <span>Données synthétiques</span>
+        <span>Aucun compte requis</span>
+      </div>
+    </header>
+    <nav class="lab-jump" aria-label="Choisir une expérience">
+      <a href="#data">
+        <span>01</span> L’atelier data <span aria-hidden="true">↓</span>
+      </a>
+      <a href="#workflow">
+        <span>02</span> Le flux documentaire <span aria-hidden="true">↓</span>
+      </a>
+    </nav>
+    <noscript>
+      <p class="notice">
+        Les jeux de données et leur explication restent lisibles. Activez JavaScript pour modifier
+        les données et exécuter les expériences.
+      </p>
+    </noscript>
+    <section id="data" class="lab-section" data-data-lab>
+      <header class="lab-heading" data-reveal>
+        <p class="eyebrow">01 / Data</p>
+        <h2>
+          Du brut
+          <br />
+          <em>au lisible.</em>
+        </h2>
+        <p>
+          Un petit CSV comporte des variations de casse, un doublon et des entrées invalides. Le
+          traitement harmonise les valeurs, écarte les anomalies et calcule une vue par catégorie.
+        </p>
+      </header>
+      <div class="data-workspace" data-reveal>
+        <form class="source-panel" data-data-form>
+          <div class="panel-header">
+            <span>01 — LA MATIÈRE</span>
+            <span>CSV / UTF-8</span>
+          </div>
+          <label for="lab-csv">Votre jeu de données</label>
+          <textarea
+            id="lab-csv"
+            name="csv"
+            rows="12"
+            spellcheck="false"
+            maxlength="20000"
+            aria-describedby="csv-help"
+            data-csv-input
+          >{sampleCsv}</textarea>
+          <p id="csv-help" class="field-help">
+            Séparateur « ; ». Catégories : web, data, automatisation. Montants positifs, jusqu’à 2
+            décimales. 100 lignes maximum. Utilisez uniquement des données fictives.
+          </p>
+          <div class="source-actions">
+            <button type="submit" class="button button-primary" data-normalize disabled>
+              Transformer <span aria-hidden="true">↗</span>
+            </button>
+            <button type="button" class="reset-button" data-reset-csv disabled>
+              Réinitialiser
+            </button>
+          </div>
+        </form>
+        <div class="result-panel">
+          <div class="panel-header">
+            <span>02 — LA LECTURE</span>
+            <span>CALCUL LOCAL</span>
+          </div>
+          <div class="result-controls">
+            <label for="lab-category">Catégorie</label>
+            <select id="lab-category" data-data-filter disabled>
+              <option value="all">Toutes les catégories</option>
+              {dataCategories.map((category) => (
+                <option value={category}>{category}</option>
+              ))}
+            </select>
+          </div>
+          <div class="data-stats">
+            <div>
+              <strong data-stat-valid>{sampleData.rows.length}</strong>
+              <span>lignes valides</span>
+            </div>
+            <div>
+              <strong data-stat-duplicate>{sampleData.duplicateCount}</strong>
+              <span>doublon</span>
+            </div>
+            <div>
+              <strong data-stat-invalid>{sampleData.invalidCount}</strong>
+              <span>anomalies</span>
+            </div>
+          </div>
+          <div
+            class="lab-chart"
+            data-data-chart
+            role="img"
+            aria-label={`Montants synthétiques : ${sampleSummary.map((item) => `${item.category} : ${formatAmount(item.amount)} euros`).join(', ')}`}
+          >
+            {sampleSummary.map((item) => (
+              <div class="lab-chart-row" data-chart-category={item.category}>
+                <span>{item.category}</span>
+                <div class="lab-chart-track">
+                  <div
+                    class="lab-chart-bar"
+                    data-chart-bar
+                    style={`width:${(item.amount / 2100) * 100}%`}
+                  ></div>
+                </div>
+                <strong data-chart-value>{formatAmount(item.amount)} €</strong>
+              </div>
+            ))}
+          </div>
+          <p class="chart-caption">Montants fictifs agrégés à partir des lignes retenues.</p>
+          <p class="lab-status" role="status" aria-live="polite" data-data-status>
+            Le jeu fourni : 9 lignes, 6 retenues. Modifiez le CSV pour tester les règles.
+          </p>
+          <details class="issues">
+            <summary>Détail des lignes écartées</summary>
+            <ul data-data-issues>
+              {sampleData.issues.map((issue) => (
+                <li>{issue}</li>
+              ))}
+            </ul>
+          </details>
+        </div>
+      </div>
+      <details class="data-table-details">
+        <summary>
+          Voir les lignes retenues <span aria-hidden="true">↗</span>
+        </summary>
+        <div class="table-scroll">
+          <table>
+            <caption>Lignes normalisées, selon le filtre actif</caption>
+            <thead>
+              <tr>
+                <th scope="col">Identifiant</th>
+                <th scope="col">Catégorie</th>
+                <th scope="col">Montant synthétique</th>
+              </tr>
+            </thead>
+            <tbody data-data-rows>
+              {sampleData.rows.map((row) => (
+                <tr>
+                  <td>{row.id}</td>
+                  <td>{row.category}</td>
+                  <td>{formatAmount(row.amount)} €</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
+      <div class="lab-bottom">
+        <p>
+          Les règles sont explicites : catégories harmonisées, première occurrence d’un identifiant
+          conservée, entrées invalides signalées. Aucun fichier n’est envoyé ou enregistré.
+        </p>
+        <a href="/realisations/atelier-data" class="text-link">
+          Lire l’étude de cas <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+    <section id="workflow" class="lab-section workflow-section" data-workflow-lab>
+      <header class="lab-heading" data-reveal>
+        <p class="eyebrow">02 / Automatisation</p>
+        <h2>
+          Une action.
+          <br />
+          <em>Un chemin clair.</em>
+        </h2>
+        <p>
+          Déclenchez une suite d’opérations sur trois objets synthétiques. Le programme vérifie
+          leurs champs, les oriente et prépare un export que vous pouvez télécharger.
+        </p>
+      </header>
+      <div class="workflow-workspace" data-reveal>
+        <div class="panel-header">
+          <span>DOCUMENT FLOW</span>
+          <span>EXÉCUTION LOCALE</span>
+        </div>
+        <ol class="workflow-steps">
+          {workflowSteps.map((step, index) => (
+            <li data-workflow-step>
+              <span class="step-number">0{index + 1}</span>
+              <div>
+                <h3>{step.label}</h3>
+                <p>{step.detail}</p>
+                <span class="step-state" data-step-state>
+                  À lancer
+                </span>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <div class="workflow-options">
+          <label>
+            <input type="checkbox" data-workflow-valid /> Utiliser un jeu entièrement valide
+          </label>
+          <div class="workflow-actions">
+            <button type="button" class="button button-primary" data-run-workflow disabled>
+              Lancer le flux <span aria-hidden="true">↗</span>
+            </button>
+            <button type="button" class="button button-secondary" data-download-workflow disabled>
+              Télécharger le JSON <span aria-hidden="true">↓</span>
+            </button>
+          </div>
+        </div>
+        <p class="lab-status workflow-status" role="status" aria-live="polite" data-workflow-status>
+          Prêt à traiter trois objets synthétiques. Aucun fichier PDF n’est réellement lu.
+        </p>
+        <div class="table-scroll">
+          <table class="workflow-table">
+            <caption>Documents synthétiques et décisions de traitement</caption>
+            <thead>
+              <tr>
+                <th scope="col">Document représenté</th>
+                <th scope="col">Montant</th>
+                <th scope="col">Destination</th>
+              </tr>
+            </thead>
+            <tbody data-workflow-results>
+              {sampleDocuments.map((doc) => (
+                <tr>
+                  <td>
+                    {doc.name}
+                    <small>{doc.reference || 'Référence absente'}</small>
+                  </td>
+                  <td>{formatAmount(doc.amount)} €</td>
+                  <td>En attente</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="lab-bottom">
+        <p>
+          Ce démonstrateur traite des objets JavaScript. Il ne lit pas de PDF, n’envoie pas de
+          document et ne se connecte à aucun logiciel. L’animation rend visible un calcul effectué
+          localement.
+        </p>
+        <a href="/realisations/flux-documents" class="text-link">
+          Lire l’étude de cas <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+    <section class="lab-cta" data-reveal>
+      <p class="eyebrow">Passer à votre cas</p>
+      <h2>
+        Le même principe.
+        <br />
+        <em>Votre propre matière.</em>
+      </h2>
+      <p>Vos données, vos étapes, vos contraintes. Parlons de ce qui mérite d’être simplifié.</p>
+      <a href="/contact" class="button button-primary">
+        Parler de votre projet <span aria-hidden="true">↗</span>
+      </a>
+    </section>
+  </div>
+</Layout>
+<style>
+  h1 em,
+  h2 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .lab-notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 27px;
+    margin-top: 35px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .lab-notes span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lab-notes i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #b9ca9e;
+  }
+  .lab-jump {
+    display: flex;
+    gap: 45px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .lab-jump a {
+    color: var(--ink);
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  .lab-jump a span:first-child {
+    color: var(--accent);
+    font-size: 10px;
+  }
+  .lab-jump a span:last-child {
+    margin-left: 20px;
+  }
+  .lab-section {
+    padding-top: 100px;
+    scroll-margin-top: 100px;
+  }
+  .lab-heading {
+    display: grid;
+    grid-template-columns: 0.65fr 1.15fr 1fr;
+    gap: 5%;
+    align-items: start;
+    margin-bottom: 45px;
+  }
+  .lab-heading h2 {
+    font-size: clamp(38px, 5vw, 66px);
+    letter-spacing: -0.06em;
+    line-height: 1.07;
+  }
+  .lab-heading > p:last-child {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.8;
+    margin: 0;
+  }
+  .data-workspace {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    border: 1px solid var(--line);
+    background: #1a1d18;
+  }
+  .source-panel,
+  .result-panel {
+    padding: 28px;
+    min-width: 0;
+  }
+  .source-panel {
+    border-right: 1px solid var(--line);
+    background: #171a16;
+  }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    color: #bcc5ae;
+    font: 9px monospace;
+    letter-spacing: 0.1em;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #c0cfa221;
+    margin-bottom: 24px;
+  }
+  .source-panel label,
+  .result-controls label {
+    display: block;
+    font-size: 12px;
+    color: #d1d6c9;
+    margin-bottom: 12px;
+  }
+  .source-panel textarea {
+    width: 100%;
+    min-height: 265px;
+    padding: 18px;
+    border: 1px solid #b7cba22b;
+    background: #111510;
+    color: #c9d5b9;
+    border-radius: 0;
+    font: 12px/1.8 monospace;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+  .field-help {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin: 12px 0 22px;
+  }
+  .source-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .reset-button {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    padding: 9px 0;
+    font: inherit;
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .result-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+  }
+  .result-controls label {
+    margin: 0;
+  }
+  .result-controls select {
+    max-width: 230px;
+    background: #272e22;
+    color: #e1e6d7;
+    border: 1px solid #b7cba23b;
+    padding: 10px 30px 10px 10px;
+    font: inherit;
+    font-size: 11px;
+  }
+  .data-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 32px 0;
+  }
+  .data-stats strong {
+    display: block;
+    font-weight: 400;
+    font-size: 43px;
+    letter-spacing: -0.06em;
+  }
+  .data-stats span {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 4px;
+  }
+  .data-stats > div:first-child strong {
+    color: #bdce9e;
+  }
+  .data-stats > div:last-child strong {
+    color: var(--accent);
+  }
+  .lab-chart {
+    margin: 12px 0 0;
+  }
+  .lab-chart-row {
+    display: grid;
+    grid-template-columns: 91px minmax(25px, 1fr) 75px;
+    align-items: center;
+    gap: 12px;
+    margin: 23px 0;
+  }
+  .lab-chart-row > span {
+    font-size: 10px;
+    color: #d2d9c7;
+  }
+  .lab-chart-row strong {
+    font: 10px monospace;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .lab-chart-track {
+    height: 22px;
+    background: #ffffff08;
+  }
+  .lab-chart-bar {
+    background: #b5c796;
+    height: 100%;
+  }
+  .lab-chart-row:nth-child(2) .lab-chart-bar {
+    background: #e89561;
+  }
+  .lab-chart-row:nth-child(3) .lab-chart-bar {
+    background: #81946a;
+  }
+  .chart-caption {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+  }
+  .lab-status {
+    font-size: 12px;
+    color: #d1dbc3;
+    border-top: 1px solid var(--line);
+    line-height: 1.8;
+    padding-top: 17px;
+    margin-bottom: 15px;
+  }
+  .lab-status[data-state='error'] {
+    color: #ffb18d;
+  }
+  .issues {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .issues summary {
+    cursor: pointer;
+  }
+  .issues ul {
+    padding-left: 17px;
+  }
+  .data-table-details {
+    border: 1px solid var(--line);
+    border-top: 0;
+    padding: 20px 28px;
+  }
+  .data-table-details > summary {
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .data-table-details > summary > span {
+    float: right;
+  }
+  .table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .table-scroll table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+    font-size: 12px;
+    margin: 12px 0;
+  }
+  .table-scroll caption {
+    text-align: left;
+    color: var(--muted);
+    font-size: 11px;
+    padding: 15px 0;
+  }
+  .table-scroll th {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 400;
+    border-bottom: 1px solid var(--line);
+    padding: 13px 15px 13px 0;
+  }
+  .table-scroll td {
+    padding: 14px 15px 14px 0;
+    border-bottom: 1px solid var(--line);
+    line-height: 1.6;
+  }
+  .table-scroll td small {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+  }
+  .lab-bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 35px;
+    align-items: start;
+    margin-top: 23px;
+  }
+  .lab-bottom p {
+    font-size: 11px;
+    max-width: 660px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin: 0;
+  }
+  .lab-bottom a {
+    white-space: nowrap;
+    font-size: 12px;
+  }
+  .workflow-section {
+    padding-top: 130px;
+  }
+  .workflow-workspace {
+    background: #1b211a;
+    border: 1px solid var(--line);
+    padding: 28px;
+  }
+  .workflow-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    list-style: none;
+    padding: 15px 0 40px;
+    gap: 30px;
+  }
+  .workflow-steps li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .workflow-steps li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    height: 1px;
+    top: 17px;
+    left: 52px;
+    right: 0;
+    background: #bdd29d33;
+  }
+  .step-number {
+    width: 35px;
+    height: 35px;
+    border: 1px solid #a6bd8c55;
+    display: grid;
+    place-items: center;
+    font: 11px monospace;
+    color: #b7caa2;
+  }
+  .workflow-steps h3 {
+    font-size: 16px;
+  }
+  .workflow-steps p {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+    margin: 10px 0;
+    min-height: 37px;
+  }
+  .step-state {
+    font: 9px monospace;
+    color: #a8b59b;
+  }
+  .workflow-steps li[data-state='active'] .step-number {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+  .workflow-steps li[data-state='done'] .step-number {
+    background: #b8cba0;
+    color: var(--bg);
+  }
+  .workflow-steps li[data-state='done'] .step-state {
+    color: #c2d5ac;
+  }
+  .workflow-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    align-items: center;
+    padding-top: 25px;
+    border-top: 1px solid var(--line);
+  }
+  .workflow-options > label {
+    font-size: 12px;
+    line-height: 1.7;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .workflow-options input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+  }
+  .workflow-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .workflow-actions .button {
+    font-size: 12px;
+  }
+  .workflow-status {
+    margin-top: 25px;
+  }
+  .workflow-table td:last-child {
+    color: #c5d7b2;
+  }
+  .lab-cta {
+    text-align: center;
+    margin: 130px auto 0;
+    max-width: 720px;
+  }
+  .lab-cta h2 {
+    font-size: clamp(40px, 5vw, 68px);
+    letter-spacing: -0.06em;
+    margin-top: 25px;
+  }
+  .lab-cta > p:not(.eyebrow) {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.8;
+    margin: 25px 0;
+  }
+  .notice {
+    border-left: 2px solid var(--accent);
+    padding: 18px 20px;
+    background: var(--surface);
+    color: var(--muted);
+  }
+  .button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  @media (max-width: 1000px) {
+    .lab-heading {
+      grid-template-columns: 1fr 1.3fr;
+      gap: 25px;
+    }
+    .lab-heading > .eyebrow {
+      grid-column: 1 / -1;
+    }
+    .source-panel,
+    .result-panel {
+      padding: 22px;
+    }
+    .lab-chart-row {
+      grid-template-columns: 78px minmax(20px, 1fr) 64px;
+      gap: 8px;
+    }
+    .workflow-options {
+      flex-direction: column;
+      align-items: start;
+    }
+    .lab-bottom {
+      flex-direction: column;
+      gap: 18px;
+    }
+  }
+  @media (max-width: 767px) {
+    .lab-jump {
+      flex-direction: column;
+      gap: 22px;
+    }
+    .lab-jump a {
+      justify-content: space-between;
+    }
+    .lab-jump a > span:last-child {
+      margin-left: auto;
+    }
+    .lab-heading {
+      grid-template-columns: 1fr;
+    }
+    .lab-section {
+      padding-top: 70px;
+    }
+    .data-workspace {
+      grid-template-columns: 1fr;
+    }
+    .source-panel {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .source-panel,
+    .result-panel {
+      padding: 20px;
+    }
+    .workflow-workspace {
+      padding: 20px;
+    }
+    .workflow-steps {
+      grid-template-columns: 1fr;
+      gap: 25px;
+      padding-bottom: 30px;
+    }
+    .workflow-steps li {
+      flex-direction: row;
+      gap: 18px;
+    }
+    .workflow-steps li:not(:last-child)::after {
+      height: auto;
+      width: 1px;
+      left: 17px;
+      top: 46px;
+      bottom: -15px;
+    }
+    .step-number {
+      flex-shrink: 0;
+    }
+    .workflow-steps p {
+      min-height: 0;
+    }
+    .workflow-steps h3 {
+      font-size: 19px;
+    }
+    .workflow-options {
+      align-items: stretch;
+    }
+    .workflow-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .workflow-actions .button {
+      justify-content: center;
+    }
+    .workflow-table {
+      min-width: 360px;
+    }
+    .lab-cta {
+      text-align: left;
+      margin-top: 75px;
+    }
+    .data-table-details {
+      padding: 18px 20px;
+    }
+    .result-controls select {
+      max-width: 195px;
+    }
+    .lab-chart-row {
+      grid-template-columns: 81px minmax(25px, 1fr) 68px;
+    }
+    .lab-notes {
+      font-size: 10px;
+    }
+  }
+</style>

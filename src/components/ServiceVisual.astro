@@ -1,0 +1,153 @@
+---
+import type { ServiceSlug } from '../content/services';
+interface Props {
+  type?: ServiceSlug;
+  slug?: ServiceSlug;
+  kind?: 'web' | 'automation' | 'data' | 'ai';
+  compact?: boolean;
+}
+const { type, slug, kind, compact = false } = Astro.props;
+const kindMap: Record<string, ServiceSlug> = {
+  web: 'developpement-web',
+  automation: 'automatisation',
+  data: 'data',
+  ai: 'intelligence-artificielle',
+};
+const service = type ?? slug ?? (kind ? kindMap[kind] : 'developpement-web')!;
+const labels = {
+  'developpement-web': 'Une structure devient une interface web claire.',
+  automatisation: 'Des documents suivent un parcours de réception, vérification et classement.',
+  data: 'Des données se regroupent pour former un graphique lisible.',
+  'intelligence-artificielle': 'Un document est relié à un extrait et à sa source.',
+};
+---
+
+<div class:list={['service-visual', { compact }]} data-service-scene={service}>
+  <svg viewBox="0 0 400 220" role="img" aria-label={labels[service]}>
+    <g class="scene-grid" fill="currentColor" opacity=".18">
+      {Array.from({ length: 30 }, (_, i) => (
+        <circle cx={30 + (i % 10) * 38} cy={35 + Math.floor(i / 10) * 75} r="1" />
+      ))}
+    </g>
+    {service === 'developpement-web' && (
+      <>
+        <g class="scene-part" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3">
+          <path d="M45 62h238v137H45z" stroke-dasharray="4 5" />
+          <path d="M45 94h238M108 94v105" />
+        </g>
+        <g class="scene-part">
+          <rect x="90" y="29" width="252" height="151" rx="7" fill="#242722" stroke="#777c6d" />
+          <path d="M90 56h252" stroke="#777c6d" />
+          <circle cx="104" cy="42" r="2" fill="#f1814b" />
+          <circle cx="113" cy="42" r="2" fill="#aaa99e" />
+          <circle cx="122" cy="42" r="2" fill="#aaa99e" />
+        </g>
+        <g class="scene-part" fill="#eae6dd">
+          <rect x="110" y="79" width="96" height="9" rx="2" />
+          <rect x="110" y="97" width="76" height="5" rx="1" opacity=".35" />
+          <rect x="110" y="109" width="90" height="5" rx="1" opacity=".35" />
+          <rect x="110" y="138" width="61" height="19" rx="3" fill="#f1814b" />
+        </g>
+        <g class="scene-part" fill="none" stroke="#f1814b" stroke-width="2">
+          <path d="M232 136l20-47 18 35 20-22 28 43" />
+          <rect x="230" y="74" width="90" height="85" rx="3" stroke-opacity=".3" />
+        </g>
+      </>
+    )}
+    {service === 'automatisation' && (
+      <>
+        <g stroke="#8b8d7e" stroke-width="1.2" fill="none">
+          <path d="M99 113h53m57 0h40m0 0v-48h45m-45 48v50h45" stroke-dasharray="4 4" />
+        </g>
+        <g class="scene-part" transform="translate(40 75)">
+          <rect x="0" y="10" width="56" height="67" rx="4" fill="#22251f" stroke="#747a69" />
+          <rect x="7" width="56" height="67" rx="4" fill="#2f332c" stroke="#acb59b" />
+          <path d="M20 18h29M20 29h22M20 40h29" stroke="#aab59a" />
+        </g>
+        <g class="scene-part">
+          <rect x="151" y="84" width="59" height="58" rx="9" fill="#f1814b" />
+          <path d="m170 110 8 8 16-19" stroke="#171915" stroke-width="3" fill="none" />
+        </g>
+        <g class="scene-part">
+          <rect x="293" y="40" width="69" height="49" rx="6" fill="#2f382b" stroke="#9dbd83" />
+          <path d="m314 64 8 8 15-17" stroke="#b4d29c" stroke-width="2" fill="none" />
+        </g>
+        <g class="scene-part">
+          <rect x="293" y="141" width="69" height="45" rx="6" fill="#2d2922" stroke="#987f64" />
+          <path d="M327 150v13m0 6v3" stroke="#e1b988" stroke-width="2" />
+        </g>
+      </>
+    )}
+    {service === 'data' && (
+      <>
+        <g class="scene-part" fill="#838d77">
+          <rect x="39" y="95" width="14" height="14" transform="rotate(13 46 102)" />
+          <rect x="75" y="48" width="14" height="14" transform="rotate(-24 82 55)" />
+          <rect x="82" y="122" width="14" height="14" transform="rotate(30 89 129)" />
+          <rect x="40" y="156" width="14" height="14" />
+          <rect x="109" y="81" width="14" height="14" transform="rotate(15 116 88)" />
+        </g>
+        <path d="M141 111h45m-9-8 9 8-9 8" stroke="#aaa99e" fill="none" />
+        <g stroke="currentColor" opacity=".2">
+          <path d="M215 58h153M215 97h153M215 136h153M215 175h153" />
+        </g>
+        <g class="scene-part" fill="#7b8b68">
+          <rect x="224" y="104" width="31" height="71" rx="2" />
+          <rect x="272" y="69" width="31" height="106" rx="2" />
+        </g>
+        <g class="scene-part" fill="#f1814b">
+          <rect x="320" y="35" width="31" height="140" rx="2" />
+        </g>
+      </>
+    )}
+    {service === 'intelligence-artificielle' && (
+      <>
+        <g class="scene-part">
+          <rect x="37" y="43" width="94" height="128" rx="4" fill="#262a24" stroke="#87927a" />
+          <path d="M52 63h59M52 74h51M52 95h59M52 106h57M52 117h59M52 139h41" stroke="#a8b39a" />
+          <rect
+            x="48"
+            y="90"
+            width="72"
+            height="32"
+            fill="#f1814b"
+            fill-opacity=".17"
+            stroke="#f1814b"
+          />
+        </g>
+        <path
+          class="scene-part"
+          d="M133 107h45v-42h35m-35 42v53h50"
+          stroke="#f1814b"
+          fill="none"
+          stroke-dasharray="4 5"
+        />
+        <g class="scene-part">
+          <rect x="212" y="40" width="142" height="55" rx="5" fill="#2c3228" stroke="#9cae8a" />
+          <path d="M227 57h106M227 68h82M227 79h97" stroke="#afbe9e" />
+        </g>
+        <g class="scene-part">
+          <rect x="228" y="136" width="115" height="46" rx="5" fill="#352a22" stroke="#f1814b" />
+          <text x="246" y="164" font-size="11" fill="#f1814b" font-family="monospace">
+            SOURCE [01]
+          </text>
+        </g>
+      </>
+    )}
+  </svg>
+</div>
+<style>
+  .service-visual {
+    width: 100%;
+    color: var(--ink);
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .compact {
+    max-width: 400px;
+  }
+</style>

@@ -1,0 +1,294 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectPreview from '../../components/ProjectPreview.astro';
+import { publishedProjects } from '../../content/projects';
+import { services } from '../../content/services';
+export const prerender = true;
+---
+
+<Layout
+  title="Réalisations — Des idées mises en pratique"
+  description="Explorez les démonstrateurs de Paul Berdier : automatisation de documents et transformation de données, avec leurs résultats et leurs limites explicites."
+>
+  <div class="container page-shell" data-projects>
+    <header class="page-heading">
+      <p class="eyebrow">Réalisations / Sélection</p>
+      <h1 data-line>
+        Les idées prennent
+        <br />
+        <em>forme ici.</em>
+      </h1>
+      <p class="lede">
+        Des interfaces que vous pouvez explorer. Des mécanismes que vous pouvez tester. Et un
+        périmètre expliqué sans détour.
+      </p>
+    </header>
+    <div class="projects-toolbar">
+      <div class="project-filters" role="group" aria-label="Filtrer les réalisations">
+        <button type="button" data-project-filter="all" aria-pressed="true" disabled>
+          Tout voir <span>{publishedProjects.length}</span>
+        </button>
+        {services.map((service) => (
+          <button type="button" data-project-filter={service.slug} aria-pressed="false" disabled>
+            {service.shortTitle}
+          </button>
+        ))}
+      </div>
+      <span class="toolbar-note">PROJETS PERSONNELS & DÉMONSTRATEURS</span>
+    </div>
+    <p class="filter-status" data-project-status role="status" aria-live="polite">
+      {publishedProjects.length} démonstrateurs à explorer.
+    </p>
+    <div class="project-grid" data-project-grid>
+      {publishedProjects.map((project) => (
+        <article
+          class="project-item"
+          data-project-item
+          data-categories={project.services.join(' ')}
+          data-reveal
+        >
+          <a
+            class="project-image-link"
+            href={project.href}
+            aria-label={`Découvrir ${project.title}`}
+          >
+            <div class="project-image" transition:name={`project-${project.slug}`}>
+              <ProjectPreview project={project} />
+            </div>
+            <span class="project-open" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+          <div class="project-meta">
+            <span>{project.category}</span>
+            <span>
+              {project.type} / {project.number}
+            </span>
+          </div>
+          <h2>
+            <a href={project.href}>{project.title}</a>
+          </h2>
+          <p>{project.summary}</p>
+          <ul class="tags">
+            {project.tags.map((tag) => (
+              <li class="tag">{tag}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+    <div class="empty-state" data-project-empty hidden>
+      <span aria-hidden="true">↗</span>
+      <h2>Le prochain sujet est à construire.</h2>
+      <p>
+        Aucune réalisation publiée dans ce domaine pour le moment. Je préfère montrer un projet
+        vérifiable.
+      </p>
+      <a href="/services/intelligence-artificielle" class="text-link">
+        Découvrir l’approche IA <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <noscript>
+      <p class="no-script-note">
+        Tous les démonstrateurs sont affichés. Le filtrage nécessite JavaScript.
+      </p>
+    </noscript>
+    <aside class="honesty-note">
+      <span class="eyebrow">Ce que vous regardez</span>
+      <p>
+        Ces deux projets sont des <strong>démonstrateurs réalisés pour ce portfolio</strong>. Ils
+        utilisent des données synthétiques et ne sont pas présentés comme des missions clients.
+        Chaque étude de cas détaille ce qui fonctionne et ce qui reste hors périmètre.
+      </p>
+    </aside>
+  </div>
+</Layout>
+<style>
+  .page-heading h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .projects-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    padding: 25px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .project-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .project-filters button {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid transparent;
+    border-radius: 30px;
+    padding: 10px 15px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .project-filters button[aria-pressed='true'] {
+    color: var(--ink);
+    border-color: var(--line);
+    background: var(--surface);
+  }
+  .project-filters button:hover {
+    color: var(--accent);
+  }
+  .project-filters button span {
+    font-size: 9px;
+    color: var(--accent);
+    vertical-align: super;
+    margin-left: 2px;
+  }
+  .toolbar-note {
+    font: 9px monospace;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  .filter-status {
+    margin: 18px 0 28px;
+    font-size: 12px;
+    color: var(--muted);
+    min-height: 20px;
+  }
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: start;
+    gap: 7%;
+  }
+  .project-item:nth-child(2) {
+    margin-top: 105px;
+  }
+  .project-item[hidden] {
+    display: none;
+  }
+  .project-image-link {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    color: var(--ink);
+  }
+  .project-image {
+    width: 100%;
+  }
+  .project-open {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+  }
+  .project-meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    gap: 10px;
+    font: 10px monospace;
+    padding: 26px 0 17px;
+  }
+  .project-meta > span:first-child {
+    color: var(--accent);
+  }
+  .project-item h2 {
+    font-size: clamp(26px, 3vw, 40px);
+    line-height: 1.13;
+    letter-spacing: -0.05em;
+  }
+  .project-item h2 a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .project-item p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.75;
+    margin: 18px 0;
+    max-width: 450px;
+  }
+  .tags {
+    padding: 0;
+    margin: 20px 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .honesty-note {
+    margin-top: 110px;
+    padding: 35px 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 25px;
+  }
+  .honesty-note p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 0;
+    max-width: 620px;
+  }
+  .honesty-note strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .empty-state {
+    padding: 55px 0;
+    max-width: 600px;
+  }
+  .empty-state[hidden] {
+    display: none;
+  }
+  .empty-state > span {
+    color: var(--accent);
+    font-size: 50px;
+  }
+  .empty-state h2 {
+    font-size: 36px;
+  }
+  .empty-state p,
+  .no-script-note {
+    color: var(--muted);
+    margin: 20px 0;
+  }
+  @media (max-width: 950px) {
+    .toolbar-note {
+      display: none;
+    }
+    .project-grid {
+      gap: 4%;
+    }
+  }
+  @media (max-width: 767px) {
+    .project-grid {
+      grid-template-columns: 1fr;
+      gap: 50px;
+    }
+    .project-item:nth-child(2) {
+      margin-top: 0;
+    }
+    .project-filters button {
+      padding: 9px 12px;
+    }
+    .honesty-note {
+      grid-template-columns: 1fr;
+      margin-top: 65px;
+    }
+    .project-item h2 {
+      font-size: 32px;
+    }
+  }
+</style>

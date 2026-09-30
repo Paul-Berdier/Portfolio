@@ -1,0 +1,59 @@
+{
+  "name": "paul-berdier-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.16.0"
+  },
+  "scripts": {
+    "dev": "node scripts/astro.mjs dev --host 127.0.0.1",
+    "check": "node scripts/astro.mjs check",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "build": "node scripts/astro.mjs build",
+    "postbuild": "node scripts/compress.mjs",
+    "start": "node --env-file-if-exists=.env scripts/start.mjs",
+    "db:migrate": "node --env-file-if-exists=.env scripts/migrate.mjs",
+    "leads": "node --env-file-if-exists=.env scripts/leads.mjs",
+    "prebuild": "node --env-file-if-exists=.env scripts/generate-og.mjs",
+    "test:e2e:contact": "playwright test --config=playwright.contact.config.ts",
+    "test:visual": "node scripts/capture.mjs",
+    "test:performance": "node scripts/performance.mjs",
+    "format": "prettier --write src scripts tests *.mjs *.ts *.json",
+    "format:check": "prettier --check src scripts"
+  },
+  "dependencies": {
+    "@astrojs/node": "11.1.6",
+    "@fontsource-variable/manrope": "5.3.0",
+    "@fontsource-variable/space-grotesk": "5.3.0",
+    "@tailwindcss/vite": "4.3.3",
+    "astro": "7.3.5",
+    "gsap": "3.15.0",
+    "pg": "8.23.0",
+    "sharp": "0.35.5",
+    "sirv": "3.0.2",
+    "tailwindcss": "4.3.3",
+    "three": "0.186.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
+    "@electric-sql/pglite": "0.5.8",
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.19.0",
+    "@types/pg": "8.23.1",
+    "@types/three": "0.186.0",
+    "chrome-launcher": "1.2.2",
+    "eslint": "10.11.0",
+    "eslint-plugin-astro": "3.2.1",
+    "lighthouse": "13.5.0",
+    "prettier": "3.9.9",
+    "prettier-plugin-astro": "1.1.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0",
+    "vitest": "5.0.2"
+  }
+}

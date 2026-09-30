@@ -1,0 +1,360 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectPreview from '../../components/ProjectPreview.astro';
+import { publishedProjects } from '../../content/projects';
+export const prerender = true;
+export function getStaticPaths() {
+  return publishedProjects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+const { project } = Astro.props;
+const nextProject = publishedProjects.find((item) => item.slug !== project.slug);
+---
+
+<Layout title={`${project.title} — Étude de cas`} description={project.summary}>
+  <div class="case-progress" data-case-progress aria-hidden="true"></div>
+  <article class="container page-shell case-study">
+    <a href="/realisations" class="text-link back-link">
+      <span aria-hidden="true">←</span> Les réalisations
+    </a>
+    <header class="case-heading">
+      <p class="eyebrow">
+        {project.category} / {project.type} / {project.number}
+      </p>
+      <h1 data-line>{project.title}</h1>
+      <p class="lede">{project.summary}</p>
+      <div class="case-tags">
+        {project.tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    </header>
+    <figure class="case-preview" data-reveal>
+      <div transition:name={`project-${project.slug}`}>
+        <ProjectPreview project={project} variant="case" />
+      </div>
+      <figcaption>
+        Vue réelle de l’interface de démonstration, rendue avec les mêmes données que le lab. Jeu
+        entièrement synthétique.
+      </figcaption>
+    </figure>
+    <div class="case-facts">
+      <div>
+        <span>STATUT</span>
+        <p>{project.type}</p>
+      </div>
+      <div>
+        <span>PÉRIMÈTRE</span>
+        <p>Expérience locale</p>
+      </div>
+      <div>
+        <span>DISPONIBILITÉ</span>
+        <p>{project.status}</p>
+      </div>
+      <a
+        href={`/lab#${project.preview === 'data' ? 'data' : 'workflow'}`}
+        class="button button-primary"
+      >
+        Tester le démonstrateur <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+    <section class="case-section" data-reveal>
+      <p class="eyebrow">01 / Le contexte</p>
+      <div>
+        <h2>Une question concrète.</h2>
+        <p>{project.context}</p>
+        <blockquote>{project.problem}</blockquote>
+      </div>
+    </section>
+    <section class="case-section" data-reveal>
+      <p class="eyebrow">02 / Le périmètre</p>
+      <div>
+        <h2>Ce qui a été construit.</h2>
+        <ul>
+          {project.scope.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+        <h3>Mon rôle</h3>
+        <p>{project.role}</p>
+      </div>
+    </section>
+    <section class="case-section" data-reveal>
+      <p class="eyebrow">03 / La solution</p>
+      <div>
+        <h2>Rendre la logique visible.</h2>
+        <p>{project.solution}</p>
+        <ol class="architecture" data-service-scene="architecture">
+          {project.architecture.map((step, index) => (
+            <li class="scene-part">
+              <span>0{index + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+    <section class="case-section" data-reveal>
+      <p class="eyebrow">04 / Le résultat</p>
+      <div>
+        <h2>Un résultat vérifiable.</h2>
+        <ul class="results">
+          {project.result.map((result) => (
+            <li>{result}</li>
+          ))}
+        </ul>
+        <aside class="case-limits">
+          <h3>Les limites, elles aussi, sont visibles.</h3>
+          <p>{project.limits}</p>
+        </aside>
+        <a class="text-link" href={`/lab#${project.preview === 'data' ? 'data' : 'workflow'}`}>
+          Passer de l’explication à l’expérience <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+    {nextProject && (
+      <nav aria-label="Réalisation suivante" class="next-project">
+        <p class="eyebrow">Continuer l’exploration</p>
+        <a href={nextProject.href}>
+          <h2>{nextProject.title}</h2>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </nav>
+    )}
+  </article>
+</Layout>
+<style>
+  .case-progress {
+    position: fixed;
+    top: 0;
+    height: 2px;
+    background: var(--accent);
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    z-index: 100;
+  }
+  .back-link {
+    margin-bottom: 55px;
+  }
+  .case-heading {
+    max-width: 920px;
+    margin-bottom: 65px;
+  }
+  .case-heading h1 {
+    font-size: clamp(46px, 7.7vw, 112px);
+    letter-spacing: -0.065em;
+    line-height: 0.99;
+    margin: 28px 0;
+  }
+  .case-heading .lede {
+    max-width: 660px;
+  }
+  .case-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 30px;
+  }
+  .case-preview {
+    margin: 0 auto 55px;
+    max-width: 1000px;
+  }
+  .case-preview :global(.project-preview) {
+    padding: 45px 7%;
+  }
+  .case-preview :global(.workflow-preview) {
+    min-height: 300px;
+  }
+  .case-preview :global(.document-line) {
+    font-size: 13px;
+    padding: 18px;
+  }
+  .case-preview :global(.flow-result) {
+    font-size: 14px;
+    padding: 20px;
+  }
+  .case-preview :global(.preview-chart) {
+    height: 245px;
+  }
+  .case-preview :global(.chart-bar) {
+    max-width: 125px;
+  }
+  .case-preview figcaption {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 14px 0 0;
+    line-height: 1.7;
+  }
+  .case-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 25px;
+    align-items: center;
+    border-top: 1px solid var(--line);
+    padding: 28px 0 60px;
+  }
+  .case-facts span {
+    color: var(--muted);
+    font: 9px monospace;
+    letter-spacing: 0.08em;
+  }
+  .case-facts p {
+    font-size: 13px;
+    margin: 10px 0 0;
+  }
+  .case-section {
+    padding: 60px 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 6%;
+  }
+  .case-section h2 {
+    font-size: clamp(32px, 4vw, 56px);
+    letter-spacing: -0.05em;
+    margin-bottom: 28px;
+  }
+  .case-section p:not(.eyebrow),
+  .case-section li {
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.85;
+  }
+  .case-section blockquote {
+    font-size: 24px;
+    line-height: 1.5;
+    padding: 24px 0 0 22px;
+    margin: 35px 0;
+    border-left: 2px solid var(--accent);
+  }
+  .case-section ul {
+    padding-left: 20px;
+    margin-bottom: 40px;
+  }
+  .case-section li {
+    margin-bottom: 14px;
+  }
+  .case-section h3 {
+    font-size: 21px;
+    margin-top: 30px;
+  }
+  .architecture {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0 0;
+  }
+  .architecture li {
+    display: flex;
+    gap: 25px;
+    padding: 24px 22px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    position: relative;
+    margin: 0 0 18px;
+  }
+  .architecture li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 18px;
+    background: var(--accent);
+    top: 100%;
+    left: 34px;
+  }
+  .architecture li > span {
+    color: var(--accent);
+    font: 11px monospace;
+    padding-top: 7px;
+  }
+  .architecture h3 {
+    margin: 0;
+    font-size: 20px;
+  }
+  .architecture p {
+    margin: 7px 0 0;
+    font-size: 14px !important;
+  }
+  .case-limits {
+    padding: 15px 28px;
+    border-left: 2px solid var(--accent);
+    background: var(--surface);
+    margin: 38px 0;
+  }
+  .case-limits h3 {
+    margin-top: 10px;
+    font-size: 20px;
+  }
+  .case-limits p {
+    font-size: 14px !important;
+  }
+  .next-project {
+    border-top: 1px solid var(--line);
+    padding-top: 55px;
+    margin-top: 45px;
+  }
+  .next-project a {
+    display: flex;
+    color: inherit;
+    text-decoration: none;
+    justify-content: space-between;
+    gap: 30px;
+    align-items: center;
+    margin-top: 30px;
+  }
+  .next-project h2 {
+    font-size: clamp(32px, 5vw, 70px);
+    max-width: 760px;
+    letter-spacing: -0.055em;
+  }
+  .next-project a > span {
+    font-size: 65px;
+    color: var(--accent);
+  }
+  @media (max-width: 767px) {
+    .case-heading {
+      margin-bottom: 40px;
+    }
+    .case-facts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .case-facts .button {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+    .case-section {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 40px 0;
+    }
+    .case-preview :global(.project-preview) {
+      padding: 17px;
+    }
+    .case-preview :global(.document-line) {
+      font-size: 8px;
+      padding: 10px 6px;
+    }
+    .case-preview :global(.flow-result) {
+      font-size: 8px;
+      padding: 10px 6px;
+    }
+    .case-preview :global(.workflow-preview) {
+      min-height: 230px;
+    }
+    .case-preview :global(.preview-chart) {
+      height: 165px;
+    }
+    .next-project a > span {
+      font-size: 40px;
+    }
+    .case-section p:not(.eyebrow),
+    .case-section li {
+      font-size: 16px;
+    }
+  }
+</style>

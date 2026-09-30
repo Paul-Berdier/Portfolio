@@ -1,0 +1,386 @@
+---
+import { randomUUID } from 'node:crypto';
+import { needs, budgets, deadlines } from '../server/contact-schema';
+import { brand } from '../config/brand';
+
+interface Props {
+  enabled: boolean;
+  retentionMonths: number;
+  selectedNeed?: keyof typeof needs;
+}
+const { enabled, retentionMonths, selectedNeed } = Astro.props;
+const key = randomUUID();
+---
+
+<form
+  class="contact-form"
+  method="post"
+  action="/api/contact"
+  data-contact-form
+  data-enabled={String(enabled)}
+  aria-describedby="contact-privacy"
+>
+  <input type="hidden" name="idempotencyKey" value={key} />
+  <div class="form-trap" aria-hidden="true">
+    <label for="contact-website">Votre site internet (laisser vide)</label>
+    <input id="contact-website" name="website" autocomplete="off" tabindex="-1" />
+  </div>
+  <fieldset disabled={!enabled}>
+    <legend class="form-legend">
+      <span>01</span> Faisons connaissance.
+    </legend>
+    <p class="form-help">
+      Les champs marqués d’un astérisque sont nécessaires. Les autres sont facultatifs.
+    </p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="contact-name">
+          Votre nom <span aria-hidden="true">*</span>
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          autocomplete="name"
+          required
+          minlength="2"
+          maxlength="100"
+          placeholder="Prénom et nom"
+          aria-describedby="error-name"
+        />
+        <p class="field-error" id="error-name" data-error-for="name" hidden></p>
+      </div>
+      <div class="field">
+        <label for="contact-email">
+          Votre email <span aria-hidden="true">*</span>
+        </label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          maxlength="254"
+          placeholder="vous@entreprise.fr"
+          aria-describedby="error-email"
+        />
+        <p class="field-error" id="error-email" data-error-for="email" hidden></p>
+      </div>
+      <div class="field">
+        <label for="contact-company">
+          Entreprise <span class="optional">facultatif</span>
+        </label>
+        <input
+          id="contact-company"
+          name="company"
+          autocomplete="organization"
+          maxlength="150"
+          placeholder="Votre structure"
+          aria-describedby="error-company"
+        />
+        <p class="field-error" id="error-company" data-error-for="company" hidden></p>
+      </div>
+      <div class="field">
+        <label for="contact-phone">
+          Téléphone <span class="optional">facultatif</span>
+        </label>
+        <input
+          id="contact-phone"
+          name="phone"
+          type="tel"
+          autocomplete="tel"
+          maxlength="40"
+          placeholder="Un numéro pour échanger"
+          aria-describedby="error-phone"
+        />
+        <p class="field-error" id="error-phone" data-error-for="phone" hidden></p>
+      </div>
+    </div>
+    <div class="form-divider"></div>
+    <h2 class="form-legend">
+      <span>02</span> Ce que vous avez en tête.
+    </h2>
+    <div class="form-grid">
+      <div class="field field-wide">
+        <label for="contact-need">
+          Votre besoin <span aria-hidden="true">*</span>
+        </label>
+        <select id="contact-need" name="need" required aria-describedby="error-need">
+          <option value="" selected={!selectedNeed} disabled>
+            Quel sujet voulez-vous faire avancer ?
+          </option>
+          {Object.entries(needs).map(([value, label]) => (
+            <option value={value} selected={value === selectedNeed}>
+              {label}
+            </option>
+          ))}
+        </select>
+        <p class="field-error" id="error-need" data-error-for="need" hidden></p>
+      </div>
+      <div class="field">
+        <label for="contact-budget">
+          Budget indicatif <span aria-hidden="true">*</span>
+        </label>
+        <select id="contact-budget" name="budget" required aria-describedby="error-budget">
+          {Object.entries(budgets).map(([value, label]) => (
+            <option value={value}>{label}</option>
+          ))}
+        </select>
+        <p class="field-error" id="error-budget" data-error-for="budget" hidden></p>
+      </div>
+      <div class="field">
+        <label for="contact-deadline">
+          Échéance <span aria-hidden="true">*</span>
+        </label>
+        <select id="contact-deadline" name="deadline" required aria-describedby="error-deadline">
+          {Object.entries(deadlines).map(([value, label]) => (
+            <option value={value}>{label}</option>
+          ))}
+        </select>
+        <p class="field-error" id="error-deadline" data-error-for="deadline" hidden></p>
+      </div>
+      <div class="field field-wide">
+        <label for="contact-message">
+          Parlez-moi de votre projet <span aria-hidden="true">*</span>
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows="6"
+          required
+          minlength="20"
+          maxlength="5000"
+          placeholder="Le contexte, ce qui vous bloque aujourd’hui, ce que vous aimeriez rendre possible…"
+          aria-describedby="message-hint error-message"
+        ></textarea>
+        <p class="field-hint" id="message-hint">
+          20 à 5 000 caractères. Ne partagez pas de mot de passe ni de donnée confidentielle.
+        </p>
+        <p class="field-error" id="error-message" data-error-for="message" hidden></p>
+      </div>
+    </div>
+    <div class="form-submit">
+      <button class="button button-primary" type="submit" data-submit>
+        <span data-submit-label>Parler de mon projet</span>
+        <span aria-hidden="true">↗</span>
+      </button>
+      <span class="submit-note">
+        Un premier échange.
+        <br />
+        Un besoin à clarifier, ensemble.
+      </span>
+    </div>
+  </fieldset>
+  <p
+    class="form-status"
+    data-contact-status
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    tabindex="-1"
+  ></p>
+  <p class="privacy-note" id="contact-privacy">
+    {brand.owner} utilise ces informations uniquement pour examiner votre demande et y répondre,
+    dans le cadre de démarches précontractuelles à votre initiative. Conservation prévue :{' '}
+    {retentionMonths} mois après la réception, sauf obligation légale applicable. Aucun abonnement à
+    une newsletter.
+    <a href="/confidentialite">Détails du traitement et exercice de vos droits</a>.
+  </p>
+  <noscript>
+    <p class="form-help">
+      Ce formulaire fonctionne aussi sans JavaScript lorsque la collecte est ouverte. Le résultat de
+      l’envoi s’affichera sur une nouvelle page.
+    </p>
+  </noscript>
+</form>
+<style>
+  .contact-form {
+    min-width: 0;
+  }
+  fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .form-legend {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    font-size: clamp(1.2rem, 2vw, 1.65rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    padding: 0;
+    margin: 0 0 1.1rem;
+  }
+  .form-legend span {
+    color: var(--accent);
+    font: 400 0.7rem monospace;
+    letter-spacing: 0.03em;
+  }
+  .form-help {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin: 0 0 1.8rem;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 1.2rem;
+  }
+  .field-wide {
+    grid-column: 1 / -1;
+  }
+  .field {
+    min-width: 0;
+  }
+  label {
+    display: block;
+    font-size: 0.82rem;
+    margin-bottom: 0.65rem;
+  }
+  label > span:not(.optional) {
+    color: var(--accent);
+  }
+  .optional {
+    color: var(--muted);
+    font-size: 0.7rem;
+    margin-left: 0.35rem;
+  }
+  input:not([type='hidden']),
+  select,
+  textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid #41423b;
+    border-radius: 5px;
+    padding: 0.95rem 1rem;
+    font: inherit;
+    font-size: 0.88rem;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: #92968c;
+    opacity: 1;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 10rem;
+  }
+  select {
+    padding-right: 0.8rem;
+    cursor: pointer;
+  }
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  [aria-invalid='true'] {
+    border-color: #f7a58e !important;
+  }
+  fieldset:disabled input,
+  fieldset:disabled textarea,
+  fieldset:disabled select {
+    cursor: not-allowed;
+  }
+  fieldset:disabled .button {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+  .field-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.55rem;
+    line-height: 1.6;
+  }
+  .field-error {
+    color: #ffc4b3;
+    font-size: 0.78rem;
+    margin: 0.6rem 0 0;
+  }
+  .form-divider {
+    height: 1px;
+    background: #36372f;
+    margin: 2.5rem 0;
+  }
+  .form-submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .submit-note {
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .form-status {
+    min-height: 1.5em;
+    font-size: 0.95rem;
+    margin: 1.5rem 0 0;
+    line-height: 1.6;
+  }
+  .form-status[data-state='error'] {
+    color: #ffc4b3;
+  }
+  .form-status[data-state='success'] {
+    color: #c5db9d;
+    padding: 1.25rem;
+    border: 1px solid #607644;
+    border-radius: 5px;
+  }
+  .privacy-note {
+    font-size: 0.72rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+  .privacy-note a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .form-trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  @media (max-width: 580px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    .form-submit {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    input:not([type='hidden']),
+    select,
+    textarea {
+      font-size: 1rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    input,
+    textarea,
+    select {
+      transition: none !important;
+    }
+  }
+  :global(html[data-motion='off']) input,
+  :global(html[data-motion='off']) textarea,
+  :global(html[data-motion='off']) select {
+    transition: none;
+  }
+</style>

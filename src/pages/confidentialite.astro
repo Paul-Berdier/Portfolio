@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { brand } from '../config/brand';
+import { getContactConfig } from '../server/config';
+export const prerender = false;
+const { retentionMonths } = getContactConfig();
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+
+<Layout
+  title="Confidentialité"
+  description="Fonctionnement des données du portfolio : contact, démonstrateurs locaux, préférences de mouvement et configuration de préproduction."
+>
+  <div class="container page-shell legal-page">
+    <header class="page-heading">
+      <p class="eyebrow">Informations / Données</p>
+      <h1>Confidentialité.</h1>
+      <p class="lede">Comprendre ce qui est utilisé, pour quoi et par qui.</p>
+    </header>
+    <div class="legal-notice">
+      <strong>Notice préparatoire — à valider avant activation du contact.</strong>
+      <p>
+        La version livrée désactive la collecte publique et la mesure d’audience. L’ouverture du
+        contact nécessite une configuration explicite et des informations légales validées.
+      </p>
+    </div>
+    <div class="prose legal-copy">
+      <h2>Le formulaire de contact</h2>
+      <p>
+        Responsable prévu : {brand.owner}. Finalité : étudier votre besoin et vous répondre. Base
+        légale envisagée : mesures précontractuelles réalisées à votre demande, à confirmer selon
+        l’activité effective.
+      </p>
+      <p>
+        Les champs obligatoires sont indiqués. Sans les informations nécessaires, la demande ne peut
+        pas être traitée. L’entreprise et le téléphone sont facultatifs. Aucune inscription à une
+        newsletter n’est prévue.
+      </p>
+      <p>
+        Durée cible : {retentionMonths} mois, à valider avant activation. Destinataires prévus :{' '}
+        {brand.owner} et les prestataires techniques nécessaires au stockage et à la notification.
+        Leurs identités, localisations et éventuels transferts doivent être documentés avant
+        ouverture.
+      </p>
+      <h2>Vos droits</h2>
+      <p>
+        Vous pouvez demander l’accès, la rectification, l’effacement ou la limitation de vos données
+        et, selon les conditions applicables, leur portabilité.{' '}
+        {brand.email ? (
+          <>
+            Contact : <a href={`mailto:${brand.email}`}>{brand.email}</a>.
+          </>
+        ) : (
+          <>L’adresse pour exercer vos droits doit être configurée avant la collecte.</>
+        )}{' '}
+        Une réclamation peut être adressée à la{' '}
+        <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener noreferrer">
+          CNIL
+        </a>
+        .
+      </p>
+      <h2>Le lab</h2>
+      <p>
+        Les deux expériences traitent leurs données dans votre navigateur. Le CSV n’est ni envoyé ni
+        enregistré sur le serveur. L’export du workflow crée uniquement un fichier à télécharger sur
+        votre appareil. Les exemples fournis sont intégralement synthétiques.
+      </p>
+      <h2>Préférences et services tiers</h2>
+      <p>
+        Le choix des animations est conservé localement dans votre navigateur pour respecter votre
+        préférence. Aucun outil de mesure d’audience ou calendrier tiers n’est chargé par défaut.
+        L’hébergement peut produire des journaux techniques nécessaires au fonctionnement ; leur
+        configuration et leur conservation doivent être vérifiées au déploiement.
+      </p>
+      <h2>État de cette notice</h2>
+      <p>
+        Cette notice décrit le fonctionnement prévu de la version livrée. Elle doit être complétée
+        avec la configuration réellement retenue. La préparation de l’information du formulaire
+        s’appuie sur les{' '}
+        <a
+          href="https://www.cnil.fr/fr/exemples-de-formulaire-de-collecte-de-donnees-caractere-personnel"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          indications de la CNIL
+        </a>
+        .
+      </p>
+    </div>
+  </div>
+</Layout>
+<style>
+  .legal-page {
+    max-width: 1000px;
+  }
+  .legal-notice {
+    border-left: 2px solid var(--accent);
+    background: var(--surface);
+    padding: 22px 28px;
+    margin-bottom: 55px;
+  }
+  .legal-notice strong {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .legal-notice p {
+    margin: 12px 0 0;
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 14px;
+  }
+  .legal-copy {
+    max-width: 740px;
+  }
+  .legal-copy h2 {
+    font-size: 26px;
+    letter-spacing: -0.035em;
+    margin: 40px 0 16px;
+  }
+  .legal-copy p {
+    color: var(--muted);
+    line-height: 1.9;
+    font-size: 15px;
+  }
+  .legal-copy a {
+    color: var(--ink);
+    text-underline-offset: 4px;
+  }
+</style>

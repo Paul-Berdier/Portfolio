@@ -1,5 +1,6 @@
 ---
 import type { ServiceSlug } from '../content/services';
+import { localeFromPath, translate } from '../i18n';
 interface Props {
   type?: ServiceSlug;
   slug?: ServiceSlug;
@@ -15,12 +16,29 @@ const kindMap: Record<string, ServiceSlug> = {
 };
 const service = type ?? slug ?? (kind ? kindMap[kind] : 'developpement-web')!;
 const gradientId = 'service-flow-' + crypto.randomUUID();
+const locale = localeFromPath(Astro.url.pathname);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
 const labels = {
-  'developpement-web': 'Une matière souple devient une interface web structurée.',
-  automatisation: 'Un flux courbe relie les documents, leur contrôle et deux destinations.',
-  data: 'Des lignes de données convergent et alimentent trois colonnes lisibles.',
-  'intelligence-artificielle':
+  'developpement-web': t(
+    'Une matière souple devient une interface web structurée.',
+    'A flexible ribbon becomes a structured web interface.',
+    'Una materia flexible se convierte en una interfaz web estructurada.',
+  ),
+  automatisation: t(
+    'Un flux courbe relie les documents, leur contrôle et deux destinations.',
+    'A curved flow connects documents, their validation and two destinations.',
+    'Un flujo curvo conecta los documentos, su validación y dos destinos.',
+  ),
+  data: t(
+    'Des lignes de données convergent et alimentent trois colonnes lisibles.',
+    'Lines of data converge to form three readable columns.',
+    'Las líneas de datos convergen y forman tres columnas legibles.',
+  ),
+  'intelligence-artificielle': t(
     'Un extrait de document rejoint une réponse et sa référence vérifiable.',
+    'A document extract connects to an answer and its verifiable source.',
+    'Un extracto de documento se conecta con una respuesta y su fuente verificable.',
+  ),
 };
 ---
 
@@ -275,7 +293,7 @@ const labels = {
             stroke="var(--accent)"
           />
           <text x="242" y="166" font-size="11" fill="var(--accent-hover)" font-family="monospace">
-            SOURCE [01]
+            {t('SOURCE [01]', 'SOURCE [01]', 'FUENTE [01]')}
           </text>
         </g>
       </>

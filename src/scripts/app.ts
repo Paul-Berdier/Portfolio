@@ -6,7 +6,8 @@ import { initLab } from './lab';
 import { initProjects } from './projects';
 import { initContact } from './contact';
 import { initBrandAnimations } from './brand-animation';
-import { engineModes } from '../config/engine';
+import { getEngineModes } from '../config/engine';
+import { localeFromPath } from '../i18n';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 let disposePage: (() => void) | undefined;
@@ -33,6 +34,14 @@ function initialize() {
   const cleanups: (() => void)[] = [];
   const controller = new AbortController();
   const { signal } = controller;
+  const locale = localeFromPath(location.pathname);
+  const engineModes = getEngineModes(locale);
+  document.querySelectorAll<HTMLAnchorElement>('[data-language-switcher] a').forEach((link) => {
+    const destination = new URL(link.href);
+    destination.search = location.search;
+    destination.hash = location.hash;
+    link.href = destination.href;
+  });
   let alive = true;
   const preference = document.querySelector<HTMLSelectElement>('#motion-preference');
   if (preference) {

@@ -1,6 +1,12 @@
 # Portfolio de Paul Berdier
 
-Site personnel français, nom de travail configurable MorphAI. Studio solo : écrire « je ». Toulouse et France à distance. Aucun client, témoignage, diplôme, résultat ou statut juridique inventé. Aucun accès aux ressources de Prooftag. Aucun secret versionné.
+Site personnel français, anglais et espagnol, nom configurable MorphAI. Studio solo : écrire à la première personne. Toulouse et France à distance. Aucun client, témoignage, diplôme, résultat ou statut juridique inventé. Aucun accès aux ressources de Prooftag. Aucun secret versionné.
+
+Paul a confirmé le 30 septembre 2026 : master Bac+5, ingénieur en automatisation des systèmes et IA, data scientist, deux ans au bureau d’études de Prooftag. Ces seuls faits sont autorisés pour cette expérience : aucune mission, école, date ou donnée professionnelle déduite. GitHub public : `https://github.com/Paul-Berdier`. Les technologies doivent rester sourcées par les projets personnels publics ; ne pas confondre présence d’un langage dans un dépôt et niveau de maîtrise.
+
+## Langues
+
+`src/i18n/index.ts` définit fr/en/es et les correspondances de routes : français à la racine, anglais sous `/en`, espagnol sous `/es`. Utiliser `localizePath` pour les liens publics et `getBrand` pour les textes de marque. Les pages traduites réutilisent les composants de page : éviter la duplication des mises en page. Conserver les identifiants de services, de projets et de données synthétiques ; seuls les textes visibles sont traduits. Réinitialiser les interactions dans la langue courante après navigation Astro. Les préférences de mouvement restent indépendantes de la langue. Les données de contact ne stockent pas de nouveau champ langue.
 
 ## Architecture
 

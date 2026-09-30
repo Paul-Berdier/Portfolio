@@ -1,0 +1,78 @@
+name: Portfolio quality
+
+on:
+  push:
+    branches: [code/morphai-portfolio]
+  pull_request:
+    branches: [code/morphai-portfolio]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PUBLIC_SITE_MODE: preview
+      PUBLIC_LEGAL_VALIDATED: 'false'
+      CONTACT_ENABLED: 'false'
+      ASTRO_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Archive tracked sources for review
+        run: git archive --format=zip --output=/tmp/morphai-source.zip HEAD
+      - uses: actions/upload-artifact@v4
+        with:
+          name: morphai-source-${{ github.sha }}
+          path: /tmp/morphai-source.zip
+          retention-days: 3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - run: npm ci
+      - name: Export locked formatting tools for offline review
+        run: tar -czf /tmp/morphai-format-tools.tgz -C node_modules prettier prettier-plugin-astro @prettier/parse-srcset sass-formatter suf-log s.color
+      - uses: actions/upload-artifact@v4
+        with:
+          name: morphai-format-tools-${{ github.sha }}
+          path: /tmp/morphai-format-tools.tgz
+          retention-days: 1
+      - name: Typecheck
+        run: npm run check
+      - name: Lint
+        if: success() || failure()
+        run: npm run lint
+      - name: Unit and local integration tests
+        if: success() || failure()
+        run: npm test
+      - name: Production build
+        if: success() || failure()
+        run: npm run build
+      - name: Install test browser
+        if: success() || failure()
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests (isolated preview)
+        if: success() || failure()
+        run: npm run test:e2e
+      - name: Contact tests (synthetic data only)
+        if: success() || failure()
+        run: npm run test:e2e:contact
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-test-results-${{ github.sha }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7

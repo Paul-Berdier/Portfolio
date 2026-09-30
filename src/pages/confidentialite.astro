@@ -1,88 +1,151 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { brand } from '../config/brand';
+import { getBrand, localeFromPath, translate } from '../i18n';
 import { getContactConfig } from '../server/config';
 export const prerender = false;
+const locale = localeFromPath(Astro.url.pathname);
+const brand = getBrand(locale);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
 const { retentionMonths } = getContactConfig();
 Astro.response.headers.set('Cache-Control', 'no-store');
 ---
 
 <Layout
-  title="Confidentialité"
-  description="Fonctionnement des données du portfolio : contact, démonstrateurs locaux, préférences de mouvement et configuration de préproduction."
+  title={t('Confidentialité', 'Privacy', 'Privacidad')}
+  description={t(
+    'Fonctionnement des données du portfolio : contact, démonstrateurs locaux, préférences de mouvement et configuration de préproduction.',
+    'How this portfolio uses data: contact, local demos, motion preferences and preview configuration.',
+    'Uso de datos en el portfolio: contacto, demostraciones locales, preferencias de animación y configuración de preproducción.',
+  )}
 >
   <div class="container page-shell legal-page">
     <header class="page-heading">
-      <p class="eyebrow">Informations / Données</p>
-      <h1>Confidentialité.</h1>
-      <p class="lede">Comprendre ce qui est utilisé, pour quoi et par qui.</p>
+      <p class="eyebrow">
+        {t('Informations / Données', 'Information / Data', 'Información / Datos')}
+      </p>
+      <h1>{t('Confidentialité.', 'Privacy.', 'Privacidad.')}</h1>
+      <p class="lede">
+        {t(
+          'Comprendre ce qui est utilisé, pour quoi et par qui.',
+          'Understand what is used, why and by whom.',
+          'Entender qué se utiliza, para qué y por quién.',
+        )}
+      </p>
     </header>
     <div class="legal-notice">
-      <strong>Notice préparatoire — à valider avant activation du contact.</strong>
+      <strong>
+        {t(
+          'Notice préparatoire — à valider avant activation du contact.',
+          'Draft notice — to be validated before enabling contact.',
+          'Aviso preparatorio — pendiente de validación antes de activar el contacto.',
+        )}
+      </strong>
       <p>
-        La version livrée désactive la collecte publique et la mesure d’audience. L’ouverture du
-        contact nécessite une configuration explicite et des informations légales validées.
+        {t(
+          'La version livrée désactive la collecte publique et la mesure d’audience. L’ouverture du contact nécessite une configuration explicite et des informations légales validées.',
+          'The delivered version disables public data collection and audience measurement. Opening the contact form requires explicit configuration and validated legal information.',
+          'La versión entregada desactiva la recogida pública de datos y la medición de audiencia. La apertura del contacto requiere una configuración explícita e información legal validada.',
+        )}
       </p>
     </div>
     <div class="prose legal-copy">
-      <h2>Le formulaire de contact</h2>
+      <h2>{t('Le formulaire de contact', 'The contact form', 'El formulario de contacto')}</h2>
       <p>
-        Responsable prévu : {brand.owner}. Finalité : étudier votre besoin et vous répondre. Base
-        légale envisagée : mesures précontractuelles réalisées à votre demande, à confirmer selon
-        l’activité effective.
+        {t('Responsable prévu :', 'Intended data controller:', 'Responsable previsto:')}{' '}
+        {brand.owner}.{' '}
+        {t(
+          'Finalité : étudier votre besoin et vous répondre. Base légale envisagée : mesures précontractuelles réalisées à votre demande, à confirmer selon l’activité effective.',
+          'Purpose: to assess your needs and respond to you. Proposed legal basis: steps taken at your request before entering into a contract, to be confirmed according to the actual activity.',
+          'Finalidad: estudiar tu necesidad y responderte. Base jurídica prevista: medidas precontractuales adoptadas a petición tuya, pendiente de confirmación según la actividad efectiva.',
+        )}
       </p>
       <p>
-        Les champs obligatoires sont indiqués. Sans les informations nécessaires, la demande ne peut
-        pas être traitée. L’entreprise et le téléphone sont facultatifs. Aucune inscription à une
-        newsletter n’est prévue.
+        {t(
+          'Les champs obligatoires sont indiqués. Sans les informations nécessaires, la demande ne peut pas être traitée. L’entreprise et le téléphone sont facultatifs. Aucune inscription à une newsletter n’est prévue.',
+          'Required fields are marked. Without the necessary information, the enquiry cannot be processed. Company and phone number are optional. No newsletter subscription is planned.',
+          'Los campos obligatorios están indicados. Sin la información necesaria, la solicitud no puede tramitarse. La empresa y el teléfono son opcionales. No se prevé ninguna suscripción a boletines.',
+        )}
       </p>
       <p>
-        Durée cible : {retentionMonths} mois, à valider avant activation. Destinataires prévus :{' '}
-        {brand.owner} et les prestataires techniques nécessaires au stockage et à la notification.
-        Leurs identités, localisations et éventuels transferts doivent être documentés avant
-        ouverture.
+        {t('Durée cible :', 'Planned retention:', 'Plazo previsto:')} {retentionMonths}{' '}
+        {t(
+          'mois, à valider avant activation. Destinataires prévus :',
+          'months, to be validated before activation. Intended recipients:',
+          'meses, pendiente de validación antes de la activación. Destinatarios previstos:',
+        )}{' '}
+        {brand.owner}{' '}
+        {t(
+          'et les prestataires techniques nécessaires au stockage et à la notification. Leurs identités, localisations et éventuels transferts doivent être documentés avant ouverture.',
+          'and the technical providers needed for storage and notifications. Their identities, locations and any data transfers must be documented before submissions open.',
+          'y los proveedores técnicos necesarios para el almacenamiento y las notificaciones. Sus identidades, ubicaciones y posibles transferencias deben documentarse antes de la apertura.',
+        )}
       </p>
-      <h2>Vos droits</h2>
+      <h2>{t('Vos droits', 'Your rights', 'Tus derechos')}</h2>
       <p>
-        Vous pouvez demander l’accès, la rectification, l’effacement ou la limitation de vos données
-        et, selon les conditions applicables, leur portabilité.{' '}
+        {t(
+          'Vous pouvez demander l’accès, la rectification, l’effacement ou la limitation de vos données et, selon les conditions applicables, leur portabilité.',
+          'You may request access to, correction or deletion of your data, restriction of its processing and, where applicable, data portability.',
+          'Puedes solicitar el acceso, la rectificación, la supresión o la limitación del tratamiento de tus datos y, según las condiciones aplicables, su portabilidad.',
+        )}{' '}
         {brand.email ? (
           <>
-            Contact : <a href={`mailto:${brand.email}`}>{brand.email}</a>.
+            {t('Contact :', 'Contact:', 'Contacto:')}{' '}
+            <a href={`mailto:${brand.email}`}>{brand.email}</a>.
           </>
         ) : (
-          <>L’adresse pour exercer vos droits doit être configurée avant la collecte.</>
+          <>
+            {t(
+              'L’adresse pour exercer vos droits doit être configurée avant la collecte.',
+              'The address for exercising your rights must be configured before data collection begins.',
+              'La dirección para ejercer tus derechos debe configurarse antes de la recogida de datos.',
+            )}
+          </>
         )}{' '}
-        Une réclamation peut être adressée à la{' '}
+        {t(
+          'Une réclamation peut être adressée à la',
+          'You can submit a complaint to the',
+          'Puedes presentar una reclamación ante la',
+        )}{' '}
         <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener noreferrer">
           CNIL
         </a>
         .
       </p>
-      <h2>Le lab</h2>
+      <h2>{t('Le lab', 'The lab', 'El laboratorio')}</h2>
       <p>
-        Les deux expériences traitent leurs données dans votre navigateur. Le CSV n’est ni envoyé ni
-        enregistré sur le serveur. L’export du workflow crée uniquement un fichier à télécharger sur
-        votre appareil. Les exemples fournis sont intégralement synthétiques.
+        {t(
+          'Les deux expériences traitent leurs données dans votre navigateur. Le CSV n’est ni envoyé ni enregistré sur le serveur. L’export du workflow crée uniquement un fichier à télécharger sur votre appareil. Les exemples fournis sont intégralement synthétiques.',
+          'Both experiments process their data in your browser. The CSV is neither sent to nor stored on the server. Exporting the workflow only creates a file to download to your device. All examples use synthetic data.',
+          'Las dos experiencias procesan sus datos en tu navegador. El CSV no se envía ni se almacena en el servidor. La exportación del flujo de trabajo solo crea un archivo para descargar en tu dispositivo. Todos los ejemplos utilizan datos sintéticos.',
+        )}
       </p>
-      <h2>Préférences et services tiers</h2>
+      <h2>
+        {t(
+          'Préférences et services tiers',
+          'Preferences and third-party services',
+          'Preferencias y servicios de terceros',
+        )}
+      </h2>
       <p>
-        Le choix des animations est conservé localement dans votre navigateur pour respecter votre
-        préférence. Aucun outil de mesure d’audience ou calendrier tiers n’est chargé par défaut.
-        L’hébergement peut produire des journaux techniques nécessaires au fonctionnement ; leur
-        configuration et leur conservation doivent être vérifiées au déploiement.
+        {t(
+          'Le choix des animations est conservé localement dans votre navigateur pour respecter votre préférence. Aucun outil de mesure d’audience ou calendrier tiers n’est chargé par défaut. L’hébergement peut produire des journaux techniques nécessaires au fonctionnement ; leur configuration et leur conservation doivent être vérifiées au déploiement.',
+          'Your motion preference is stored locally in your browser so it can be respected. No analytics tool or third-party calendar is loaded by default. The hosting service may produce technical logs needed for operation; their configuration and retention must be checked when deploying.',
+          'La preferencia de animación se guarda localmente en tu navegador para respetarla. No se carga por defecto ninguna herramienta de analítica ni calendario de terceros. El alojamiento puede generar registros técnicos necesarios para el funcionamiento; su configuración y conservación deben verificarse durante el despliegue.',
+        )}
       </p>
-      <h2>État de cette notice</h2>
+      <h2>{t('État de cette notice', 'Status of this notice', 'Estado de este aviso')}</h2>
       <p>
-        Cette notice décrit le fonctionnement prévu de la version livrée. Elle doit être complétée
-        avec la configuration réellement retenue. La préparation de l’information du formulaire
-        s’appuie sur les{' '}
+        {t(
+          'Cette notice décrit le fonctionnement prévu de la version livrée. Elle doit être complétée avec la configuration réellement retenue. La préparation de l’information du formulaire s’appuie sur les',
+          'This notice describes the intended operation of the delivered version. It must be completed with the configuration actually selected. The form’s information notice was prepared using the',
+          'Este aviso describe el funcionamiento previsto de la versión entregada. Debe completarse con la configuración finalmente elegida. La información del formulario se ha preparado tomando como referencia las',
+        )}{' '}
         <a
           href="https://www.cnil.fr/fr/exemples-de-formulaire-de-collecte-de-donnees-caractere-personnel"
           target="_blank"
           rel="noopener noreferrer"
         >
-          indications de la CNIL
+          {t('indications de la CNIL', 'CNIL’s guidance', 'indicaciones de la CNIL')}
         </a>
         .
       </p>

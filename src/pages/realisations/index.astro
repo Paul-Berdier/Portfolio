@@ -1,32 +1,57 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ProjectPreview from '../../components/ProjectPreview.astro';
-import { publishedProjects } from '../../content/projects';
-import { services } from '../../content/services';
+import SelectedProjects from '../../components/SelectedProjects.astro';
+import { getPublishedProjects } from '../../content/projects';
+import { getServices } from '../../content/services';
+import { localeFromPath, translate, localizePath } from '../../i18n';
 export const prerender = true;
+const locale = localeFromPath(Astro.url.pathname);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
+const publishedProjects = getPublishedProjects(locale);
+const services = getServices(locale);
 ---
 
 <Layout
-  title="Réalisations — Des idées mises en pratique"
-  description="Explorez les démonstrateurs de Paul Berdier : automatisation de documents et transformation de données, avec leurs résultats et leurs limites explicites."
+  title={t(
+    'Réalisations — Des idées mises en pratique',
+    'Work — Ideas put into practice',
+    'Proyectos — Ideas llevadas a la práctica',
+  )}
+  description={t(
+    'Découvrez MissionPilot, PlumID et La Toile d’Or : projets personnels et contributions de Paul Berdier, puis testez ses démonstrateurs interactifs.',
+    'Explore MissionPilot, PlumID and La Toile d’Or: Paul Berdier’s personal projects and contributions, then try his interactive demos.',
+    'Descubre MissionPilot, PlumID y La Toile d’Or: proyectos personales y contribuciones de Paul Berdier, además de demostraciones interactivas.',
+  )}
 >
   <div class="container page-shell" data-projects>
     <header class="page-heading">
-      <p class="eyebrow">Réalisations / Sélection</p>
+      <p class="eyebrow">
+        {t('Réalisations / Sélection', 'Work / Selected projects', 'Proyectos / Selección')}
+      </p>
       <h1 data-line>
-        Les idées prennent
+        {t('Les idées prennent', 'Ideas take', 'Las ideas toman')}
         <br />
-        <em>forme ici.</em>
+        <em>{t('forme ici.', 'shape here.', 'forma aquí.')}</em>
       </h1>
       <p class="lede">
-        Des interfaces que vous pouvez explorer. Des mécanismes que vous pouvez tester. Et un
-        périmètre expliqué sans détour.
+        {t(
+          'Des interfaces que vous pouvez explorer. Des mécanismes que vous pouvez tester. Et un périmètre expliqué sans détour.',
+          'Interfaces you can explore. Processes you can try. With a clear explanation of what each one does.',
+          'Interfaces que puedes explorar. Procesos que puedes probar. Y un alcance explicado con claridad.',
+        )}
       </p>
     </header>
+    <SelectedProjects />
+    <h2 class="demos-heading">{t('Démonstrateurs interactifs', 'Interactive demos', 'Demostraciones interactivas')}</h2>
     <div class="projects-toolbar">
-      <div class="project-filters" role="group" aria-label="Filtrer les réalisations">
+      <div
+        class="project-filters"
+        role="group"
+        aria-label={t('Filtrer les démonstrateurs', 'Filter demos', 'Filtrar demostraciones')}
+      >
         <button type="button" data-project-filter="all" aria-pressed="true" disabled>
-          Tout voir <span>{publishedProjects.length}</span>
+          {t('Tout voir', 'View all', 'Ver todos')} <span>{publishedProjects.length}</span>
         </button>
         {services.map((service) => (
           <button type="button" data-project-filter={service.slug} aria-pressed="false" disabled>
@@ -34,10 +59,17 @@ export const prerender = true;
           </button>
         ))}
       </div>
-      <span class="toolbar-note">PROJETS PERSONNELS & DÉMONSTRATEURS</span>
+      <span class="toolbar-note">
+        {t(
+          'DÉMONSTRATEURS PERSONNELS',
+          'PERSONAL DEMOS',
+          'DEMOSTRACIONES PERSONALES',
+        )}
+      </span>
     </div>
     <p class="filter-status" data-project-status role="status" aria-live="polite">
-      {publishedProjects.length} démonstrateurs à explorer.
+      {publishedProjects.length}{' '}
+      {t('démonstrateurs à explorer.', 'demos to explore.', 'demostraciones para explorar.')}
     </p>
     <div class="project-grid" data-project-grid>
       {publishedProjects.map((project) => (
@@ -49,10 +81,10 @@ export const prerender = true;
         >
           <a
             class="project-image-link"
-            href={project.href}
-            aria-label={`Découvrir ${project.title}`}
+            href={localizePath(project.href, locale)}
+            aria-label={t('Découvrir ', 'Explore ', 'Descubrir ') + project.title}
           >
-            <div class="project-image" transition:name={`project-${project.slug}`}>
+            <div class="project-image" transition:name={'project-' + project.slug}>
               <ProjectPreview project={project} />
             </div>
             <span class="project-open" aria-hidden="true">
@@ -66,7 +98,7 @@ export const prerender = true;
             </span>
           </div>
           <h2>
-            <a href={project.href}>{project.title}</a>
+            <a href={localizePath(project.href, locale)}>{project.title}</a>
           </h2>
           <p>{project.summary}</p>
           <ul class="tags">
@@ -79,26 +111,52 @@ export const prerender = true;
     </div>
     <div class="empty-state" data-project-empty hidden>
       <span aria-hidden="true">↗</span>
-      <h2>Le prochain sujet est à construire.</h2>
+      <h2>
+        {t(
+          'Le prochain sujet est à construire.',
+          'The next project is yet to be built.',
+          'El próximo proyecto está por construir.',
+        )}
+      </h2>
       <p>
-        Aucune réalisation publiée dans ce domaine pour le moment. Je préfère montrer un projet
-        vérifiable.
+        {t(
+          'Aucun démonstrateur interactif publié dans ce domaine pour le moment. Les projets et contributions sont présentés plus haut.',
+          'There is no interactive demo in this area yet. Projects and contributions are presented above.',
+          'Todavía no hay una demostración interactiva en esta área. Los proyectos y contribuciones se presentan más arriba.',
+        )}
       </p>
-      <a href="/services/intelligence-artificielle" class="text-link">
-        Découvrir l’approche IA <span aria-hidden="true">↗</span>
+      <a href={localizePath('/services/intelligence-artificielle', locale)} class="text-link">
+        {t('Découvrir l’approche IA', 'Explore my approach to AI', 'Descubrir mi enfoque de la IA')}{' '}
+        <span aria-hidden="true">↗</span>
       </a>
     </div>
     <noscript>
       <p class="no-script-note">
-        Tous les démonstrateurs sont affichés. Le filtrage nécessite JavaScript.
+        {t(
+          'Tous les démonstrateurs sont affichés. Le filtrage nécessite JavaScript.',
+          'All demos are shown. Filtering requires JavaScript.',
+          'Se muestran todas las demostraciones. El filtrado requiere JavaScript.',
+        )}
       </p>
     </noscript>
     <aside class="honesty-note">
-      <span class="eyebrow">Ce que vous regardez</span>
+      <span class="eyebrow">
+        {t('Ce que vous regardez', 'What you are looking at', 'Qué estás viendo')}
+      </span>
       <p>
-        Ces deux projets sont des <strong>démonstrateurs réalisés pour ce portfolio</strong>. Ils
-        utilisent des données synthétiques et ne sont pas présentés comme des missions clients.
-        Chaque étude de cas détaille ce qui fonctionne et ce qui reste hors périmètre.
+        {t('Ces deux projets sont des ', 'These two projects are ', 'Estos dos proyectos son ')}
+        <strong>
+          {t(
+            'démonstrateurs réalisés pour ce portfolio',
+            'demos built for this portfolio',
+            'demostraciones creadas para este portfolio',
+          )}
+        </strong>
+        {t(
+          '. Ils utilisent des données synthétiques et ne sont pas présentés comme des missions clients. Chaque étude de cas détaille ce qui fonctionne et ce qui reste hors périmètre.',
+          '. They use synthetic data and are not presented as client work. Each case study explains what works and what remains outside its scope.',
+          '. Utilizan datos sintéticos y no se presentan como trabajos para clientes. Cada caso explica lo que funciona y lo que queda fuera de su alcance.',
+        )}
       </p>
     </aside>
   </div>

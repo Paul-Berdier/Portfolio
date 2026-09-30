@@ -1,11 +1,23 @@
 import type { ServiceSlug } from './services';
+import type { Locale } from '../i18n';
+import { englishProjects } from './projects.en';
+import { spanishProjects } from './projects.es';
 
 export interface Project {
   slug: string;
   number: string;
   title: string;
   category: string;
-  type: 'Démonstrateur' | 'Projet personnel' | 'Client autorisé';
+  type:
+    | 'Démonstrateur'
+    | 'Projet personnel'
+    | 'Client autorisé'
+    | 'Demo'
+    | 'Personal project'
+    | 'Authorised client project'
+    | 'Demostración'
+    | 'Proyecto personal'
+    | 'Proyecto de cliente autorizado';
   status: string;
   summary: string;
   services: ServiceSlug[];
@@ -135,3 +147,9 @@ export const projects: Project[] = [
 ];
 
 export const publishedProjects = projects.filter((project) => project.published);
+
+export function getPublishedProjects(locale: Locale): Project[] {
+  if (locale === 'fr') return publishedProjects;
+  const copy = locale === 'es' ? spanishProjects : englishProjects;
+  return publishedProjects.map((project) => ({ ...project, ...copy[project.slug] }));
+}

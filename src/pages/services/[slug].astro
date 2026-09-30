@@ -1,43 +1,58 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ServiceVisual from '../../components/ServiceVisual.astro';
-import { services } from '../../content/services';
-import { publishedProjects } from '../../content/projects';
+import { services, getServices, type Service } from '../../content/services';
+import { getPublishedProjects } from '../../content/projects';
+import { localeFromPath, translate, localizePath } from '../../i18n';
 export const prerender = true;
 export function getStaticPaths() {
   return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
 }
-const { service } = Astro.props;
-const relatedProjects = publishedProjects.filter((project) =>
+interface Props {
+  service: Service;
+}
+const locale = localeFromPath(Astro.url.pathname);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
+const service = getServices(locale).find((item) => item.slug === Astro.props.service.slug)!;
+const relatedProjects = getPublishedProjects(locale).filter((project) =>
   project.services.includes(service.slug),
 );
 ---
 
 <Layout title={service.title} description={service.description}>
   <div class="container page-shell">
-    <a href="/services" class="text-link back-link">
-      <span aria-hidden="true">←</span> Toutes les expertises
+    <a href={localizePath('/services', locale)} class="text-link back-link">
+      <span aria-hidden="true">←</span>{' '}
+      {t('Toutes les expertises', 'All services', 'Todos los servicios')}
     </a>
     <header class="service-hero">
       <div>
         <p class="eyebrow">
-          Expertise {service.number} / {service.shortTitle}
+          {t('Expertise', 'Service', 'Servicio')} {service.number} / {service.shortTitle}
         </p>
         <h1 data-line>{service.promise}</h1>
         <p class="lede">{service.description}</p>
-        <a class="button button-primary" href={`/contact?besoin=${service.slug}`}>
-          Parler de votre projet <span aria-hidden="true">↗</span>
+        <a
+          class="button button-primary"
+          href={localizePath('/contact?besoin=' + service.slug, locale)}
+        >
+          {t('Parler de votre projet', 'Discuss your project', 'Hablar de tu proyecto')}{' '}
+          <span aria-hidden="true">↗</span>
         </a>
       </div>
       <div class="service-art">
         <ServiceVisual type={service.slug} />
-        <span>MATIÈRE → SYSTÈME / {service.number}</span>
+        <span>
+          {t('MATIÈRE → SYSTÈME', 'MATERIAL → SYSTEM', 'MATERIA → SISTEMA')} / {service.number}
+        </span>
       </div>
     </header>
     <section class="editorial-section" data-reveal>
-      <p class="eyebrow">Le point de départ</p>
+      <p class="eyebrow">{t('Le point de départ', 'The starting point', 'El punto de partida')}</p>
       <div>
-        <h2>Vous vous reconnaissez ?</h2>
+        <h2>
+          {t('Vous vous reconnaissez ?', 'Does this sound familiar?', '¿Te resulta familiar?')}
+        </h2>
         <ul class="needs">
           {service.needs.map((need) => (
             <li>{need}</li>
@@ -46,7 +61,7 @@ const relatedProjects = publishedProjects.filter((project) =>
       </div>
     </section>
     <section class="editorial-section" data-reveal>
-      <p class="eyebrow">Ce que je construis</p>
+      <p class="eyebrow">{t('Ce que je construis', 'What I build', 'Lo que construyo')}</p>
       <div class="deliverables">
         {service.deliverables.map((item, index) => (
           <article>
@@ -60,26 +75,26 @@ const relatedProjects = publishedProjects.filter((project) =>
       </div>
     </section>
     <section class="editorial-section" data-reveal>
-      <p class="eyebrow">La manière</p>
+      <p class="eyebrow">{t('La manière', 'The approach', 'La forma de trabajar')}</p>
       <div>
         <h2>
-          Partir du réel.
+          {t('Partir du réel.', 'Start with real needs.', 'Partir de la realidad.')}
           <br />
-          <em>Avancer par étapes.</em>
+          <em>{t('Avancer par étapes.', 'Move forward in stages.', 'Avanzar por etapas.')}</em>
         </h2>
         <p class="body-copy">{service.approach}</p>
         <aside class="boundary">
-          <h3>Un périmètre clair</h3>
+          <h3>{t('Un périmètre clair', 'A clear scope', 'Un alcance claro')}</h3>
           <p>{service.boundaries}</p>
         </aside>
       </div>
     </section>
     {relatedProjects.length > 0 && (
       <section class="editorial-section" data-reveal>
-        <p class="eyebrow">Voir en pratique</p>
+        <p class="eyebrow">{t('Voir en pratique', 'See it in practice', 'Verlo en la práctica')}</p>
         <div>
           {relatedProjects.map((project) => (
-            <a class="related-project" href={project.href}>
+            <a class="related-project" href={localizePath(project.href, locale)}>
               <div>
                 <small>
                   {project.type} / {project.category}
@@ -94,10 +109,20 @@ const relatedProjects = publishedProjects.filter((project) =>
       </section>
     )}
     <div class="final-cta" data-reveal>
-      <h2>Et dans votre activité ?</h2>
-      <p>Décrivons le besoin, les contraintes et la première étape utile.</p>
-      <a href={`/contact?besoin=${service.slug}`} class="button button-primary">
-        Faire le point ensemble <span aria-hidden="true">↗</span>
+      <h2>{t('Et dans votre activité ?', 'What about your business?', '¿Y en tu actividad?')}</h2>
+      <p>
+        {t(
+          'Décrivons le besoin, les contraintes et la première étape utile.',
+          'Let’s define the need, the constraints and a useful first step.',
+          'Definamos la necesidad, las limitaciones y un primer paso útil.',
+        )}
+      </p>
+      <a
+        href={localizePath('/contact?besoin=' + service.slug, locale)}
+        class="button button-primary"
+      >
+        {t('Faire le point ensemble', 'Let’s talk it through', 'Hablemos de ello')}{' '}
+        <span aria-hidden="true">↗</span>
       </a>
     </div>
   </div>

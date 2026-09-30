@@ -1,70 +1,134 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { brand } from '../config/brand';
+import { getBrand, localeFromPath, localizePath, translate } from '../i18n';
 export const prerender = true;
+const locale = localeFromPath(Astro.url.pathname);
+const brand = getBrand(locale);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
 ---
 
 <Layout
-  title="Mentions légales"
-  description="Informations sur l’édition du portfolio personnel de Paul Berdier et état de validation des mentions légales."
+  title={t('Mentions légales', 'Legal information', 'Aviso legal')}
+  description={t(
+    'Informations sur l’édition du portfolio personnel de Paul Berdier et état de validation des mentions légales.',
+    'Publishing information for Paul Berdier’s personal portfolio and the validation status of its legal information.',
+    'Información sobre la edición del portfolio personal de Paul Berdier y el estado de validación de su aviso legal.',
+  )}
 >
   <div class="container page-shell legal-page">
     <header class="page-heading">
-      <p class="eyebrow">Informations / Édition</p>
-      <h1>Mentions légales.</h1>
-      <p class="lede">Un portfolio personnel. Des informations explicites.</p>
+      <p class="eyebrow">
+        {t('Informations / Édition', 'Information / Publisher', 'Información / Edición')}
+      </p>
+      <h1>{t('Mentions légales.', 'Legal information.', 'Aviso legal.')}</h1>
+      <p class="lede">
+        {t(
+          'Un portfolio personnel. Des informations explicites.',
+          'A personal portfolio. Clear information.',
+          'Un portfolio personal. Información clara.',
+        )}
+      </p>
     </header>
     <div class="legal-notice">
-      <strong>Document préparatoire — informations à valider.</strong>
+      <strong>
+        {t(
+          'Document préparatoire — informations à valider.',
+          'Draft document — information to be validated.',
+          'Documento preparatorio — información pendiente de validación.',
+        )}
+      </strong>
       <p>
-        Ce site est livré en préproduction. L’identité professionnelle complète, les coordonnées
-        légales et l’hébergement effectif doivent être validés avant l’ouverture de la collecte au
-        public.
+        {t(
+          'Ce site est livré en préproduction. L’identité professionnelle complète, les coordonnées légales et l’hébergement effectif doivent être validés avant l’ouverture de la collecte au public.',
+          'This site is delivered as a preview. The full professional identity, legal contact details and actual hosting arrangements must be validated before public submissions open.',
+          'Este sitio se entrega en preproducción. La identidad profesional completa, los datos legales de contacto y el alojamiento efectivo deben validarse antes de admitir solicitudes del público.',
+        )}
       </p>
     </div>
     <div class="prose legal-copy">
-      <h2>Édition du site</h2>
+      <h2>{t('Édition du site', 'Site publisher', 'Edición del sitio')}</h2>
       <p>
-        Le portfolio présente le travail et les domaines d’intervention de {brand.owner}. «{' '}
-        {brand.name} » est un nom de travail, dont la disponibilité juridique n’a pas été validée.
-        Ce site ne déclare aucune immatriculation ni marque déposée.
+        {t(
+          'Le portfolio présente le travail et les domaines d’intervention de',
+          'This portfolio presents the work and areas of expertise of',
+          'Este portfolio presenta el trabajo y los ámbitos de especialización de',
+        )}{' '}
+        {brand.owner}. « {brand.name} »{' '}
+        {t(
+          'est un nom de travail, dont la disponibilité juridique n’a pas été validée. Ce site ne déclare aucune immatriculation ni marque déposée.',
+          'is a working name; its legal availability has not been validated. This site does not claim any business registration or registered trademark.',
+          'es un nombre de trabajo cuya disponibilidad jurídica no se ha validado. Este sitio no declara ninguna inscripción empresarial ni marca registrada.',
+        )}
       </p>
       <p>
-        Zone d’intervention annoncée : {brand.location}. Cette indication n’est pas une adresse
-        professionnelle.
+        {t('Zone d’intervention annoncée :', 'Stated working area:', 'Zona de trabajo indicada:')}{' '}
+        {brand.location}.{' '}
+        {t(
+          'Cette indication n’est pas une adresse professionnelle.',
+          'This is not a business address.',
+          'Esta indicación no constituye un domicilio profesional.',
+        )}
       </p>
       {brand.email ? (
         <p>
-          Contact : <a href={`mailto:${brand.email}`}>{brand.email}</a>.
+          {t('Contact :', 'Contact:', 'Contacto:')}{' '}
+          <a href={`mailto:${brand.email}`}>{brand.email}</a>.
         </p>
       ) : (
         <p>
-          Les coordonnées de contact publiques restent à configurer et à valider par {brand.owner}.
+          {t(
+            'Les coordonnées de contact publiques restent à configurer et à valider par',
+            'Public contact details still need to be configured and validated by',
+            'Los datos de contacto públicos aún deben ser configurados y validados por',
+          )}{' '}
+          {brand.owner}.
         </p>
       )}
-      <h2>Informations avant mise en production</h2>
+      <h2>
+        {t(
+          'Informations avant mise en production',
+          'Information required before launch',
+          'Información previa a la puesta en producción',
+        )}
+      </h2>
       <p>
-        Le statut de l’éditeur, l’adresse de publication autorisée, les coordonnées professionnelles
-        et, selon le statut retenu, les informations d’immatriculation doivent être renseignés.
-        Aucun numéro ou statut n’est présumé dans cette version.
+        {t(
+          'Le statut de l’éditeur, l’adresse de publication autorisée, les coordonnées professionnelles et, selon le statut retenu, les informations d’immatriculation doivent être renseignés. Aucun numéro ou statut n’est présumé dans cette version.',
+          'The publisher’s status, authorised publication address, professional contact details and, depending on that status, registration information must be provided. This version does not assume any registration number or legal status.',
+          'Deben indicarse el estatus del editor, la dirección autorizada para su publicación, los datos de contacto profesionales y, según el estatus elegido, la información de registro. Esta versión no presupone ningún número de registro ni estatus jurídico.',
+        )}
       </p>
-      <h2>Hébergement</h2>
+      <h2>{t('Hébergement', 'Hosting', 'Alojamiento')}</h2>
       <p>
-        Railway est l’hébergement envisagé. Aucun hébergement effectif n’est attesté par cette page.
-        Les informations du prestataire contractuel, la localisation des services retenus et les
-        coordonnées requises seront renseignées à partir du déploiement réellement autorisé.
+        {t(
+          'Railway est l’hébergement envisagé. Aucun hébergement effectif n’est attesté par cette page. Les informations du prestataire contractuel, la localisation des services retenus et les coordonnées requises seront renseignées à partir du déploiement réellement autorisé.',
+          'Railway is the proposed hosting provider. This page does not confirm that hosting is active. The contracted provider’s details, the location of the selected services and the required contact information will be added based on the deployment that is actually authorised.',
+          'Railway es el alojamiento previsto. Esta página no acredita ningún alojamiento efectivo. Los datos del proveedor contratado, la ubicación de los servicios elegidos y los datos de contacto necesarios se completarán a partir del despliegue efectivamente autorizado.',
+        )}
       </p>
-      <h2>Contenus et réalisations</h2>
+      <h2>{t('Contenus et réalisations', 'Content and projects', 'Contenidos y proyectos')}</h2>
       <p>
-        Les projets publiés sont identifiés comme démonstrateurs ou projets personnels. Leurs
-        données sont synthétiques, leurs limites sont documentées et aucun résultat commercial n’est
-        attribué à un client fictif.
+        {t(
+          'Les projets publiés sont identifiés comme démonstrateurs ou projets personnels. Leurs données sont synthétiques, leurs limites sont documentées et aucun résultat commercial n’est attribué à un client fictif.',
+          'Published projects are identified as demos or personal projects. They use synthetic data, their limitations are documented, and no business results are attributed to fictional clients.',
+          'Los proyectos publicados se identifican como demostraciones o proyectos personales. Sus datos son sintéticos, sus límites están documentados y no se atribuye ningún resultado comercial a clientes ficticios.',
+        )}
       </p>
-      <h2>Données personnelles</h2>
+      <h2>{t('Données personnelles', 'Personal data', 'Datos personales')}</h2>
       <p>
-        Le fonctionnement prévu du contact, les données utilisées et les droits sont détaillés sur
-        la page <a href="/confidentialite">Confidentialité</a>. La collecte reste désactivée tant
-        que la configuration requise n’est pas validée.
+        {t(
+          'Le fonctionnement prévu du contact, les données utilisées et les droits sont détaillés sur la page',
+          'The planned contact process, the data used and your rights are described on the',
+          'El funcionamiento previsto del contacto, los datos utilizados y los derechos se detallan en la página de',
+        )}{' '}
+        <a href={localizePath('/confidentialite', locale)}>
+          {t('Confidentialité', 'Privacy', 'Privacidad')}
+        </a>
+        {t(
+          '. La collecte reste désactivée tant que la configuration requise n’est pas validée.',
+          ' page. Submissions remain disabled until the required configuration is validated.',
+          '. La recogida de datos permanece desactivada hasta que se valide la configuración necesaria.',
+        )}
       </p>
     </div>
   </div>

@@ -19,7 +19,7 @@ export const brand = {
   siteUrl: optionalUrl(import.meta.env.PUBLIC_SITE_URL),
   email: import.meta.env.PUBLIC_CONTACT_EMAIL || '',
   bookingUrl: import.meta.env.PUBLIC_BOOKING_URL || '',
-  githubUrl: import.meta.env.PUBLIC_GITHUB_URL || '',
+  githubUrl: import.meta.env.PUBLIC_GITHUB_URL || 'https://github.com/Paul-Berdier',
   production: import.meta.env.PUBLIC_SITE_MODE === 'production',
   legalValidated: import.meta.env.PUBLIC_LEGAL_VALIDATED === 'true',
   retentionMonths: 12,

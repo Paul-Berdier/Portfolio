@@ -1,0 +1,8 @@
+---
+import Page from '../../realisations/[slug].astro';
+import { publishedProjects } from '../../../content/projects';
+export const prerender = true;
+const project = publishedProjects.find((item) => item.slug === 'atelier-data')!;
+---
+
+<Page project={project} />

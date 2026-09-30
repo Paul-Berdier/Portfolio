@@ -1,41 +1,62 @@
 ---
 import { randomUUID } from 'node:crypto';
-import { needs, budgets, deadlines } from '../server/contact-schema';
-import { brand } from '../config/brand';
+import { contactOptions } from '../i18n/contact';
+import { getBrand, localeFromPath, localizePath, translate, type Locale } from '../i18n';
 
 interface Props {
   enabled: boolean;
   retentionMonths: number;
-  selectedNeed?: keyof typeof needs;
+  selectedNeed?: keyof typeof contactOptions.fr.needs;
+  locale?: Locale;
 }
-const { enabled, retentionMonths, selectedNeed } = Astro.props;
+const {
+  enabled,
+  retentionMonths,
+  selectedNeed,
+  locale = localeFromPath(Astro.url.pathname),
+} = Astro.props;
+const { needs, budgets, deadlines } = contactOptions[locale];
+const brand = getBrand(locale);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
 const key = randomUUID();
 ---
 
 <form
   class="contact-form"
   method="post"
-  action="/api/contact"
+  action={locale === 'fr' ? '/api/contact' : `/api/contact?lang=${locale}`}
   data-contact-form
+  data-contact-locale={locale}
   data-enabled={String(enabled)}
   aria-describedby="contact-privacy"
 >
   <input type="hidden" name="idempotencyKey" value={key} />
   <div class="form-trap" aria-hidden="true">
-    <label for="contact-website">Votre site internet (laisser vide)</label>
+    <label for="contact-website">
+      {t(
+        'Votre site internet (laisser vide)',
+        'Your website (leave blank)',
+        'Tu sitio web (déjalo vacío)',
+      )}
+    </label>
     <input id="contact-website" name="website" autocomplete="off" tabindex="-1" />
   </div>
   <fieldset disabled={!enabled}>
     <legend class="form-legend">
-      <span>01</span> Faisons connaissance.
+      <span>01</span>{' '}
+      {t('Faisons connaissance.', 'Let’s get to know each other.', 'Empecemos por conocernos.')}
     </legend>
     <p class="form-help">
-      Les champs marqués d’un astérisque sont nécessaires. Les autres sont facultatifs.
+      {t(
+        'Les champs marqués d’un astérisque sont nécessaires. Les autres sont facultatifs.',
+        'Fields marked with an asterisk are required. All others are optional.',
+        'Los campos marcados con un asterisco son obligatorios. Los demás son opcionales.',
+      )}
     </p>
     <div class="form-grid">
       <div class="field">
         <label for="contact-name">
-          Votre nom <span aria-hidden="true">*</span>
+          {t('Votre nom', 'Your name', 'Tu nombre')} <span aria-hidden="true">*</span>
         </label>
         <input
           id="contact-name"
@@ -44,14 +65,15 @@ const key = randomUUID();
           required
           minlength="2"
           maxlength="100"
-          placeholder="Prénom et nom"
+          placeholder={t('Prénom et nom', 'First and last name', 'Nombre y apellidos')}
           aria-describedby="error-name"
         />
         <p class="field-error" id="error-name" data-error-for="name" hidden></p>
       </div>
       <div class="field">
         <label for="contact-email">
-          Votre email <span aria-hidden="true">*</span>
+          {t('Votre email', 'Your email', 'Tu correo electrónico')}{' '}
+          <span aria-hidden="true">*</span>
         </label>
         <input
           id="contact-email"
@@ -60,28 +82,30 @@ const key = randomUUID();
           autocomplete="email"
           required
           maxlength="254"
-          placeholder="vous@entreprise.fr"
+          placeholder={t('vous@entreprise.fr', 'you@company.com', 'tu@empresa.es')}
           aria-describedby="error-email"
         />
         <p class="field-error" id="error-email" data-error-for="email" hidden></p>
       </div>
       <div class="field">
         <label for="contact-company">
-          Entreprise <span class="optional">facultatif</span>
+          {t('Entreprise', 'Company', 'Empresa')}{' '}
+          <span class="optional">{t('facultatif', 'optional', 'opcional')}</span>
         </label>
         <input
           id="contact-company"
           name="company"
           autocomplete="organization"
           maxlength="150"
-          placeholder="Votre structure"
+          placeholder={t('Votre structure', 'Your organisation', 'Tu organización')}
           aria-describedby="error-company"
         />
         <p class="field-error" id="error-company" data-error-for="company" hidden></p>
       </div>
       <div class="field">
         <label for="contact-phone">
-          Téléphone <span class="optional">facultatif</span>
+          {t('Téléphone', 'Phone', 'Teléfono')}{' '}
+          <span class="optional">{t('facultatif', 'optional', 'opcional')}</span>
         </label>
         <input
           id="contact-phone"
@@ -89,7 +113,11 @@ const key = randomUUID();
           type="tel"
           autocomplete="tel"
           maxlength="40"
-          placeholder="Un numéro pour échanger"
+          placeholder={t(
+            'Un numéro pour échanger',
+            'A number to reach you on',
+            'Un número para hablar contigo',
+          )}
           aria-describedby="error-phone"
         />
         <p class="field-error" id="error-phone" data-error-for="phone" hidden></p>
@@ -97,16 +125,21 @@ const key = randomUUID();
     </div>
     <div class="form-divider"></div>
     <h2 class="form-legend">
-      <span>02</span> Ce que vous avez en tête.
+      <span>02</span>{' '}
+      {t('Ce que vous avez en tête.', 'What you have in mind.', 'Lo que tienes en mente.')}
     </h2>
     <div class="form-grid">
       <div class="field field-wide">
         <label for="contact-need">
-          Votre besoin <span aria-hidden="true">*</span>
+          {t('Votre besoin', 'Your project', 'Tu proyecto')} <span aria-hidden="true">*</span>
         </label>
         <select id="contact-need" name="need" required aria-describedby="error-need">
           <option value="" selected={!selectedNeed} disabled>
-            Quel sujet voulez-vous faire avancer ?
+            {t(
+              'Quel sujet voulez-vous faire avancer ?',
+              'What would you like to work on?',
+              '¿Qué te gustaría hacer avanzar?',
+            )}
           </option>
           {Object.entries(needs).map(([value, label]) => (
             <option value={value} selected={value === selectedNeed}>
@@ -118,7 +151,8 @@ const key = randomUUID();
       </div>
       <div class="field">
         <label for="contact-budget">
-          Budget indicatif <span aria-hidden="true">*</span>
+          {t('Budget indicatif', 'Estimated budget', 'Presupuesto orientativo')}{' '}
+          <span aria-hidden="true">*</span>
         </label>
         <select id="contact-budget" name="budget" required aria-describedby="error-budget">
           {Object.entries(budgets).map(([value, label]) => (
@@ -129,7 +163,7 @@ const key = randomUUID();
       </div>
       <div class="field">
         <label for="contact-deadline">
-          Échéance <span aria-hidden="true">*</span>
+          {t('Échéance', 'Timeframe', 'Plazo')} <span aria-hidden="true">*</span>
         </label>
         <select id="contact-deadline" name="deadline" required aria-describedby="error-deadline">
           {Object.entries(deadlines).map(([value, label]) => (
@@ -140,7 +174,8 @@ const key = randomUUID();
       </div>
       <div class="field field-wide">
         <label for="contact-message">
-          Parlez-moi de votre projet <span aria-hidden="true">*</span>
+          {t('Parlez-moi de votre projet', 'Tell me about your project', 'Cuéntame tu proyecto')}{' '}
+          <span aria-hidden="true">*</span>
         </label>
         <textarea
           id="contact-message"
@@ -149,24 +184,38 @@ const key = randomUUID();
           required
           minlength="20"
           maxlength="5000"
-          placeholder="Le contexte, ce qui vous bloque aujourd’hui, ce que vous aimeriez rendre possible…"
+          placeholder={t(
+            'Le contexte, ce qui vous bloque aujourd’hui, ce que vous aimeriez rendre possible…',
+            'The context, what’s holding you back today, and what you’d like to make possible…',
+            'El contexto, lo que te frena hoy y lo que te gustaría hacer posible…',
+          )}
           aria-describedby="message-hint error-message"
         ></textarea>
         <p class="field-hint" id="message-hint">
-          20 à 5 000 caractères. Ne partagez pas de mot de passe ni de donnée confidentielle.
+          {t(
+            '20 à 5 000 caractères. Ne partagez pas de mot de passe ni de donnée confidentielle.',
+            '20–5,000 characters. Do not share passwords or confidential information.',
+            'De 20 a 5.000 caracteres. No compartas contraseñas ni datos confidenciales.',
+          )}
         </p>
         <p class="field-error" id="error-message" data-error-for="message" hidden></p>
       </div>
     </div>
     <div class="form-submit">
       <button class="button button-primary" type="submit" data-submit>
-        <span data-submit-label>Parler de mon projet</span>
+        <span data-submit-label>
+          {t('Parler de mon projet', 'Discuss my project', 'Hablar de mi proyecto')}
+        </span>
         <span aria-hidden="true">↗</span>
       </button>
       <span class="submit-note">
-        Un premier échange.
+        {t('Un premier échange.', 'A first conversation.', 'Una primera conversación.')}
         <br />
-        Un besoin à clarifier, ensemble.
+        {t(
+          'Un besoin à clarifier, ensemble.',
+          'A need to explore, together.',
+          'Una necesidad que concretar juntos.',
+        )}
       </span>
     </div>
   </fieldset>
@@ -179,16 +228,34 @@ const key = randomUUID();
     tabindex="-1"
   ></p>
   <p class="privacy-note" id="contact-privacy">
-    {brand.owner} utilise ces informations uniquement pour examiner votre demande et y répondre,
-    dans le cadre de démarches précontractuelles à votre initiative. Conservation prévue :{' '}
-    {retentionMonths} mois après la réception, sauf obligation légale applicable. Aucun abonnement à
-    une newsletter.
-    <a href="/confidentialite">Détails du traitement et exercice de vos droits</a>.
+    {brand.owner}{' '}
+    {t(
+      'utilise ces informations uniquement pour examiner votre demande et y répondre, dans le cadre de démarches précontractuelles à votre initiative. Conservation prévue :',
+      'uses this information only to review and respond to your enquiry, as part of steps you request before entering into a contract. Planned retention:',
+      'utiliza esta información únicamente para estudiar tu solicitud y responderte, en el marco de medidas precontractuales a petición tuya. Conservación prevista:',
+    )}{' '}
+    {retentionMonths}{' '}
+    {t(
+      'mois après la réception, sauf obligation légale applicable. Aucun abonnement à une newsletter.',
+      'months after receipt, unless a legal obligation applies. No newsletter subscription.',
+      'meses desde la recepción, salvo obligación legal aplicable. Sin suscripción a boletines.',
+    )}{' '}
+    <a href={localizePath('/confidentialite', locale)}>
+      {t(
+        'Détails du traitement et exercice de vos droits',
+        'How your data is used and how to exercise your rights',
+        'Detalles del tratamiento y ejercicio de tus derechos',
+      )}
+    </a>
+    .
   </p>
   <noscript>
     <p class="form-help">
-      Ce formulaire fonctionne aussi sans JavaScript lorsque la collecte est ouverte. Le résultat de
-      l’envoi s’affichera sur une nouvelle page.
+      {t(
+        'Ce formulaire fonctionne aussi sans JavaScript lorsque la collecte est ouverte. Le résultat de l’envoi s’affichera sur une nouvelle page.',
+        'This form also works without JavaScript when submissions are open. The result will appear on a new page.',
+        'Este formulario también funciona sin JavaScript cuando se admiten solicitudes. El resultado se mostrará en una nueva página.',
+      )}
     </p>
   </noscript>
 </form>

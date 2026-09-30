@@ -1,5 +1,7 @@
 ---
 import type { Project } from '../content/projects';
+import { localeFromPath, translate } from '../i18n';
+import { getLabMessages, labCategoryLabel } from '../i18n/lab';
 import {
   sampleDocuments,
   sampleRoutedDocuments,
@@ -12,21 +14,34 @@ interface Props {
   variant?: string;
 }
 const { project, variant = '' } = Astro.props;
+const locale = localeFromPath(Astro.url.pathname);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
+const messages = getLabMessages(locale);
 ---
 
 <div
   class:list={['project-preview', project.preview, variant]}
-  aria-label={`Aperçu du démonstrateur ${project.title}`}
+  aria-label={
+    t('Aperçu du démonstrateur ', 'Demo preview: ', 'Vista previa de la demostración: ') +
+    project.title
+  }
 >
   <div class="preview-top">
     <span class="preview-dot"></span>
-    <span>{project.preview === 'workflow' ? 'DOCUMENT FLOW' : 'DATA WORKSPACE'}</span>
-    <span class="preview-local">LOCAL / DÉMO</span>
+    <span>
+      {project.preview === 'workflow'
+        ? t('DOCUMENT FLOW', 'DOCUMENT FLOW', 'FLUJO DOCUMENTAL')
+        : t('DATA WORKSPACE', 'DATA WORKSPACE', 'TALLER DE DATOS')}
+    </span>
+    <span class="preview-local">{t('LOCAL / DÉMO', 'LOCAL / DEMO', 'LOCAL / DEMO')}</span>
   </div>
   {project.preview === 'workflow' ? (
     <div class="workflow-preview">
       <div class="document-stack">
-        <span class="tiny-label">ENTRÉE · {sampleDocuments.length} DOCUMENTS</span>
+        <span class="tiny-label">
+          {t('ENTRÉE', 'INPUT', 'ENTRADA')} · {sampleDocuments.length}{' '}
+          {t('DOCUMENTS', 'DOCUMENTS', 'DOCUMENTOS')}
+        </span>
         {sampleDocuments.map((doc, i) => (
           <div class="document-line" style={`--doc-index:${i}`}>
             <svg viewBox="0 0 18 22" width="16" height="19" aria-hidden="true">
@@ -48,11 +63,14 @@ const { project, variant = '' } = Astro.props;
         </svg>
       </div>
       <div class="flow-results">
-        <span class="tiny-label">RÈGLES APPLIQUÉES</span>
+        <span class="tiny-label">
+          {t('RÈGLES APPLIQUÉES', 'RULES APPLIED', 'REGLAS APLICADAS')}
+        </span>
         <div class="flow-result ready">
           <span class="result-icon">✓</span>
           <span>
-            Prêts à exporter<small>Référence vérifiée</small>
+            {t('Prêts à exporter', 'Ready to export', 'Listos para exportar')}
+            <small>{t('Référence vérifiée', 'Reference checked', 'Referencia verificada')}</small>
           </span>
           <strong>
             {sampleRoutedDocuments.filter((doc) => doc.destination === 'Prêt à exporter').length}
@@ -61,7 +79,8 @@ const { project, variant = '' } = Astro.props;
         <div class="flow-result review">
           <span class="result-icon">!</span>
           <span>
-            À vérifier<small>Validation humaine</small>
+            {messages.review}
+            <small>{t('Validation humaine', 'Human review', 'Revisión humana')}</small>
           </span>
           <strong>
             {sampleRoutedDocuments.filter((doc) => doc.destination === 'À vérifier').length}
@@ -73,30 +92,48 @@ const { project, variant = '' } = Astro.props;
     <div class="data-preview">
       <div class="data-title">
         <div>
-          <span class="tiny-label">MONTANTS PAR CATÉGORIE</span>
-          <p>Une vue d’ensemble.</p>
+          <span class="tiny-label">
+            {t('MONTANTS PAR CATÉGORIE', 'AMOUNTS BY CATEGORY', 'IMPORTES POR CATEGORÍA')}
+          </span>
+          <p>{t('Une vue d’ensemble.', 'The full picture.', 'Una visión de conjunto.')}</p>
         </div>
-        <span class="quality-label">{sampleData.rows.length} lignes valides</span>
+        <span class="quality-label">
+          {sampleData.rows.length} {t('lignes valides', 'valid rows', 'filas válidas')}
+        </span>
       </div>
       <div
         class="preview-chart"
         role="img"
-        aria-label={`Données synthétiques : ${sampleSummary.map((item) => `${item.category}, ${formatAmount(item.amount)} euros`).join(' ; ')}`}
+        aria-label={
+          t('Données synthétiques : ', 'Synthetic data: ', 'Datos sintéticos: ') +
+          sampleSummary
+            .map(
+              (item) =>
+                `${labCategoryLabel(item.category, locale)}, ${formatAmount(item.amount, locale)} euros`,
+            )
+            .join(' ; ')
+        }
       >
         <div class="chart-rule"></div>
         <div class="chart-rule"></div>
         <div class="chart-rule"></div>
         {sampleSummary.map((item) => (
           <div class="chart-column">
-            <span>{formatAmount(item.amount)} €</span>
+            <span>{formatAmount(item.amount, locale)} €</span>
             <div class="chart-bar" style={`--bar-height:${(item.amount / 2100) * 100}%`}></div>
-            <small>{item.category}</small>
+            <small>{labCategoryLabel(item.category, locale)}</small>
           </div>
         ))}
       </div>
       <div class="data-footer">
-        <span>CSV → normalisation → agrégation</span>
-        <span>Données synthétiques</span>
+        <span>
+          {t(
+            'CSV → normalisation → agrégation',
+            'CSV → normalisation → aggregation',
+            'CSV → normalización → agregación',
+          )}
+        </span>
+        <span>{t('Données synthétiques', 'Synthetic data', 'Datos sintéticos')}</span>
       </div>
     </div>
   )}

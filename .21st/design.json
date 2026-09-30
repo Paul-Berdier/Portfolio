@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "project": {
+    "name": "paul-berdier-portfolio",
+    "productType": "Portfolio personnel multilingue",
+    "stack": ["astro", "tailwind-v4"]
+  },
+  "sources": {
+    "tokens": ["src/styles/global.css", "src/brand/palette.mjs"],
+    "components": ["src/components", "src/layouts/Layout.astro"],
+    "assets": ["public/brand"],
+    "instructions": ["AGENTS.md"]
+  },
+  "design": {
+    "colorMode": "dark",
+    "colors": {},
+    "typography": {},
+    "spacing": {},
+    "radius": {},
+    "shadows": {},
+    "motion": {},
+    "density": "unknown"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": ["Logo", "Mark", "BrandAnimation", "LanguageSwitcher"],
+    "patterns": []
+  },
+  "constraints": {
+    "must": [
+      "Préserver le M en ruban et la palette MorphAI",
+      "Français, anglais et espagnol avec liens directs et clavier",
+      "Faits biographiques confirmés et technologies sourcées",
+      "Contenu lisible sans JavaScript et avec mouvement réduit"
+    ],
+    "avoid": [
+      "Niveaux de maîtrise inventés",
+      "Clients ou résultats fictifs",
+      "Contenu confidentiel employeur"
+    ]
+  },
+  "decisions": [
+    "30 septembre 2026 : conserver la direction MorphAI ; ajouter FR/EN/ES et une présentation personnelle documentée."
+  ],
+  "evidence": [
+    {
+      "fact": "project.instructions",
+      "source": "AGENTS.md"
+    },
+    {
+      "fact": "project.stack:astro",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:tailwind-v4",
+      "source": "package.json"
+    }
+  ],
+  "generatedAt": "2026-09-30T12:31:53.027Z"
+}

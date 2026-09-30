@@ -2,74 +2,112 @@
 import Layout from '../layouts/Layout.astro';
 import {
   sampleCsv,
-  sampleData,
+  normalizeCsv,
   sampleSummary,
   sampleDocuments,
-  workflowSteps,
   formatAmount,
   dataCategories,
 } from '../content/lab';
+import { localeFromPath, localizePath, translate } from '../i18n';
+import { getLabMessages, labCategoryLabel } from '../i18n/lab';
 export const prerender = true;
+const locale = localeFromPath(Astro.url.pathname);
+const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
+const messages = getLabMessages(locale);
+const sampleData = normalizeCsv(sampleCsv, locale);
+const categoryLabel = (category: string) => labCategoryLabel(category, locale);
+const amount = (value: number) => formatAmount(value, locale);
 ---
 
 <Layout
-  title="Le lab — Deux expériences à manipuler"
-  description="Transformez un petit CSV et déclenchez un workflow de documents : deux démonstrateurs locaux avec des données synthétiques, sans compte ni transmission."
+  title={t(
+    'Le lab — Deux expériences à manipuler',
+    'The lab — Two hands-on experiments',
+    'El laboratorio — Dos experiencias interactivas',
+  )}
+  description={t(
+    'Transformez un petit CSV et déclenchez un workflow de documents : deux démonstrateurs locaux avec des données synthétiques, sans compte ni transmission.',
+    'Transform a small CSV and run a document workflow: two local demos with synthetic data, no account or data transfer required.',
+    'Transforma un pequeño CSV y ejecuta un flujo documental: dos demos locales con datos sintéticos, sin cuenta ni envío de datos.',
+  )}
 >
   <div class="container page-shell">
     <header class="page-heading">
-      <p class="eyebrow">Le lab / Expériences ouvertes</p>
+      <p class="eyebrow">
+        {t(
+          'Le lab / Expériences ouvertes',
+          'The lab / Open experiments',
+          'El laboratorio / Experiencias abiertas',
+        )}
+      </p>
       <h1 data-line>
-        Moins de promesses.
+        {t('Moins de promesses.', 'Fewer promises.', 'Menos promesas.')}
         <br />
-        <em>À vous de jouer.</em>
+        <em>{t('À vous de jouer.', 'Try it yourself.', 'Pruébalo tú.')}</em>
       </h1>
       <p class="lede">
-        Deux petites expériences pour voir une idée devenir un outil. Modifiez une entrée. Lancez
-        une action. Observez ce qui change.
+        {t(
+          'Deux petites expériences pour voir une idée devenir un outil. Modifiez une entrée. Lancez une action. Observez ce qui change.',
+          'Two small experiments to see an idea become a tool. Change an input. Run an action. See what happens.',
+          'Dos pequeñas experiencias para ver cómo una idea se convierte en una herramienta. Modifica un dato. Ejecuta una acción. Observa qué cambia.',
+        )}
       </p>
       <div class="lab-notes">
         <span>
-          <i></i>Dans votre navigateur
+          <i></i>
+          {t('Dans votre navigateur', 'In your browser', 'En tu navegador')}
         </span>
-        <span>Données synthétiques</span>
-        <span>Aucun compte requis</span>
+        <span>{t('Données synthétiques', 'Synthetic data', 'Datos sintéticos')}</span>
+        <span>{t('Aucun compte requis', 'No account required', 'Sin necesidad de cuenta')}</span>
       </div>
     </header>
-    <nav class="lab-jump" aria-label="Choisir une expérience">
+    <nav
+      class="lab-jump"
+      aria-label={t('Choisir une expérience', 'Choose an experiment', 'Elegir una experiencia')}
+    >
       <a href="#data">
-        <span>01</span> L’atelier data <span aria-hidden="true">↓</span>
+        <span>01</span> {t('L’atelier data', 'Data workbench', 'Taller de datos')}{' '}
+        <span aria-hidden="true">↓</span>
       </a>
       <a href="#workflow">
-        <span>02</span> Le flux documentaire <span aria-hidden="true">↓</span>
+        <span>02</span> {t('Le flux documentaire', 'Document workflow', 'Flujo documental')}{' '}
+        <span aria-hidden="true">↓</span>
       </a>
     </nav>
     <noscript>
       <p class="notice">
-        Les jeux de données et leur explication restent lisibles. Activez JavaScript pour modifier
-        les données et exécuter les expériences.
+        {t(
+          'Les jeux de données et leur explication restent lisibles. Activez JavaScript pour modifier les données et exécuter les expériences.',
+          'The datasets and their explanations remain readable. Enable JavaScript to edit the data and run the experiments.',
+          'Los datos y sus explicaciones siguen siendo legibles. Activa JavaScript para modificar los datos y ejecutar las experiencias.',
+        )}
       </p>
     </noscript>
     <section id="data" class="lab-section" data-data-lab>
       <header class="lab-heading" data-reveal>
-        <p class="eyebrow">01 / Data</p>
+        <p class="eyebrow">01 / {t('Data', 'Data', 'Datos')}</p>
         <h2>
-          Du brut
+          {t('Du brut', 'From raw data', 'De datos en bruto')}
           <br />
-          <em>au lisible.</em>
+          <em>{t('au lisible.', 'to a clear view.', 'a una vista clara.')}</em>
         </h2>
         <p>
-          Un petit CSV comporte des variations de casse, un doublon et des entrées invalides. Le
-          traitement harmonise les valeurs, écarte les anomalies et calcule une vue par catégorie.
+          {t(
+            'Un petit CSV comporte des variations de casse, un doublon et des entrées invalides. Le traitement harmonise les valeurs, écarte les anomalies et calcule une vue par catégorie.',
+            'A small CSV contains inconsistent letter case, a duplicate and invalid entries. Processing standardises the values, excludes invalid rows and calculates a view by category.',
+            'Un pequeño CSV contiene variaciones de mayúsculas, un duplicado y entradas no válidas. El proceso unifica los valores, descarta las anomalías y calcula una vista por categoría.',
+          )}
         </p>
       </header>
       <div class="data-workspace" data-reveal>
         <form class="source-panel" data-data-form>
           <div class="panel-header">
-            <span>01 — LA MATIÈRE</span>
+            <span>{t('01 — LA MATIÈRE', '01 — THE INPUT', '01 — LOS DATOS')}</span>
             <span>CSV / UTF-8</span>
           </div>
-          <label for="lab-csv">Votre jeu de données</label>
+          <label for="lab-csv">
+            {t('Votre jeu de données', 'Your dataset', 'Tu conjunto de datos')}
+          </label>
           <textarea
             id="lab-csv"
             name="csv"
@@ -80,55 +118,60 @@ export const prerender = true;
             data-csv-input
           >{sampleCsv}</textarea>
           <p id="csv-help" class="field-help">
-            Séparateur « ; ». Catégories : web, data, automatisation. Montants positifs, jusqu’à 2
-            décimales. 100 lignes maximum. Utilisez uniquement des données fictives.
+            {t(
+              'Séparateur « ; ». Catégories : web, data, automatisation. Montants positifs, jusqu’à 2 décimales. 100 lignes maximum. Utilisez uniquement des données fictives.',
+              'Use “;” as the separator. Keep the CSV header id;categorie;montant and category values web, data, automatisation. Non-negative amounts, up to 2 decimal places. Maximum 100 rows. Use fictional data only.',
+              'Usa «;» como separador. Conserva la cabecera id;categorie;montant y los valores de categoría web, data, automatisation. Importes no negativos, con hasta 2 decimales. Máximo 100 filas. Utiliza solo datos ficticios.',
+            )}
           </p>
           <div class="source-actions">
             <button type="submit" class="button button-primary" data-normalize disabled>
-              Transformer <span aria-hidden="true">↗</span>
+              {t('Transformer', 'Transform', 'Transformar')} <span aria-hidden="true">↗</span>
             </button>
             <button type="button" class="reset-button" data-reset-csv disabled>
-              Réinitialiser
+              {t('Réinitialiser', 'Reset', 'Restablecer')}
             </button>
           </div>
         </form>
         <div class="result-panel">
           <div class="panel-header">
-            <span>02 — LA LECTURE</span>
-            <span>CALCUL LOCAL</span>
+            <span>{t('02 — LA LECTURE', '02 — THE VIEW', '02 — LA VISTA')}</span>
+            <span>{t('CALCUL LOCAL', 'LOCAL CALCULATION', 'CÁLCULO LOCAL')}</span>
           </div>
           <div class="result-controls">
-            <label for="lab-category">Catégorie</label>
+            <label for="lab-category">{t('Catégorie', 'Category', 'Categoría')}</label>
             <select id="lab-category" data-data-filter disabled>
-              <option value="all">Toutes les catégories</option>
+              <option value="all">
+                {t('Toutes les catégories', 'All categories', 'Todas las categorías')}
+              </option>
               {dataCategories.map((category) => (
-                <option value={category}>{category}</option>
+                <option value={category}>{categoryLabel(category)}</option>
               ))}
             </select>
           </div>
           <div class="data-stats">
             <div>
               <strong data-stat-valid>{sampleData.rows.length}</strong>
-              <span>lignes valides</span>
+              <span>{t('lignes valides', 'valid rows', 'filas válidas')}</span>
             </div>
             <div>
               <strong data-stat-duplicate>{sampleData.duplicateCount}</strong>
-              <span>doublon</span>
+              <span>{t('doublon', 'duplicate', 'duplicado')}</span>
             </div>
             <div>
               <strong data-stat-invalid>{sampleData.invalidCount}</strong>
-              <span>anomalies</span>
+              <span>{t('anomalies', 'invalid entries', 'anomalías')}</span>
             </div>
           </div>
           <div
             class="lab-chart"
             data-data-chart
             role="img"
-            aria-label={`Montants synthétiques : ${sampleSummary.map((item) => `${item.category} : ${formatAmount(item.amount)} euros`).join(', ')}`}
+            aria-label={`${messages.chartLabel} : ${sampleSummary.map((item) => `${categoryLabel(item.category)} : ${amount(item.amount)} euros`).join(', ')}`}
           >
             {sampleSummary.map((item) => (
               <div class="lab-chart-row" data-chart-category={item.category}>
-                <span>{item.category}</span>
+                <span>{categoryLabel(item.category)}</span>
                 <div class="lab-chart-track">
                   <div
                     class="lab-chart-bar"
@@ -136,16 +179,32 @@ export const prerender = true;
                     style={`width:${(item.amount / 2100) * 100}%`}
                   ></div>
                 </div>
-                <strong data-chart-value>{formatAmount(item.amount)} €</strong>
+                <strong data-chart-value>{amount(item.amount)} €</strong>
               </div>
             ))}
           </div>
-          <p class="chart-caption">Montants fictifs agrégés à partir des lignes retenues.</p>
+          <p class="chart-caption">
+            {t(
+              'Montants fictifs agrégés à partir des lignes retenues.',
+              'Fictional amounts aggregated from the accepted rows.',
+              'Importes ficticios agregados a partir de las filas aceptadas.',
+            )}
+          </p>
           <p class="lab-status" role="status" aria-live="polite" data-data-status>
-            Le jeu fourni : 9 lignes, 6 retenues. Modifiez le CSV pour tester les règles.
+            {t(
+              'Le jeu fourni : 9 lignes, 6 retenues. Modifiez le CSV pour tester les règles.',
+              'The sample has 9 rows, with 6 accepted. Edit the CSV to test the rules.',
+              'El ejemplo contiene 9 filas, de las que se aceptan 6. Modifica el CSV para probar las reglas.',
+            )}
           </p>
           <details class="issues">
-            <summary>Détail des lignes écartées</summary>
+            <summary>
+              {t(
+                'Détail des lignes écartées',
+                'Excluded row details',
+                'Detalle de las filas descartadas',
+              )}
+            </summary>
             <ul data-data-issues>
               {sampleData.issues.map((issue) => (
                 <li>{issue}</li>
@@ -156,24 +215,33 @@ export const prerender = true;
       </div>
       <details class="data-table-details">
         <summary>
-          Voir les lignes retenues <span aria-hidden="true">↗</span>
+          {t('Voir les lignes retenues', 'View accepted rows', 'Ver las filas aceptadas')}{' '}
+          <span aria-hidden="true">↗</span>
         </summary>
         <div class="table-scroll">
           <table>
-            <caption>Lignes normalisées, selon le filtre actif</caption>
+            <caption>
+              {t(
+                'Lignes normalisées, selon le filtre actif',
+                'Normalised rows, using the current filter',
+                'Filas normalizadas según el filtro activo',
+              )}
+            </caption>
             <thead>
               <tr>
-                <th scope="col">Identifiant</th>
-                <th scope="col">Catégorie</th>
-                <th scope="col">Montant synthétique</th>
+                <th scope="col">{t('Identifiant', 'Identifier', 'Identificador')}</th>
+                <th scope="col">{t('Catégorie', 'Category', 'Categoría')}</th>
+                <th scope="col">
+                  {t('Montant synthétique', 'Synthetic amount', 'Importe sintético')}
+                </th>
               </tr>
             </thead>
             <tbody data-data-rows>
               {sampleData.rows.map((row) => (
                 <tr>
                   <td>{row.id}</td>
-                  <td>{row.category}</td>
-                  <td>{formatAmount(row.amount)} €</td>
+                  <td>{categoryLabel(row.category)}</td>
+                  <td>{amount(row.amount)} €</td>
                 </tr>
               ))}
             </tbody>
@@ -182,41 +250,48 @@ export const prerender = true;
       </details>
       <div class="lab-bottom">
         <p>
-          Les règles sont explicites : catégories harmonisées, première occurrence d’un identifiant
-          conservée, entrées invalides signalées. Aucun fichier n’est envoyé ou enregistré.
+          {t(
+            'Les règles sont explicites : catégories harmonisées, première occurrence d’un identifiant conservée, entrées invalides signalées. Aucun fichier n’est envoyé ou enregistré.',
+            'The rules are explicit: standardised categories, the first valid occurrence of each identifier kept, invalid entries flagged. No files are sent or saved.',
+            'Las reglas son explícitas: categorías unificadas, primera aparición válida de cada identificador conservada y entradas no válidas señaladas. No se envía ni se guarda ningún archivo.',
+          )}
         </p>
-        <a href="/realisations/atelier-data" class="text-link">
-          Lire l’étude de cas <span aria-hidden="true">↗</span>
+        <a href={localizePath('/realisations/atelier-data', locale)} class="text-link">
+          {t('Lire l’étude de cas', 'Read the case study', 'Leer el caso práctico')}{' '}
+          <span aria-hidden="true">↗</span>
         </a>
       </div>
     </section>
     <section id="workflow" class="lab-section workflow-section" data-workflow-lab>
       <header class="lab-heading" data-reveal>
-        <p class="eyebrow">02 / Automatisation</p>
+        <p class="eyebrow">02 / {t('Automatisation', 'Automation', 'Automatización')}</p>
         <h2>
-          Une action.
+          {t('Une action.', 'One action.', 'Una acción.')}
           <br />
-          <em>Un chemin clair.</em>
+          <em>{t('Un chemin clair.', 'A clear path.', 'Un camino claro.')}</em>
         </h2>
         <p>
-          Déclenchez une suite d’opérations sur trois objets synthétiques. Le programme vérifie
-          leurs champs, les oriente et prépare un export que vous pouvez télécharger.
+          {t(
+            'Déclenchez une suite d’opérations sur trois objets synthétiques. Le programme vérifie leurs champs, les oriente et prépare un export que vous pouvez télécharger.',
+            'Run a sequence of operations on three synthetic objects. The program checks their fields, routes them and prepares an export you can download.',
+            'Ejecuta una secuencia de operaciones sobre tres objetos sintéticos. El programa comprueba sus campos, los clasifica y prepara una exportación descargable.',
+          )}
         </p>
       </header>
       <div class="workflow-workspace" data-reveal>
         <div class="panel-header">
-          <span>DOCUMENT FLOW</span>
-          <span>EXÉCUTION LOCALE</span>
+          <span>{t('DOCUMENT FLOW', 'DOCUMENT FLOW', 'FLUJO DOCUMENTAL')}</span>
+          <span>{t('EXÉCUTION LOCALE', 'LOCAL EXECUTION', 'EJECUCIÓN LOCAL')}</span>
         </div>
         <ol class="workflow-steps">
-          {workflowSteps.map((step, index) => (
+          {messages.steps.map((step, index) => (
             <li data-workflow-step>
               <span class="step-number">0{index + 1}</span>
               <div>
                 <h3>{step.label}</h3>
                 <p>{step.detail}</p>
                 <span class="step-state" data-step-state>
-                  À lancer
+                  {messages.idle}
                 </span>
               </div>
             </li>
@@ -224,28 +299,47 @@ export const prerender = true;
         </ol>
         <div class="workflow-options">
           <label>
-            <input type="checkbox" data-workflow-valid /> Utiliser un jeu entièrement valide
+            <input type="checkbox" data-workflow-valid />{' '}
+            {t(
+              'Utiliser un jeu entièrement valide',
+              'Use a fully valid dataset',
+              'Usar un conjunto de datos completamente válido',
+            )}
           </label>
           <div class="workflow-actions">
             <button type="button" class="button button-primary" data-run-workflow disabled>
-              Lancer le flux <span aria-hidden="true">↗</span>
+              {t('Lancer le flux', 'Run the workflow', 'Ejecutar el flujo')}{' '}
+              <span aria-hidden="true">↗</span>
             </button>
             <button type="button" class="button button-secondary" data-download-workflow disabled>
-              Télécharger le JSON <span aria-hidden="true">↓</span>
+              {t('Télécharger le JSON', 'Download the JSON', 'Descargar el JSON')}{' '}
+              <span aria-hidden="true">↓</span>
             </button>
           </div>
         </div>
         <p class="lab-status workflow-status" role="status" aria-live="polite" data-workflow-status>
-          Prêt à traiter trois objets synthétiques. Aucun fichier PDF n’est réellement lu.
+          {t(
+            'Prêt à traiter trois objets synthétiques. Aucun fichier PDF n’est réellement lu.',
+            'Ready to process three synthetic objects. No actual PDF files are read.',
+            'Todo listo para procesar tres objetos sintéticos. No se lee ningún archivo PDF real.',
+          )}
         </p>
         <div class="table-scroll">
           <table class="workflow-table">
-            <caption>Documents synthétiques et décisions de traitement</caption>
+            <caption>
+              {t(
+                'Documents synthétiques et décisions de traitement',
+                'Synthetic documents and processing decisions',
+                'Documentos sintéticos y decisiones de procesamiento',
+              )}
+            </caption>
             <thead>
               <tr>
-                <th scope="col">Document représenté</th>
-                <th scope="col">Montant</th>
-                <th scope="col">Destination</th>
+                <th scope="col">
+                  {t('Document représenté', 'Sample document', 'Documento de ejemplo')}
+                </th>
+                <th scope="col">{t('Montant', 'Amount', 'Importe')}</th>
+                <th scope="col">{t('Destination', 'Destination', 'Destino')}</th>
               </tr>
             </thead>
             <tbody data-workflow-results>
@@ -253,10 +347,13 @@ export const prerender = true;
                 <tr>
                   <td>
                     {doc.name}
-                    <small>{doc.reference || 'Référence absente'}</small>
+                    <small>
+                      {doc.reference ||
+                        t('Référence absente', 'Missing reference', 'Sin referencia')}
+                    </small>
                   </td>
-                  <td>{formatAmount(doc.amount)} €</td>
-                  <td>En attente</td>
+                  <td>{amount(doc.amount)} €</td>
+                  <td>{messages.pending}</td>
                 </tr>
               ))}
             </tbody>
@@ -265,25 +362,39 @@ export const prerender = true;
       </div>
       <div class="lab-bottom">
         <p>
-          Ce démonstrateur traite des objets JavaScript. Il ne lit pas de PDF, n’envoie pas de
-          document et ne se connecte à aucun logiciel. L’animation rend visible un calcul effectué
-          localement.
+          {t(
+            'Ce démonstrateur traite des objets JavaScript. Il ne lit pas de PDF, n’envoie pas de document et ne se connecte à aucun logiciel. L’animation rend visible un calcul effectué localement.',
+            'This demo processes JavaScript objects. It does not read PDFs, send documents or connect to any software. The animation shows a calculation performed locally.',
+            'Esta demo procesa objetos JavaScript. No lee PDF, no envía documentos ni se conecta a ningún programa. La animación muestra un cálculo realizado localmente.',
+          )}
         </p>
-        <a href="/realisations/flux-documents" class="text-link">
-          Lire l’étude de cas <span aria-hidden="true">↗</span>
+        <a href={localizePath('/realisations/flux-documents', locale)} class="text-link">
+          {t('Lire l’étude de cas', 'Read the case study', 'Leer el caso práctico')}{' '}
+          <span aria-hidden="true">↗</span>
         </a>
       </div>
     </section>
     <section class="lab-cta" data-reveal>
-      <p class="eyebrow">Passer à votre cas</p>
+      <p class="eyebrow">
+        {t('Passer à votre cas', 'Apply it to your project', 'Aplicarlo a tu proyecto')}
+      </p>
       <h2>
-        Le même principe.
+        {t('Le même principe.', 'The same principle.', 'El mismo principio.')}
         <br />
-        <em>Votre propre matière.</em>
+        <em>
+          {t('Votre propre matière.', 'Your own starting point.', 'Tu propio punto de partida.')}
+        </em>
       </h2>
-      <p>Vos données, vos étapes, vos contraintes. Parlons de ce qui mérite d’être simplifié.</p>
-      <a href="/contact" class="button button-primary">
-        Parler de votre projet <span aria-hidden="true">↗</span>
+      <p>
+        {t(
+          'Vos données, vos étapes, vos contraintes. Parlons de ce qui mérite d’être simplifié.',
+          'Your data, your steps, your constraints. Let’s discuss what could be simpler.',
+          'Tus datos, tus etapas, tus límites. Hablemos de lo que se podría simplificar.',
+        )}
+      </p>
+      <a href={localizePath('/contact', locale)} class="button button-primary">
+        {t('Parler de votre projet', 'Discuss your project', 'Hablar de tu proyecto')}{' '}
+        <span aria-hidden="true">↗</span>
       </a>
     </section>
   </div>

@@ -1,0 +1,62 @@
+/* The main ID intentionally overrides Astro-scoped editorial sizes. Diagram labels and the animated ribbon retain their scale. */
+body { font-size: 16px; }
+body .eyebrow, body .tag, body #main .section-label { font-size: 12px; line-height: 1.65; }
+body .button, body .text-link { font-size: 15px; min-height: 44px; }
+body .desktop-nav a { font-size: 14px; }
+body .header-contact { font-size: 14px; }
+body #main .hero-eyebrow { font-size: 12px; }
+body #main .hero-description { font-size: 16px; line-height: 1.85; max-width: 46ch; }
+body #main .hero-actions { flex-wrap: wrap; gap: 12px 20px; }
+body #main .hero-actions .button, body #main .hero-secondary { font-size: 14px; min-height: 48px; }
+body #main .hero-secondary { white-space: normal; }
+body #main .hero-signature p { font-size: 14px; }
+body #main .hero-signature p span { font-size: 12px; line-height: 1.7; }
+body #main .hero-bottom { font-size: 11px; gap: 18px; line-height: 1.7; }
+body #main .hero-bottom > span { text-align: right; }
+body #main .section-intro, body #main .service-copy p { font-size: 16px; line-height: 1.8; }
+body #main .service-tags span { font-size: 12px; }
+body #main .method-steps p { font-size: 15px; line-height: 1.8; }
+body #main .about-copy > p:not(.section-label) { font-size: 16px; line-height: 1.85; }
+body #main .about-small, body #main .about-coordinate { font-size: 12px; line-height: 1.6; letter-spacing: .06em; right: 20px; }
+body #main .home-project > p, body #main .project-item > p { font-size: 16px; line-height: 1.8; }
+body #main .project-caption .eyebrow, body #main .project-meta { font-size: 12px; }
+body #main .project-honesty, body #main .honesty-note p { font-size: 14px; line-height: 1.8; }
+body #main .demos-heading { margin: 22px 0 28px; font-size: clamp(30px, 3vw, 44px); }
+body #main .toolbar-note { font-size: 11px; }
+body #main .project-filters button { min-height: 44px; font-size: 14px; }
+body #main .project-filters button span { font-size: 12px; }
+body .footer-meta p { font-size: 14px; line-height: 1.8; }
+body .footer-bottom, body .footer-bottom a { font-size: 12px; line-height: 1.7; }
+body .footer-bottom > div { flex-wrap: wrap; }
+body .motion-control { font-size: 12px; }
+body .motion-control select { min-height: 40px; font-size: 14px; }
+body .preview-note { font-size: 12px; line-height: 1.8; }
+body #main .field label, body #main .form-help, body #main .field-hint, body #main .field-error { font-size: 14px; line-height: 1.7; }
+body #main .field input, body #main .field select, body #main .field textarea { font-size: 16px; }
+body #main .contact-aside p, body #main .contact-aside dd, body #main .contact-notice p { font-size: 15px; line-height: 1.85; }
+body #main .service-detail p, body #main .case-section > p { font-size: 16px; line-height: 1.85; }
+@media (max-width: 1150px) {
+  body .desktop-nav { gap: 14px; }
+  body .header-contact span { display: none; }
+  body .header-contact { padding: 10px; gap: 0; }
+}
+@media (min-width: 761px) and (max-width: 900px) {
+  body .site-header { flex-wrap: wrap; height: auto; min-height: 106px; padding-block: 15px; gap: 12px; }
+  body .desktop-nav { order: 5; width: 100%; justify-content: center; flex-wrap: wrap; }
+}
+@media (max-width: 760px) {
+  body .site-header > .header-contact { display: none; }
+  body .site-header > .language-switcher { margin-left: auto; }
+  body .site-header > .brand { font-size: 21px; }
+  body .site-header > .menu-toggle { flex-shrink: 0; }
+  body #main .hero-description { font-size: 16px; }
+  body #main .hero-actions .button, body #main .hero-secondary { font-size: 15px; }
+  body #main .hero-actions { gap: 12px; align-items: flex-start; flex-direction: column; }
+  body #main .hero-bottom { font-size: 11px; }
+  body #main .hero h1 { white-space: normal; font-size: clamp(42px, 10.2vw, 72px); }
+  body #main .hero-emphasis { display: inline-block; }
+  body .footer-invitation .eyebrow { font-size: 12px; letter-spacing: .05em; }
+  body .footer-invitation { flex-wrap: wrap; }
+  body .projects-toolbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  body #main .about-graphic { min-height: 360px; }
+}

@@ -82,7 +82,7 @@ export const profile = {
 }>;
 
 export const technologyGroups = [
-  { id: 'languages', titles: ['Langages', 'Languages', 'Lenguajes'], items: ['Python', 'SQL', 'TypeScript', 'JavaScript', 'HTML', 'CSS'] },
+  { id: 'languages', titles: ['Langages', 'Languages', 'Lenguajes'], items: ['Python', 'SQL', 'Go', 'Lua', 'Java', 'TypeScript', 'JavaScript', 'HTML', 'CSS'] },
   { id: 'web', titles: ['Web & API', 'Web & APIs', 'Web y API'], items: ['FastAPI', 'Flask', 'Django', 'React', 'Next.js', 'Astro', 'Node.js', 'Express', 'Tailwind CSS'] },
   { id: 'data', titles: ['Data & automatisation', 'Data & automation', 'Datos y automatización'], items: ['pandas', 'NumPy', 'scikit-learn', 'Power BI', 'Apache Airflow', 'PostgreSQL', 'MySQL', 'SQLite'] },
   { id: 'ai', titles: ['IA & recherche documentaire', 'AI & document retrieval', 'IA y búsqueda documental'], items: ['PyTorch', 'TensorFlow', 'Keras', 'Transformers', 'LLM / RAG', 'vLLM', 'Qdrant', 'MCP'] },

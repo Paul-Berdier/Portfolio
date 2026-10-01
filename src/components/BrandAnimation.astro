@@ -1,5 +1,6 @@
 ---
 import { getBrand, localeFromPath, translate } from '../i18n';
+import AuroraBackdrop from './AuroraBackdrop.astro';
 const locale = localeFromPath(Astro.url.pathname);
 const brand = getBrand(locale);
 const t = (fr: string, en: string, es: string) => translate(locale, fr, en, es);
@@ -24,6 +25,7 @@ const wordScale = Math.min(0.85, 410 / typeArt.word.width);
   data-brand-formation="1"
 >
   <div class="brand-stage" data-brand-stage>
+    <AuroraBackdrop />
     <svg
       class:list={{ 'engine-fallback': canvas }}
       data-brand-art
@@ -133,6 +135,10 @@ const wordScale = Math.min(0.85, 410 / typeArt.word.width);
       <button type="button" class="text-link" data-brand-action="replay">
         {t('Rejouer', 'Replay', 'Repetir')} <span aria-hidden="true">↻</span>
       </button>
+      <button type="button" class="text-link" data-aurora-toggle aria-pressed="false" hidden>
+        <span data-aurora-pause-label>{t('Mettre l’aurore en pause', 'Pause the aurora', 'Pausar la aurora')}</span>
+        <span data-aurora-resume-label hidden>{t('Reprendre l’aurore', 'Resume the aurora', 'Reanudar la aurora')}</span>
+      </button>
       {variant === 'presentation' && (
         <label class="brand-scrubber">
           {t('Progression', 'Progress', 'Progreso')}{' '}
@@ -168,6 +174,8 @@ const wordScale = Math.min(0.85, 410 / typeArt.word.width);
     isolation: isolate;
   }
   .brand-stage > svg {
+    position: relative;
+    z-index: 1;
     display: block;
     width: 100%;
     height: 100%;
@@ -191,17 +199,21 @@ const wordScale = Math.min(0.85, 410 / typeArt.word.width);
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
     padding: 16px 0;
-    font-size: 12px;
+    font-size: 13px;
   }
   .brand-playback button {
     border: 0;
     background: none;
     color: var(--accent);
-    padding: 6px 0;
+    padding: 8px 0;
+    min-height: 44px;
     cursor: pointer;
     font: inherit;
+  }
+  .brand-playback [hidden] {
+    display: none !important;
   }
   .brand-scrubber {
     display: flex;
@@ -218,11 +230,11 @@ const wordScale = Math.min(0.85, 410 / typeArt.word.width);
   }
   .brand-step {
     color: var(--muted);
-    font-size: 11px;
+    font-size: 12px;
   }
   .brand-animation-hero .brand-playback {
     justify-content: space-between;
-    padding: 2px 16px 10px;
+    padding: 2px 12px 10px;
   }
   :global([data-engine][data-ready='true']) [data-brand-ribbon] {
     opacity: 0;
@@ -235,7 +247,8 @@ const wordScale = Math.min(0.85, 410 / typeArt.word.width);
   }
   @media (max-width: 480px) {
     .brand-playback {
-      gap: 14px;
+      gap: 8px 14px;
+      font-size: 12px;
     }
     .brand-scrubber {
       flex-basis: 100%;

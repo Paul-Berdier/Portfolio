@@ -11,14 +11,14 @@ const engineModes = getEngineModes(locale);
   <div class="engine-meta" aria-hidden="true">
     <span>
       <i />
-      MORPH ENGINE
+      MORPH AURORA
     </span>
     <span>
       {translate(
         locale,
-        'UNE MATIÈRE · CINQ FORMES',
-        'ONE MATERIAL · FIVE FORMS',
-        'UNA MATERIA · CINCO FORMAS',
+        'UNE IDENTITÉ VIVANTE',
+        'A LIVING IDENTITY',
+        'UNA IDENTIDAD VIVA',
       )}
     </span>
   </div>
@@ -65,16 +65,21 @@ const engineModes = getEngineModes(locale);
   .engine-meta {
     display: flex;
     justify-content: space-between;
-    font-size: 8px;
-    letter-spacing: 0.16em;
+    font-size: 11px;
+    letter-spacing: 0.1em;
     color: var(--muted);
-    padding: 0 16px;
-    gap: 20px;
+    padding: 0 12px;
+    gap: 16px;
+    line-height: 1.5;
   }
   .engine-meta > span:first-child {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
+  }
+  .engine-meta > span:last-child {
+    text-align: right;
   }
   .engine-meta i {
     width: 4px;
@@ -116,7 +121,7 @@ const engineModes = getEngineModes(locale);
   }
   .engine-controls {
     display: grid;
-    grid-template-columns: 0.9fr 0.75fr 1.55fr 0.7fr 0.65fr;
+    grid-template-columns: minmax(0, .9fr) minmax(0, .75fr) minmax(0, 1.65fr) minmax(0, .7fr) minmax(0, .65fr);
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
@@ -125,18 +130,20 @@ const engineModes = getEngineModes(locale);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 5px;
     font: inherit;
-    font-size: 10px;
+    font-size: 13px;
+    line-height: 1.4;
     color: var(--muted);
     background: none;
     border: 0;
-    padding: 19px 4px;
+    padding: 17px 3px;
     cursor: pointer;
     min-height: 48px;
+    min-width: 0;
   }
   .engine-controls button span {
-    font-size: 7px;
+    font-size: 10px;
     opacity: 0.75;
   }
   .engine-controls button:after {
@@ -161,28 +168,28 @@ const engineModes = getEngineModes(locale);
     background: var(--surface-hover);
   }
   .engine-caption {
-    font-size: 10px;
-    line-height: 1.7;
+    font-size: 13px;
+    line-height: 1.75;
     color: var(--muted);
-    margin: 15px 15px 0;
-    min-height: 34px;
+    margin: 15px 12px 0;
+    min-height: 46px;
   }
   @media (max-width: 760px) {
     .engine-stage {
       margin-top: 22px;
     }
     .engine-meta {
-      font-size: 7px;
+      font-size: 10px;
     }
     .engine-controls button {
-      font-size: 9px;
-      gap: 5px;
+      font-size: 12px;
+      gap: 4px;
     }
     .engine-controls button span {
       display: none;
     }
     .engine-caption {
-      font-size: 11px;
+      font-size: 13px;
       margin-top: 15px;
     }
   }

@@ -1,0 +1,88 @@
+---
+import { AURORA, auroraParticle, auroraVeil } from '../brand/aurora';
+import { palette } from '../brand/palette.mjs';
+const id = `aurora-${crypto.randomUUID()}`;
+---
+
+<div class="aurora-backdrop" data-aurora data-aurora-state="static" aria-hidden="true">
+  <svg viewBox="0 0 640 320" fill="none" focusable="false">
+    <defs>
+      <linearGradient id={`${id}-veil`} x1="80" y1="210" x2="485" y2="40" gradientUnits="userSpaceOnUse">
+        <stop stop-color={palette.blueLight} stop-opacity="0" />
+        <stop offset=".22" stop-color={palette.violet} stop-opacity=".48" />
+        <stop offset=".47" stop-color={palette.periwinkle} stop-opacity=".45" />
+        <stop offset=".67" stop-color={palette.lavender} stop-opacity=".12" />
+        <stop offset=".87" stop-color={palette.violet} stop-opacity=".38" />
+        <stop offset="1" stop-color={palette.periwinkle} stop-opacity="0" />
+      </linearGradient>
+      <linearGradient id={`${id}-edge`}>
+        <stop stop-color={palette.blueLight} stop-opacity="0" />
+        <stop offset=".35" stop-color={palette.periwinkle} stop-opacity=".55" />
+        <stop offset=".52" stop-color={palette.ivory} stop-opacity=".3" />
+        <stop offset=".8" stop-color={palette.violet} stop-opacity=".5" />
+        <stop offset="1" stop-color={palette.lavender} stop-opacity="0" />
+      </linearGradient>
+      <radialGradient id={`${id}-falloff`}>
+        <stop offset=".3" stop-color="white" />
+        <stop offset="1" stop-color="black" />
+      </radialGradient>
+      <mask id={`${id}-mask`} maskUnits="userSpaceOnUse" x="0" y="0" width="640" height="320">
+        <ellipse cx="320" cy="150" rx="360" ry="200" fill={`url(#${id}-falloff)`} />
+      </mask>
+    </defs>
+    <g mask={`url(#${id}-mask)`}>
+      {Array.from({ length: AURORA.layers }, (_, index) => (
+        <g opacity={1 - index * 0.18}>
+          <path data-aurora-veil={index} d={auroraVeil(0, index).fill} fill={`url(#${id}-veil)`} />
+          <path data-aurora-edge={index} d={auroraVeil(0, index).edge} stroke={`url(#${id}-edge)`} stroke-width={index ? '.7' : '1.2'} />
+        </g>
+      ))}
+      <g class="aurora-dust" fill={palette.lavender}>
+        {Array.from({ length: AURORA.desktopParticles }, (_, index) => {
+          const point = auroraParticle(index, 0);
+          return <circle data-aurora-particle={index} cx="0" cy="0" r={point.radius} opacity={point.opacity} transform={`translate(${point.x} ${point.y})`} />;
+        })}
+      </g>
+    </g>
+  </svg>
+</div>
+
+<script>
+  import { initAuroras } from '../scripts/aurora';
+  let dispose: (() => void) | undefined;
+  document.addEventListener('astro:page-load', () => {
+    dispose?.();
+    dispose = initAuroras();
+  });
+  document.addEventListener('astro:before-swap', () => {
+    dispose?.();
+    dispose = undefined;
+  });
+</script>
+
+<style>
+  .aurora-backdrop {
+    position: absolute;
+    /* Keep the actual decoration box inside its column, especially at 768px.
+       Paint containment alone does not prevent an oversized box overflowing. */
+    inset: -11% 0 17%;
+    z-index: 0;
+    pointer-events: none;
+    contain: layout paint;
+    opacity: .8;
+  }
+  .aurora-backdrop svg { display: block; width: 100%; height: 100%; }
+  .aurora-dust { opacity: .85; }
+  :global([data-motion='reduced']) .aurora-backdrop { opacity: .28; }
+  :global([data-motion='reduced']) .aurora-dust,
+  :global([data-motion='off']) .aurora-backdrop { display: none; }
+  :global(.morph-engine:not([data-state='brand'])) .aurora-backdrop { visibility: hidden; }
+  @media (prefers-reduced-motion: reduce) {
+    .aurora-backdrop { opacity: .28; }
+    .aurora-dust { display: none; }
+  }
+  @media (max-width: 760px) {
+    .aurora-backdrop { inset: -8% 0 20%; opacity: .7; }
+    [data-aurora-particle]:nth-child(n + 11) { display: none; }
+  }
+</style>

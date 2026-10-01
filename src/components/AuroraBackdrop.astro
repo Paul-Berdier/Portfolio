@@ -63,7 +63,9 @@ const id = `aurora-${crypto.randomUUID()}`;
 <style>
   .aurora-backdrop {
     position: absolute;
-    inset: -11% -12% 17%;
+    /* Keep the actual decoration box inside its column, especially at 768px.
+       Paint containment alone does not prevent an oversized box overflowing. */
+    inset: -11% 0 17%;
     z-index: 0;
     pointer-events: none;
     contain: layout paint;
@@ -80,7 +82,7 @@ const id = `aurora-${crypto.randomUUID()}`;
     .aurora-dust { display: none; }
   }
   @media (max-width: 760px) {
-    .aurora-backdrop { inset: -8% -5% 20%; opacity: .7; }
+    .aurora-backdrop { inset: -8% 0 20%; opacity: .7; }
     [data-aurora-particle]:nth-child(n + 11) { display: none; }
   }
 </style>
